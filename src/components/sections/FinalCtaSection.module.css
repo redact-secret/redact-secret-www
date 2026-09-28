@@ -1,0 +1,15 @@
+.final {
+  display: grid;
+  gap: var(--space-6);
+  justify-items: start;
+}
+
+.title {
+  max-width: 20ch;
+}
+
+.ctas {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}

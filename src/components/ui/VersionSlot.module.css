@@ -1,0 +1,21 @@
+.slot {
+  display: flex;
+  gap: var(--space-3);
+  align-items: baseline;
+  flex-wrap: wrap;
+  border-left: var(--space-1) solid var(--status-info);
+  background: var(--status-info-fill);
+  padding: var(--space-3) var(--space-4);
+}
+
+.label {
+  font: 700 var(--text-2xs) / var(--leading-2xs) var(--font-mont);
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  color: var(--status-info);
+}
+
+.body {
+  font: 400 var(--text-sm) / var(--leading-sm) var(--font-roboto);
+  color: var(--ink);
+}

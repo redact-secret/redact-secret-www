@@ -1,0 +1,47 @@
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  align-items: start;
+}
+
+.title {
+  font: 700 var(--text-lg) / var(--leading-xl) var(--font-merri);
+}
+
+.pkg {
+  font: 400 var(--text-xs) / var(--leading-xs) var(--font-mono);
+  color: var(--ink-muted);
+  word-break: break-all;
+}
+
+.registry {
+  font-family: var(--font-roboto);
+}
+
+.desc {
+  font: 400 var(--text-md) / var(--leading-code) var(--font-roboto);
+  color: var(--ink-muted);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-1) var(--space-3);
+  font: 400 var(--text-xs) / var(--leading-xs) var(--font-roboto);
+  color: var(--ink-muted);
+  margin-top: var(--space-1);
+}
+
+.facts dt {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.facts dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  word-break: break-all;
+}

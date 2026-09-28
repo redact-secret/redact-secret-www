@@ -1,0 +1,41 @@
+.band {
+  border-top: var(--hairline) solid var(--line);
+}
+
+.inner {
+  padding-block: var(--space-16);
+}
+
+@media (max-width: 860px) {
+  .inner {
+    padding-block: var(--space-12);
+  }
+}
+
+/* The page's one large brand-green block (design spec § 09). */
+.brand {
+  background: var(--brand-green);
+  color: var(--on-brand);
+}
+
+.brand :global(.eyebrow),
+.brand :global(.lede),
+.brand :global(.small) {
+  color: var(--on-brand);
+}
+
+.brand :global(.lede) {
+  opacity: 0.82;
+}
+
+.brand a {
+  color: var(--on-brand);
+  text-decoration: underline;
+}
+
+/* Global `.small b` / `.lede b` use --ink, which flips in dark mode; the
+   green ground does not, so emphasis stays on-brand. */
+.brand :global(b),
+.brand :global(code) {
+  color: var(--on-brand);
+}

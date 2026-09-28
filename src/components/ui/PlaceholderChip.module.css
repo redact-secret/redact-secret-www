@@ -1,0 +1,13 @@
+.chip {
+  background: var(--sunken-2);
+  border: var(--hairline) solid var(--ink-muted);
+  padding: calc(var(--hairline)) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.active {
+  border-color: var(--ink);
+  outline: var(--hairline) solid var(--ink);
+}

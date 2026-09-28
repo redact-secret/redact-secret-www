@@ -1,0 +1,8 @@
+.output {
+  margin: 0;
+  min-height: 100%;
+  font: 400 var(--text-sm) / var(--leading-md) var(--font-mono);
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-all;
+}

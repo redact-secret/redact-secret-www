@@ -1,0 +1,59 @@
+.flow {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: var(--rule) solid var(--on-brand);
+  color: var(--on-brand);
+}
+
+.step {
+  padding: var(--space-4) var(--space-4) var(--space-6) 0;
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+}
+
+.step + .step {
+  border-left: var(--hairline) solid color-mix(in srgb, var(--on-brand) 34%, transparent);
+  padding-left: var(--space-4);
+}
+
+/* The cut face of the logo's broken triangle: only the core step is outlined. */
+.core {
+  outline: var(--rule) solid var(--on-brand);
+  outline-offset: 0;
+}
+
+.key {
+  font: 700 var(--text-2xs) / var(--leading-2xs) var(--font-mont);
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.title {
+  font: 700 var(--text-ml) / var(--leading-md) var(--font-roboto);
+}
+
+.desc {
+  font: 400 var(--text-xs) / var(--leading-xs) var(--font-roboto);
+  opacity: 0.78;
+}
+
+@media (max-width: 900px) {
+  .flow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .step + .step {
+    border-left: 0;
+    border-top: var(--hairline) solid color-mix(in srgb, var(--on-brand) 34%, transparent);
+    padding-left: 0;
+  }
+
+  .core {
+    padding-left: var(--space-4);
+  }
+}

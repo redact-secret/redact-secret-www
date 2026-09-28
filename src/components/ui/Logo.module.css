@@ -1,0 +1,33 @@
+.logo {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.logo img {
+  display: block;
+  height: var(--logo-h);
+  width: auto;
+}
+
+@media (max-width: 560px) {
+  .logo img {
+    height: var(--logo-h-mobile);
+  }
+}
+
+/* Swap files per theme — never recolor (CONVENTIONS.md § Design system). */
+:global(:root:not([data-theme='dark'])) .dark,
+:global(:root[data-theme='dark']) .light {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme='light'])) .light {
+    display: none;
+  }
+
+  :global(:root:not([data-theme='light'])) .dark {
+    display: block;
+  }
+}

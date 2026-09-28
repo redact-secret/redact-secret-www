@@ -1,0 +1,145 @@
+/* Global base and type classes. Tokens only — see CONVENTIONS.md. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: calc(var(--head-h) + var(--space-8));
+}
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--ink);
+  font: var(--type-body);
+  overflow-wrap: break-word;
+  -webkit-text-size-adjust: 100%;
+}
+
+:lang(ko) {
+  word-break: keep-all;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+figure,
+dl {
+  margin: 0;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+:focus-visible {
+  outline: var(--rule) solid var(--focus);
+  outline-offset: var(--rule);
+}
+
+code,
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+::selection {
+  background: var(--brand-green);
+  color: var(--on-brand);
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+/* Component display rules (e.g. a tab panel's `display: grid`) must not
+   override the `hidden` attribute. */
+[hidden] {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.display {
+  font: var(--type-display);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.h1 {
+  font: var(--type-h1);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.h2 {
+  font: var(--type-h2);
+  text-wrap: balance;
+}
+
+.h3 {
+  font: var(--type-h3);
+  text-wrap: balance;
+}
+
+.eyebrow {
+  font: var(--type-eyebrow);
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.lede {
+  font: var(--type-lede);
+  color: var(--ink-muted);
+  max-width: var(--measure);
+}
+
+.small {
+  font: var(--type-small);
+  color: var(--ink-muted);
+}
+
+.tiny {
+  font: var(--type-tiny);
+  color: var(--ink-muted);
+}
+
+.lede b,
+.small b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.wrap {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: var(--hairline);
+  height: var(--hairline);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

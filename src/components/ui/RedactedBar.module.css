@@ -1,0 +1,8 @@
+.bar {
+  display: inline-block;
+  height: var(--redacted-h);
+  width: calc(var(--space-12) * 4);
+  max-width: 100%;
+  background: var(--ink);
+  vertical-align: calc(var(--rule) * -1);
+}

@@ -1,0 +1,33 @@
+{
+  "name": "redact-secret-www",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "node scripts/check-slots.mjs && tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "check:slots": "node scripts/check-slots.mjs",
+    "slots:refresh": "node scripts/refresh-slots.mjs"
+  },
+  "dependencies": {
+    "@redact-secret/core": "0.1.0-beta.10",
+    "preact": "^10.29.8",
+    "preact-iso": "^2.12.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@preact/preset-vite": "^2.10.6",
+    "@storybook/preact-vite": "^10.6.0",
+    "preact-render-to-string": "^6.7.0",
+    "storybook": "^10.6.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1"
+  }
+}

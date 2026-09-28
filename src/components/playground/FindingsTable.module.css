@@ -1,0 +1,38 @@
+.scroll {
+  overflow-x: auto;
+  border-top: var(--hairline) solid var(--ink);
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: calc(var(--space-16) * 9);
+  font: 400 var(--text-md) / var(--leading-code) var(--font-roboto);
+}
+
+.table th {
+  text-align: left;
+  font: 700 var(--text-2xs) / var(--leading-2xs) var(--font-mont);
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  border-bottom: var(--hairline) solid var(--line);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: var(--space-2) var(--space-4) var(--space-2) 0;
+  border-bottom: var(--hairline) solid var(--line);
+  vertical-align: top;
+}
+
+.table tbody tr:hover > td,
+.table tbody tr:focus-within > td {
+  background: var(--sunken);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}

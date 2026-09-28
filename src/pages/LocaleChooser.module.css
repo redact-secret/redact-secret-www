@@ -1,0 +1,15 @@
+.chooser {
+  min-height: 100dvh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-8);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: var(--space-6);
+  font: 600 var(--text-lg) / 1.5 var(--font-roboto);
+}

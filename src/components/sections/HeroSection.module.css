@@ -1,0 +1,34 @@
+.hero > :global(.wrap) {
+  padding-block: var(--space-16) var(--space-12);
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: var(--space-16);
+  align-items: start;
+}
+
+.copy {
+  display: grid;
+  gap: var(--space-6);
+  align-content: start;
+}
+
+.ctas {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.proof {
+  border-top: var(--rule) solid var(--ink);
+  padding-top: var(--space-3);
+  font: 600 var(--text-ml) / var(--leading-md) var(--font-roboto);
+  max-width: 46ch;
+}
+
+@media (max-width: 980px) {
+  .hero > :global(.wrap) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-12);
+  }
+}

@@ -1,0 +1,35 @@
+.panel {
+  margin: 0 0 0 auto;
+  height: 100dvh;
+  max-height: 100dvh;
+  width: min(calc(var(--space-16) * 5), 100vw);
+  padding: 0;
+  border: 0;
+  border-left: var(--hairline) solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.panel::backdrop {
+  background: color-mix(in srgb, var(--ink) 40%, transparent);
+}
+
+.inner {
+  display: grid;
+  gap: var(--space-8);
+  align-content: start;
+  padding: var(--space-4) var(--space-6) var(--space-8);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: calc(var(--head-h) - var(--space-4) * 2);
+}
+
+.controls {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}

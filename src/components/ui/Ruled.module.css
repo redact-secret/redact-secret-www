@@ -1,0 +1,12 @@
+.ruled {
+  border-top: var(--rule) solid var(--ink);
+  padding-top: var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+  min-width: 0;
+}
+
+.onBrand {
+  border-top-color: var(--on-brand);
+}

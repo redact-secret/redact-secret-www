@@ -1,0 +1,17 @@
+{
+  "$comment": "What the page lists and where each package is published. Versions, dates, tags, and ranges are NOT here: scripts/refresh-slots.mjs reads them from the registries into release.json.",
+  "packages": {
+    "core": { "registry": "npm", "name": "@redact-secret/core", "also": [{ "registry": "pypi", "name": "redact-secret" }, { "registry": "crates", "name": "redact-secret" }] },
+    "wasm": { "registry": "npm", "name": "@redact-secret/wasm" },
+    "cli": { "registry": "crates", "name": "redact-secret-cli" },
+    "adapter": { "registry": "npm", "name": "@redact-secret/adapter" },
+    "adapter-pino": { "registry": "npm", "name": "@redact-secret/adapter-pino" },
+    "adapter-otel": { "registry": "npm", "name": "@redact-secret/adapter-otel" },
+    "adapter-ai-context": { "registry": "npm", "name": "@redact-secret/adapter-ai-context", "tag": "alpha" },
+    "adapter-mcp": { "registry": "npm", "name": "@redact-secret/adapter-mcp", "tag": "alpha" },
+    "adapters-py": { "registry": "pypi", "name": "redact-secret-adapters" },
+    "vault": { "registry": "npm", "name": "@redact-secret/vault", "tag": "alpha" },
+    "vault-server": { "registry": "npm", "name": "@redact-secret/vault-server", "tag": "alpha" },
+    "vault-py": { "registry": "pypi", "name": "redact-secret-vault", "unpublishedVersion": "0.1.0a2" }
+  }
+}

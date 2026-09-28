@@ -1,0 +1,40 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font: 600 var(--text-xs) / var(--leading-2xs) var(--font-roboto);
+  padding: calc(var(--space-1) / 2) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: var(--hairline) solid transparent;
+  white-space: nowrap;
+}
+
+.success {
+  background: var(--status-success-fill);
+  color: var(--status-success);
+  border-color: var(--status-success);
+}
+
+.warning {
+  background: var(--status-warning-fill);
+  color: var(--status-warning);
+  border-color: var(--status-warning);
+}
+
+.danger {
+  background: var(--status-danger-fill);
+  color: var(--status-danger);
+  border-color: var(--status-danger);
+}
+
+.info {
+  background: var(--status-info-fill);
+  color: var(--status-info);
+  border-color: var(--status-info);
+}
+
+.none {
+  background: transparent;
+  color: var(--ink-muted);
+  border: var(--hairline) dashed var(--ink-muted);
+}

@@ -1,0 +1,22 @@
+.limits {
+  border-left: var(--space-1) solid var(--ink-muted);
+  background: var(--sunken);
+  padding: var(--space-4) var(--space-6);
+  max-width: 70ch;
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-12);
+}
+
+.title {
+  font: 700 var(--text-lg) / var(--leading-xl) var(--font-merri);
+}
+
+.limits p {
+  font: 400 var(--text-md) / var(--leading-md) var(--font-roboto);
+  color: var(--ink-muted);
+}
+
+.limits b {
+  color: var(--ink);
+}
