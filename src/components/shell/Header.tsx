@@ -2,7 +2,7 @@ import { useState } from 'preact/hooks';
 import { Button, Logo } from '../ui';
 import type { SiteContent } from '../../content';
 import { anchors } from '../../content/shared';
-import type { Locale } from '../../i18n';
+import { homePath, type Locale } from '../../i18n';
 import { NavLinks } from './NavLinks';
 import { ShellControls, type Alternates } from './ShellControls';
 import { SideNav, sideNavId } from './SideNav';
@@ -30,7 +30,7 @@ export function Header({ locale, copy, alternates, current }: HeaderProps) {
         {copy.skipToContent}
       </a>
       <div class={`wrap ${styles.inner}`}>
-        <Logo href={`/${locale}/`} />
+        <Logo href={homePath(locale)} />
         <nav class={styles.nav} aria-label={copy.mainNavLabel}>
           <NavLinks links={copy.nav} current={current} />
         </nav>
@@ -38,7 +38,7 @@ export function Header({ locale, copy, alternates, current }: HeaderProps) {
           <div class={styles.controls}>
             <ShellControls locale={locale} copy={copy} alternates={alternates} />
           </div>
-          <Button href={`/${locale}/#${anchors.firstRun}`}>{copy.getStarted}</Button>
+          <Button href={`${homePath(locale)}#${anchors.firstRun}`}>{copy.getStarted}</Button>
           <span class={styles.menu}>
             <Button onClick={() => setMenuOpen(true)} expanded={menuOpen} controls={sideNavId}>
               {copy.menu}
