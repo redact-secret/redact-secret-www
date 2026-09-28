@@ -2,7 +2,7 @@
  * Shared across locales, never translated: URLs, the one synthetic fixture,
  * and code snippets (CONVENTIONS.md § Bilingual content).
  */
-import { slots } from '../slots';
+import type { CoreSlot } from '../slots';
 
 export const siteOrigin = 'https://www.redactsecret.com';
 
@@ -45,42 +45,49 @@ export const fixture = {
   call: 'scanAndRedact()',
 };
 
-const { core } = slots;
+function snippetsFor(core: CoreSlot) {
+  return {
+    js: {
+      label: 'JavaScript',
+      install: `npm install @redact-secret/core@${core.npm}`,
+      code: [
+        'import { initialize, scanAndRedact } from "@redact-secret/core";',
+        '',
+        'await initialize();',
+        `const result = scanAndRedact("${fixture.input}");`,
+        'console.log(result.text);',
+        `// ${fixture.key}=${fixture.placeholder}`,
+      ].join('\n'),
+    },
+    python: {
+      label: 'Python',
+      install: `python -m pip install redact-secret==${core.pypi}`,
+      code: [
+        'import redact_secret',
+        '',
+        `result = redact_secret.scan_and_redact("${fixture.input}")`,
+        'print(result.text)',
+        `# ${fixture.key}=${fixture.placeholder}`,
+      ].join('\n'),
+    },
+    cli: {
+      label: 'CLI',
+      install: `cargo install redact-secret-cli --version ${core.crate} --locked`,
+      code: [
+        `printf '%s\\n' '${fixture.input}' \\`,
+        '  | redact-secret --redact',
+        `# ${fixture.key}=${fixture.placeholder}`,
+      ].join('\n'),
+    },
+  };
+}
 
-export const snippets = {
-  js: {
-    label: 'JavaScript',
-    install: `npm install @redact-secret/core@${core.npm}`,
-    code: [
-      'import { initialize, scanAndRedact } from "@redact-secret/core";',
-      '',
-      'await initialize();',
-      `const result = scanAndRedact("${fixture.input}");`,
-      'console.log(result.text);',
-      `// ${fixture.key}=${fixture.placeholder}`,
-    ].join('\n'),
-  },
-  python: {
-    label: 'Python',
-    install: `python -m pip install redact-secret==${core.pypi}`,
-    code: [
-      'import redact_secret',
-      '',
-      `result = redact_secret.scan_and_redact("${fixture.input}")`,
-      'print(result.text)',
-      `# ${fixture.key}=${fixture.placeholder}`,
-    ].join('\n'),
-  },
-  cli: {
-    label: 'CLI',
-    install: `cargo install redact-secret-cli --version ${core.crate} --locked`,
-    code: [
-      `printf '%s\\n' '${fixture.input}' \\`,
-      '  | redact-secret --redact',
-      `# ${fixture.key}=${fixture.placeholder}`,
-    ].join('\n'),
-  },
-};
+/** Install commands and first-run code, per language; set by installSnippets once the slots are. */
+export let snippets!: ReturnType<typeof snippetsFor>;
+
+export function installSnippets(core: CoreSlot) {
+  snippets = snippetsFor(core);
+}
 
 /**
  * Playground presets: the same one fixture value in different carriers

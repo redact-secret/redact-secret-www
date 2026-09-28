@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/locale-shell-v1.schema.json",
+  "title": "LocaleShellV1",
+  "description": "i18n/<locale>/shell.json: the site shell's copy in one locale — skip link, main navigation and header controls (header), footer, and the 404 page body. Editorial; reviewed per locale; no versions, dates or counts (those are slots).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "locale",
+    "header",
+    "footer",
+    "notFound"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "locale-shell-v1"
+    },
+    "locale": {
+      "$ref": "locale-common-v1.schema.json#/$defs/locale"
+    },
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "skipToContent",
+        "mainNavLabel",
+        "nav",
+        "getStarted",
+        "languageLabel",
+        "themeLabel",
+        "themeLight",
+        "themeDark",
+        "menu",
+        "closeMenu"
+      ],
+      "properties": {
+        "skipToContent": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "mainNavLabel": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "nav": {
+          "type": "array",
+          "items": {
+            "$ref": "locale-common-v1.schema.json#/$defs/link"
+          }
+        },
+        "getStarted": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "languageLabel": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "themeLabel": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "themeLight": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "themeDark": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "menu": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "closeMenu": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        }
+      }
+    },
+    "footer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tagline",
+        "columns",
+        "channelNote",
+        "languageNote"
+      ],
+      "properties": {
+        "tagline": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "links"
+            ],
+            "properties": {
+              "title": {
+                "$ref": "locale-common-v1.schema.json#/$defs/text"
+              },
+              "links": {
+                "type": "array",
+                "items": {
+                  "$ref": "locale-common-v1.schema.json#/$defs/link"
+                }
+              }
+            }
+          }
+        },
+        "channelNote": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "languageNote": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "notFound": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "body",
+        "home"
+      ],
+      "properties": {
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "body": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "home": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        }
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@ const meta: Meta = {
   component: IntegrationsSection,
   parameters: { layout: 'fullscreen' },
   render: (_args, { globals }) => (
-    <IntegrationsSection copy={content[globals.locale as Locale].integrations} slots={slots} />
+    <IntegrationsSection copy={content[globals.locale as Locale].home.integrations} slots={slots} />
   ),
 };
 

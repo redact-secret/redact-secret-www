@@ -1,10 +1,11 @@
 import { RedactedBar, StatusChip } from '../ui';
-import type { SiteContent } from '../../content';
+import type { HomeCopy } from '../../content';
+import { Rich } from '../ui/Rich';
 import { fixture } from '../../content/shared';
 import styles from './SpreadDiagram.module.css';
 
 export type SpreadDiagramProps = {
-  copy: SiteContent['problem'];
+  copy: HomeCopy['problem'];
 };
 
 /**
@@ -16,11 +17,11 @@ export function SpreadDiagram({ copy }: SpreadDiagramProps) {
   return (
     <div class={styles.spread}>
       <div class={styles.source}>
-        <p class="eyebrow">{copy.sourceLabel}</p>
+        <p class="eyebrow"><Rich value={copy.sourceLabel} /></p>
         <p class={styles.value}>
           {fixture.key}=<RedactedBar label={copy.redactedLabel} />
         </p>
-        <p class="small">{copy.sourceNote}</p>
+        <p class="small"><Rich value={copy.sourceNote} /></p>
       </div>
       <div>
         <ul class={styles.dests}>
@@ -30,8 +31,8 @@ export function SpreadDiagram({ copy }: SpreadDiagramProps) {
                 └→
               </span>
               <span class={styles.name}>
-                {dest.name}
-                <small class={styles.note}>{dest.note}</small>
+                <Rich value={dest.name} />
+                <small class={styles.note}><Rich value={dest.note} /></small>
               </span>
               <StatusChip tone="danger">{copy.kept}</StatusChip>
             </li>
@@ -41,11 +42,11 @@ export function SpreadDiagram({ copy }: SpreadDiagramProps) {
           {copy.counts.map((count) => (
             <div key={count.value}>
               <b>{count.value}</b>
-              <span>{count.label}</span>
+              <span><Rich value={count.label} /></span>
             </div>
           ))}
         </div>
-        <p class={`small ${styles.remedy}`}>{copy.remedy}</p>
+        <p class={`small ${styles.remedy}`}><Rich value={copy.remedy} /></p>
       </div>
     </div>
   );

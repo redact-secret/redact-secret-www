@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "locale-architecture-section-v1",
+  "locale": "en",
+  "section": "Architecture",
+  "navLabel": "Architecture",
+  "contents": "Architecture contents",
+  "groups": {
+    "section": "Section",
+    "engine": "The engine",
+    "evidence": "The evidence",
+    "boundaries": "The boundaries"
+  },
+  "pages": {
+    "overview": {
+      "nav": "Overview",
+      "title": "Architecture overview",
+      "description": "How Redact Secret is built: one Rust core that every language calls, how its decisions are measured, and the adapter and vault repositories outside it."
+    },
+    "how-it-works": {
+      "nav": "How it works",
+      "title": "How it works",
+      "description": "Four surfaces over one core, the four pipeline stages, and what it is not."
+    },
+    "detection": {
+      "nav": "How it detects",
+      "title": "How it detects",
+      "description": "Five tiers of evidence, fixed tie-breakers, no regex engine, and your own rulesets."
+    },
+    "support-claims": {
+      "nav": "Support claims",
+      "title": "How a support claim is built",
+      "description": "Three files answer three questions; a support claim exists only once they are joined."
+    },
+    "evaluation-methods": {
+      "nav": "Evaluation methods",
+      "title": "Evaluation methods",
+      "description": "Ten ways a detector can be wrong, graded five ways over byte ranges."
+    },
+    "adapters": {
+      "nav": "Adapters",
+      "title": "Adapters",
+      "description": "The packages between your host and the engine. They decide nothing."
+    },
+    "vault": {
+      "nav": "Vault",
+      "title": "Vault",
+      "description": "The one place allowed to keep an original, built to make that hard."
+    }
+  },
+  "pager": {
+    "label": "Architecture pages",
+    "prev": "← Previous",
+    "next": "Next →",
+    "back": "Back →"
+  }
+}

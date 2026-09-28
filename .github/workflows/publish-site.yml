@@ -1,15 +1,22 @@
-# Publishes www.redactsecret.com: builds a commit on main and syncs dist/ to
-# the bucket behind the www site stack that redact-secret-sites owns, using
-# the publisher role that repository creates.
+# Application release for www.redactsecret.com (ARCHITECTURE.md § Publish
+# flow): builds a commit on main and publishes it to the bucket behind the
+# www site stack that redact-secret-sites owns, using the publisher role that
+# repository creates.
 #
 # Runs after CI passes on a push to main, never on its own: the CI run's
-# commit is the one built here. Rolling back means dispatching this workflow
-# with an earlier commit on main (CONVENTIONS.md § Deploy).
+# commit is the one built here. A commit whose application files match the
+# deployed release (only i18n/ or data/ changed) is left to
+# publish-content.yml, which publishes it without a build; the `plan` job
+# makes that call with scripts/publish/plan.mjs, the same rule that workflow
+# uses, so exactly one of them publishes. A dispatch always builds: rolling
+# the application back means dispatching this workflow with an earlier
+# commit on main (CONVENTIONS.md § Deploy).
 #
 # Configuration lives in the repository's `production` GitHub environment, so
 # this file carries no account ID, bucket name, or role ARN:
 #
 #   production   PUBLISHER_ROLE_ARN, SITE_STACK=redactsecret-site-www-prod
+#   repository   SITE_URL (optional; default https://www.redactsecret.com)
 #
 # Until redact-secret-sites deploys that stack and trusts this repository's
 # OIDC subject (ARCHITECTURE.md § Publish flow), those variables are unset
@@ -24,20 +31,15 @@ on:
   workflow_dispatch:
     inputs:
       sha:
-        description: Commit on main to publish (empty = main's head). An earlier commit rolls back.
+        description: Commit on main to publish (empty = main's head). An earlier commit rolls the application back.
         type: string
         required: false
 
 permissions: {}
 
-# One publish at a time, never cancelled mid-sync.
-concurrency:
-  group: publish-site-production
-  cancel-in-progress: false
-
 jobs:
-  publish:
-    name: Publish to production
+  plan:
+    name: Application or content release
     # Only a successful CI run for a push to main in this repository — never a
     # pull request, and never a fork whose branch happens to be named main.
     if: >-
@@ -46,10 +48,59 @@ jobs:
        github.event.workflow_run.event == 'push' &&
        github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      decision: ${{ steps.plan.outputs.decision }}
+    env:
+      TARGET_SHA: ${{ inputs.sha || github.event.workflow_run.head_sha || github.sha }}
+    steps:
+      # A dispatch input is untrusted: it must be a full commit SHA.
+      - name: Validate the commit
+        run: |
+          [[ "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::sha must be a full 40-character commit SHA"; exit 1; }
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Refuse a commit that is not on main
+        run: git merge-base --is-ancestor "$TARGET_SHA" origin/main
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      # The deployed release is read from the public site; no credentials. An
+      # unreadable current.json means "build" — always correct, never minimal.
+      - name: Decide
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://www.redactsecret.com' }}
+        run: |
+          if [ "$EVENT" = workflow_dispatch ]; then
+            echo "decision=app" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          curl -fsS --max-time 20 --proto '=https' "$SITE_URL/current.json" -o "$RUNNER_TEMP/current.json" || rm -f "$RUNNER_TEMP/current.json"
+          node scripts/publish/plan.mjs --current "$RUNNER_TEMP/current.json" --target "$TARGET_SHA" --output "$GITHUB_OUTPUT"
+
+  publish:
+    name: Publish to production
+    needs: plan
+    if: needs.plan.outputs.decision == 'app'
+    runs-on: ubuntu-latest
     environment: production
     permissions:
       contents: read
       id-token: write
+    # One publish at a time across both release planes, never cancelled mid-sync.
+    concurrency:
+      group: publish-www-production
+      cancel-in-progress: false
     env:
       AWS_REGION: us-east-1
       TARGET_SHA: ${{ inputs.sha || github.event.workflow_run.head_sha || github.sha }}
@@ -67,7 +118,6 @@ jobs:
             echo "ready=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # A dispatch input is untrusted: it must be a full commit SHA.
       - name: Validate the commit
         if: steps.config.outputs.ready == 'true'
         run: |
@@ -94,6 +144,7 @@ jobs:
       - if: steps.config.outputs.ready == 'true'
         run: npm ci
 
+      # dist/ (client + every page) and build/renderer/ (the renderer artifact).
       - if: steps.config.outputs.ready == 'true'
         run: npm run build
 
@@ -109,42 +160,14 @@ jobs:
           role-session-name: publish-www-${{ github.run_id }}
 
       # Same three passes as scripts/publish-site.sh in redact-secret-sites:
-      # fingerprinted assets first and kept, then everything else with
-      # revalidation and stale files removed, then assets pruned once the new
-      # HTML is live. Change one, revisit both (CONVENTIONS.md § Deploy).
+      # fingerprinted assets first and kept (plus the renderer artifact under
+      # releases/app/<commit>/), then everything else with revalidation and
+      # stale files removed — the pages as a content release rendered by this
+      # renderer, current.json last — then assets pruned once the new HTML is
+      # live. Invalidates only the mutable paths that changed, never /*.
+      # Change one, revisit both (CONVENTIONS.md § Deploy).
       - name: Publish
         if: steps.config.outputs.ready == 'true'
         env:
           SITE_STACK: ${{ vars.SITE_STACK }}
-        run: |
-          set -euo pipefail
-          # shellcheck disable=SC2016  # backticks below are JMESPath, not shell.
-          outputs=$(aws cloudformation describe-stacks --stack-name "$SITE_STACK" \
-            --query 'Stacks[0].Outputs[?OutputKey==`BucketName`||OutputKey==`DistributionId`].[OutputKey,OutputValue]' \
-            --output text)
-          bucket=$(awk '$1=="BucketName"{print $2}' <<<"$outputs")
-          distribution=$(awk '$1=="DistributionId"{print $2}' <<<"$outputs")
-          [[ -n "$bucket" && -n "$distribution" ]] || { echo "::error::stack $SITE_STACK has no BucketName/DistributionId outputs"; exit 1; }
-
-          aws s3 sync dist/assets "s3://$bucket/assets" --only-show-errors \
-            --cache-control 'public, max-age=31536000, immutable'
-          aws s3 sync dist "s3://$bucket" --only-show-errors --delete \
-            --exclude 'assets/*' --cache-control 'no-cache'
-          aws s3 sync dist/assets "s3://$bucket/assets" --only-show-errors --delete \
-            --cache-control 'public, max-age=31536000, immutable'
-
-          invalidation=$(aws cloudfront create-invalidation --distribution-id "$distribution" --paths '/*' \
-            --query 'Invalidation.Id' --output text)
-          echo "invalidation=$invalidation" >> "$GITHUB_ENV"
-
-      - name: Record what was published
-        if: steps.config.outputs.ready == 'true'
-        run: |
-          {
-            echo "### Published www.redactsecret.com"
-            echo
-            echo "- commit: \`$TARGET_SHA\`"
-            echo "- engine: \`@redact-secret/core@$(node -p "require('./package.json').dependencies['@redact-secret/core']")\`"
-            echo "- slots observed: $(node -p "require('./src/slots/release.json').observedAt")"
-            echo "- invalidation: \`$invalidation\`"
-          } >> "$GITHUB_STEP_SUMMARY"
+        run: node scripts/publish/cli.mjs app --stack "$SITE_STACK" --commit "$TARGET_SHA" --summary "$GITHUB_STEP_SUMMARY"

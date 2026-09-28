@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/content-manifest-v2.schema.json",
+  "title": "ContentManifestV2",
+  "description": "One content release of the whole site (#11): every locale's rendered HTML, the copy and data it was rendered from, their digests, the application release whose renderer produced the HTML, and the full revisions of every source. Stored at content/<releaseId hex>/manifest.json next to the files it lists, and never rewritten. v2 replaces the per-locale v1: one release spans both locales and holds locale-neutral files (data/, the bilingual 404 page) and HTML, which v1 could not list. Consumers fail closed on an unknown schemaVersion, a locale set or file locale that does not match, a missing file, a digest mismatch, or a renderer release other than the deployed one.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "releaseId", "locales", "rendererRelease", "generatedAt", "sources", "files"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "content-manifest-v2" },
+    "releaseId": {
+      "description": "Content-addressed: sha256 over the line `renderer <rendererRelease>` followed by the sorted `<path> <digest>` lines of `files`, each newline-terminated. The same content rendered by the same renderer always has the same ID; generatedAt and sources do not enter it.",
+      "$ref": "common-v1.schema.json#/$defs/digest"
+    },
+    "locales": {
+      "description": "Every locale the release renders; must be exactly the renderer's locales.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["en", "ko"] }
+    },
+    "rendererRelease": {
+      "description": "The application release (full commit of redact-secret-www) whose renderer artifact produced the HTML, and whose hashed assets the HTML references.",
+      "$ref": "common-v1.schema.json#/$defs/gitRevision"
+    },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "sources": {
+      "description": "Every source the content was read from, at its full revision: this repository's commit (`www`), each upstream feed recorded in data/release.json (`feeds/<name>`), and each source data/evidence.json cites (`evidence/<name>`).",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "title": "ManifestSource",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "source", "freshness"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(/[a-z0-9-]+)?$" },
+          "source": { "$ref": "common-v1.schema.json#/$defs/source" },
+          "freshness": { "$ref": "common-v1.schema.json#/$defs/freshness" },
+          "digest": { "$ref": "common-v1.schema.json#/$defs/digest" }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "title": "ManifestFile",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "kind", "digest", "bytes"],
+        "properties": {
+          "path": {
+            "description": "Relative to the release root (content/<releaseId hex>/): `html/<served path>index.html` for a page, `src/<repository path>` for a copy or data file. Never absolute, never climbing out.",
+            "type": "string",
+            "pattern": "^(html|src)/(?!.*\\.\\./)[A-Za-z0-9_./-]+$"
+          },
+          "kind": {
+            "description": "html: a rendered page, copied to its stable path when the release goes live. copy: i18n/<locale>/**.json. data: data/*.json.",
+            "type": "string",
+            "enum": ["html", "copy", "data"]
+          },
+          "locale": {
+            "description": "The locale the file is written in. Absent for data and for the 404 page, which speaks every locale.",
+            "type": "string",
+            "enum": ["en", "ko"]
+          },
+          "schemaVersion": { "description": "The contract a copy or data file validates against.", "type": "string", "pattern": "^[a-z][a-z0-9-]*-v[0-9]+$" },
+          "digest": { "$ref": "common-v1.schema.json#/$defs/digest" },
+          "bytes": { "type": "integer", "minimum": 0 }
+        },
+        "if": { "properties": { "kind": { "enum": ["copy", "data"] } } },
+        "then": { "required": ["schemaVersion"] },
+        "else": { "not": { "required": ["schemaVersion"] } }
+      }
+    }
+  }
+}

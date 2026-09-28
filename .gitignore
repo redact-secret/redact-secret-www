@@ -4,6 +4,8 @@
 # Build and qualification outputs
 node_modules/
 dist/
+# The renderer artifact an application release publishes (scripts/build-site.mjs)
+build/
 *.tgz
 .qualification/
 

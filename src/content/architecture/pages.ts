@@ -3,8 +3,7 @@
  * the hub, then engine → evidence → boundaries. Order here is the sidebar
  * order and the prev/next order; the last page's "next" returns to the hub.
  */
-import type { JSX } from 'preact';
-import type { Locale } from '../../i18n';
+import { localePath, type Locale } from '../../i18n';
 
 export type ArchitectureGroup = 'section' | 'engine' | 'evidence' | 'boundaries';
 
@@ -31,18 +30,11 @@ export const architecturePages: readonly PageDef[] = [
 
 export const architectureGroups: readonly ArchitectureGroup[] = ['section', 'engine', 'evidence', 'boundaries'];
 
-/** `/ko/architecture/detection/` — directory-routed, trailing slash. */
+/**
+ * `/architecture/detection/` in English, `/ko/architecture/detection/` in
+ * Korean — directory-routed, trailing slash (ADR 0003).
+ */
 export function architecturePath(locale: Locale, id: ArchitecturePageId) {
   const page = architecturePages.find((p) => p.id === id)!;
-  return `/${locale}/architecture/${page.slug ? `${page.slug}/` : ''}`;
-}
-
-/**
- * A sub-page body in one locale. `locale` keeps cross-links in the page's own
- * locale. Counts and versions come from slots, never from the prose.
- */
-export type SubPageBody = (props: { locale: Locale }) => JSX.Element;
-
-export function isSubPage(id: ArchitecturePageId): id is SubPageId {
-  return id !== 'overview';
+  return localePath(locale, `/architecture/${page.slug ? `${page.slug}/` : ''}`);
 }

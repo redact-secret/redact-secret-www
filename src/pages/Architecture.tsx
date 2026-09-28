@@ -10,30 +10,43 @@ import {
   SourceStrip,
 } from '../components/architecture';
 import { AppShell } from '../components/shell';
-import { content } from '../content';
-import { hub } from '../content/architecture/hub';
-import { enPages } from '../content/architecture/en';
-import { koPages } from '../content/architecture/ko';
+import { Rich } from '../components/ui/Rich';
+import type { ArchitecturePagesCopy, OverviewCopy, SectionCopy, ShellCopy } from '../content';
 import {
   architectureGroups,
   architecturePages,
   architecturePath,
-  isSubPage,
   type ArchitecturePageId,
+  type SubPageId,
 } from '../content/architecture/pages';
-import { architectureShell } from '../content/architecture/shell';
-import { locales, type Locale } from '../i18n';
+import { localePrefix, locales, type Locale } from '../i18n';
+import { Adapters } from './architecture/Adapters';
+import { Detection } from './architecture/Detection';
+import { EvaluationMethods } from './architecture/EvaluationMethods';
+import { HowItWorks } from './architecture/HowItWorks';
+import { SupportClaims } from './architecture/SupportClaims';
+import { Vault } from './architecture/Vault';
 import styles from './Architecture.module.css';
 
-const bodies = { en: enPages, ko: koPages };
+/** The page's own copy: i18n/<locale>/architecture/<id>.json. */
+export type ArchitecturePageCopy = { [K in ArchitecturePageId]: { id: K; copy: ArchitecturePagesCopy[K] } }[ArchitecturePageId];
+
+export type ArchitectureProps = {
+  locale: Locale;
+  /** i18n/<locale>/shell.json */
+  shell: ShellCopy;
+  /** i18n/<locale>/architecture/section.json: sidebar, pager, every page's title. */
+  section: SectionCopy;
+  page: ArchitecturePageCopy;
+};
 
 /**
  * One page of the architecture section (design spec § 02): the hub or one of
- * the six sub-pages, every one authored in both locales.
+ * the six sub-pages. The structure is here, one template per page for both
+ * locales; the words are the page's copy file.
  */
-export function Architecture({ locale, id }: { locale: Locale; id: ArchitecturePageId }) {
-  const c = content[locale];
-  const a = architectureShell[locale];
+export function Architecture({ locale, shell, section: a, page }: ArchitectureProps) {
+  const { id } = page;
   const alternates = Object.fromEntries(locales.map((l) => [l, architecturePath(l, id)]));
   const groups = architectureGroups.map((group) => ({
     label: a.groups[group],
@@ -45,10 +58,9 @@ export function Architecture({ locale, id }: { locale: Locale; id: ArchitectureP
   const index = architecturePages.findIndex((p) => p.id === id);
   const prev = architecturePages[(index - 1 + architecturePages.length) % architecturePages.length];
   const next = architecturePages[(index + 1) % architecturePages.length];
-  const Body = isSubPage(id) ? bodies[locale][id] : undefined;
 
   return (
-    <AppShell content={c} alternates={alternates} current={architecturePath(locale, 'overview')}>
+    <AppShell locale={locale} copy={shell} alternates={alternates} current={architecturePath(locale, 'overview')}>
       <ArchitectureLayout
         section={a.section}
         path={architecturePath(locale, id)}
@@ -56,12 +68,12 @@ export function Architecture({ locale, id }: { locale: Locale; id: ArchitectureP
         contents={a.contents}
         groups={groups}
       >
-        {Body ? (
-          <article>
-            <Body locale={locale} />
-          </article>
+        {page.id === 'overview' ? (
+          <Hub locale={locale} section={a} copy={page.copy} />
         ) : (
-          <Hub locale={locale} />
+          <article>
+            <SubPage locale={locale} page={page} />
+          </article>
         )}
         <Pager
           label={a.pager.label}
@@ -77,48 +89,67 @@ export function Architecture({ locale, id }: { locale: Locale; id: ArchitectureP
   );
 }
 
-function Hub({ locale }: { locale: Locale }) {
-  const h = hub[locale];
-  const a = architectureShell[locale];
+function SubPage({ locale, page }: { locale: Locale; page: Exclude<ArchitecturePageCopy, { id: 'overview' }> }) {
+  switch (page.id) {
+    case 'how-it-works':
+      return <HowItWorks locale={locale} copy={page.copy} />;
+    case 'detection':
+      return <Detection locale={locale} copy={page.copy} />;
+    case 'support-claims':
+      return <SupportClaims locale={locale} copy={page.copy} />;
+    case 'evaluation-methods':
+      return <EvaluationMethods locale={locale} copy={page.copy} />;
+    case 'adapters':
+      return <Adapters locale={locale} copy={page.copy} />;
+    case 'vault':
+      return <Vault locale={locale} copy={page.copy} />;
+  }
+}
+
+function Hub({ locale, section: a, copy: h }: { locale: Locale; section: SectionCopy; copy: OverviewCopy }) {
   return (
     <article>
-      <PageHead display eyebrow={h.eyebrow} title={h.title} lede={h.lede} />
-      <Claim sub={h.claim.sub}>{h.claim.line}</Claim>
+      <PageHead display eyebrow={<Rich value={h.eyebrow} />} title={<Rich value={h.title} />} lede={<Rich value={h.lede} />} />
+      <Claim sub={<Rich value={h.claim.sub} />}>
+        <Rich value={h.claim.line} />
+      </Claim>
       <div class={styles.hubGroups}>
         {(['engine', 'evidence', 'boundaries'] as const).map((group) => (
-          <DocSection key={group} eyebrow={h.groups[group].eyebrow} title={h.groups[group].title}>
+          <DocSection key={group} eyebrow={<Rich value={h.groups[group].eyebrow} />} title={<Rich value={h.groups[group].title} />}>
             <HubGrid>
               {architecturePages
                 .filter((p) => p.group === group)
                 .map((p) => {
-                  const pageId = p.id as Exclude<ArchitecturePageId, 'overview'>;
+                  const pageId = p.id as SubPageId;
                   const href = architecturePath(locale, pageId);
                   return (
                     <HubCard
                       key={p.id}
                       n={p.n}
                       title={a.pages[pageId].title}
-                      question={h.cards[pageId].question}
+                      question={<Rich value={h.cards[pageId].question} />}
                       href={href}
-                      go={href.slice(`/${locale}`.length)}
+                      go={href.slice(localePrefix(locale).length)}
                     >
-                      {h.cards[pageId].body}
+                      <Rich value={h.cards[pageId].body} />
                     </HubCard>
                   );
                 })}
             </HubGrid>
           </DocSection>
         ))}
-        <DocSection eyebrow={h.repos.eyebrow} title={h.repos.title} lede={h.repos.lede}>
+        <DocSection eyebrow={<Rich value={h.repos.eyebrow} />} title={<Rich value={h.repos.title} />} lede={<Rich value={h.repos.lede} />}>
           <DataTable
             wide
             label={h.repos.tableLabel}
-            head={h.repos.head}
-            rows={h.repos.rows.map((r) => [r.repo, r.owns, r.mustNot])}
+            head={h.repos.head.map((cell) => <Rich value={cell} />)}
+            rows={h.repos.rows.map((r) => [r.repo, <Rich value={r.owns} />, <Rich value={r.mustNot} />])}
           />
         </DocSection>
       </div>
-      <SourceStrip label={h.sources.label}>{h.sources.body}</SourceStrip>
+      <SourceStrip label={<Rich value={h.sources.label} />}>
+        <Rich value={h.sources.body} />
+      </SourceStrip>
     </article>
   );
 }

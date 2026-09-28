@@ -1,0 +1,838 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/release-v1.schema.json",
+  "title": "ReleaseV1",
+  "description": "data/release.json: what each package in data/integrations.json has actually published, read from its registry by scripts/refresh-slots.mjs, and the upstream feeds (redact-secret, redact-secret-adapters) cross-checked against it. Every record carries its own source, observation time, payload digest and freshness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "generator",
+    "packages"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "release-v1"
+    },
+    "generatedAt": {
+      "description": "When the refresh that wrote this file ran. Individual records keep their own observedAt, which is older for a stale record.",
+      "$ref": "common-v1.schema.json#/$defs/timestamp"
+    },
+    "generator": {
+      "const": "scripts/refresh-slots.mjs"
+    },
+    "packages": {
+      "description": "Keyed by the package ids in data/integrations.json.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/packageRecord"
+      }
+    },
+    "feeds": {
+      "description": "The upstream feeds the refresh read, each pinned to the full commit it was fetched at. Package versions still come from the registries (`packages`); a feed is cross-checked against them and adds what only its owner knows. Optional so that a refresh without feeds stays valid; the committed file always has both.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product",
+        "adapters"
+      ],
+      "properties": {
+        "product": {
+          "$ref": "#/$defs/productFeedRecord"
+        },
+        "adapters": {
+          "$ref": "#/$defs/adaptersFeedRecord"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "packageRecord": {
+      "title": "PackageRecord",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "observedAt",
+        "freshness",
+        "value"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "common-v1.schema.json#/$defs/registrySource"
+        },
+        "observedAt": {
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        },
+        "freshness": {
+          "$ref": "common-v1.schema.json#/$defs/freshness"
+        },
+        "staleSince": {
+          "description": "Set only on a stale record: when the refresh that could not read the source ran.",
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        },
+        "digest": {
+          "$ref": "common-v1.schema.json#/$defs/digest"
+        },
+        "value": {
+          "$ref": "#/$defs/packageValue"
+        },
+        "declared": {
+          "title": "DeclaredVersion",
+          "description": "For a package its registry does not have: the version its repository declares, and where that was read.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "source"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source": {
+              "$ref": "common-v1.schema.json#/$defs/repositorySource"
+            }
+          }
+        },
+        "mirrors": {
+          "title": "Mirrors",
+          "description": "The same package published to other registries under another name.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pypi": {
+              "$ref": "#/$defs/mirrorRecord"
+            },
+            "crates": {
+              "$ref": "#/$defs/mirrorRecord"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "freshness": {
+                "const": "stale"
+              }
+            },
+            "required": [
+              "freshness"
+            ]
+          },
+          "then": {
+            "required": [
+              "staleSince"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "staleSince"
+              ]
+            }
+          }
+        },
+        {
+          "$comment": "A record that describes a published version was read from a fetched payload, so it carries that payload's digest.",
+          "if": {
+            "properties": {
+              "source": {
+                "required": [
+                  "version"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "digest"
+            ]
+          }
+        }
+      ]
+    },
+    "mirrorRecord": {
+      "title": "MirrorRecord",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "observedAt",
+        "freshness",
+        "value"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "common-v1.schema.json#/$defs/registrySource"
+        },
+        "observedAt": {
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        },
+        "freshness": {
+          "$ref": "common-v1.schema.json#/$defs/freshness"
+        },
+        "staleSince": {
+          "description": "Set only on a stale record: when the refresh that could not read the source ran.",
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        },
+        "digest": {
+          "$ref": "common-v1.schema.json#/$defs/digest"
+        },
+        "value": {
+          "$ref": "#/$defs/mirrorValue"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "freshness": {
+                "const": "stale"
+              }
+            },
+            "required": [
+              "freshness"
+            ]
+          },
+          "then": {
+            "required": [
+              "staleSince"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "staleSince"
+              ]
+            }
+          }
+        },
+        {
+          "$comment": "A record that describes a published version was read from a fetched payload, so it carries that payload's digest.",
+          "if": {
+            "properties": {
+              "source": {
+                "required": [
+                  "version"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "digest"
+            ]
+          }
+        }
+      ]
+    },
+    "mirrorValue": {
+      "title": "MirrorValue",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "published": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "packageValue": {
+      "title": "PackageValue",
+      "description": "What the page may say about the package. Either the published version (and, per registry, its tag, peers or requirements), or `unpublished: true` when the registry does not have it.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registry",
+        "name"
+      ],
+      "properties": {
+        "registry": {
+          "$ref": "common-v1.schema.json#/$defs/registry"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "published": {
+          "type": "string",
+          "format": "date"
+        },
+        "latest": {
+          "description": "Where npm's `latest` dist-tag points.",
+          "type": "string",
+          "minLength": 1
+        },
+        "tag": {
+          "description": "The npm dist-tag this page installs from.",
+          "type": "string",
+          "minLength": 1
+        },
+        "peers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "dependencies": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "requires": {
+          "description": "PyPI requires_dist.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unpublished": {
+          "const": true
+        }
+      },
+      "if": {
+        "required": [
+          "unpublished"
+        ]
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "version"
+              ]
+            },
+            {
+              "required": [
+                "published"
+              ]
+            }
+          ]
+        }
+      },
+      "else": {
+        "required": [
+          "version",
+          "published"
+        ]
+      }
+    },
+    "productFeedRecord": {
+      "title": "ProductFeedRecord",
+      "description": "redact-secret's site feed (docs/contracts/site-feed/v1/feed.json): the release identity and the support matrix the release ships, reduced to what the pages state.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "ref",
+        "observedAt",
+        "freshness",
+        "schemaVersion",
+        "generatedAt",
+        "digest",
+        "schemaDigest",
+        "crossChecked",
+        "value"
+      ],
+      "properties": {
+        "source": {
+          "description": "The repository and the full commit the feed was fetched at (resolved from `ref` through the GitHub API), with the feed and schema paths.",
+          "$ref": "common-v1.schema.json#/$defs/repositorySource"
+        },
+        "ref": {
+          "description": "The branch the commit was resolved from.",
+          "type": "string",
+          "minLength": 1
+        },
+        "observedAt": {
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        },
+        "freshness": {
+          "$ref": "common-v1.schema.json#/$defs/freshness"
+        },
+        "staleSince": {
+          "description": "Set only on a stale record: when the refresh that rejected or could not read the feed ran.",
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        },
+        "schemaVersion": {
+          "description": "The feed's own schemaVersion; the refresh knows exactly one per feed and refuses any other.",
+          "type": "string",
+          "minLength": 1
+        },
+        "generatedAt": {
+          "description": "The feed's generatedAt (derived from its inputs upstream, never a wall clock).",
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        },
+        "digest": {
+          "description": "sha256 of the feed bytes, computed here.",
+          "$ref": "common-v1.schema.json#/$defs/digest"
+        },
+        "schemaDigest": {
+          "description": "sha256 of the schema fetched at the same commit, which the feed was validated against.",
+          "$ref": "common-v1.schema.json#/$defs/digest"
+        },
+        "crossChecked": {
+          "description": "Package ids (data/integrations.json) whose registry record agreed with the feed when it was read.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "value": {
+          "title": "ProductFeedValue",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "release",
+            "supportMatrix"
+          ],
+          "properties": {
+            "release": {
+              "title": "ProductRelease",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "version",
+                "tag",
+                "sourceRevision",
+                "verifiedOn"
+              ],
+              "properties": {
+                "version": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "tag": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sourceRevision": {
+                  "$ref": "common-v1.schema.json#/$defs/gitRevision"
+                },
+                "verifiedOn": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            },
+            "supportMatrix": {
+              "title": "SupportMatrixSummary",
+              "description": "The pinned support matrix, as counts. `measuredProductVersion` is the product version the benchmark run measured and can be older than release.version; the pages show both. Counts only, never a score, rate or bound.",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "benchmarksRevision",
+                "generatedAt",
+                "measuredProductVersion",
+                "measuredProductRevision",
+                "gatedLatestRelease",
+                "families",
+                "providers",
+                "status",
+                "stableBasis",
+                "tiers"
+              ],
+              "properties": {
+                "benchmarksRevision": {
+                  "$ref": "common-v1.schema.json#/$defs/gitRevision"
+                },
+                "generatedAt": {
+                  "$ref": "common-v1.schema.json#/$defs/timestamp"
+                },
+                "measuredProductVersion": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "minLength": 1
+                },
+                "measuredProductRevision": {
+                  "oneOf": [
+                    {
+                      "$ref": "common-v1.schema.json#/$defs/gitRevision"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "gatedLatestRelease": {
+                  "description": "True when the release's support-matrix drift gate ran against exactly this matrix.",
+                  "type": "boolean"
+                },
+                "families": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "providers": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "status": {
+                  "title": "SupportStatusCounts",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "stable",
+                    "provisional",
+                    "pending",
+                    "unsupported"
+                  ],
+                  "properties": {
+                    "stable": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "provisional": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "pending": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "unsupported": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  }
+                },
+                "stableBasis": {
+                  "title": "SupportStableBasisCounts",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "documented",
+                    "empirical"
+                  ],
+                  "properties": {
+                    "documented": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "empirical": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  }
+                },
+                "tiers": {
+                  "title": "SupportTierCounts",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "T0",
+                    "T1",
+                    "T2",
+                    "T3"
+                  ],
+                  "properties": {
+                    "T0": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "T1": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "T2": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "T3": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "freshness": {
+            "const": "stale"
+          }
+        },
+        "required": [
+          "freshness"
+        ]
+      },
+      "then": {
+        "required": [
+          "staleSince"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "staleSince"
+          ]
+        }
+      }
+    },
+    "adaptersFeedRecord": {
+      "title": "AdaptersFeedRecord",
+      "description": "redact-secret-adapters' release feed (site-feed/v1/adapters.json) at the commit `ref` pointed to. mode `feed`: the feed was read, validated and cross-checked against the registry records. mode `registry-fallback`: the feed is not at that commit, so the registry records in `packages` are the only source, and `fallbackReason` says why.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "ref",
+        "mode",
+        "observedAt",
+        "freshness"
+      ],
+      "properties": {
+        "source": {
+          "description": "The repository and the full commit the feed was fetched at (resolved from `ref` through the GitHub API), with the feed and schema paths.",
+          "$ref": "common-v1.schema.json#/$defs/repositorySource"
+        },
+        "ref": {
+          "description": "The branch the commit was resolved from.",
+          "type": "string",
+          "minLength": 1
+        },
+        "observedAt": {
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        },
+        "freshness": {
+          "$ref": "common-v1.schema.json#/$defs/freshness"
+        },
+        "staleSince": {
+          "description": "Set only on a stale record: when the refresh that rejected or could not read the feed ran.",
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        },
+        "schemaVersion": {
+          "description": "The feed's own schemaVersion; the refresh knows exactly one per feed and refuses any other.",
+          "type": "string",
+          "minLength": 1
+        },
+        "generatedAt": {
+          "description": "The feed's generatedAt (derived from its inputs upstream, never a wall clock).",
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        },
+        "digest": {
+          "description": "sha256 of the feed bytes, computed here.",
+          "$ref": "common-v1.schema.json#/$defs/digest"
+        },
+        "schemaDigest": {
+          "description": "sha256 of the schema fetched at the same commit, which the feed was validated against.",
+          "$ref": "common-v1.schema.json#/$defs/digest"
+        },
+        "crossChecked": {
+          "description": "Package ids (data/integrations.json) whose registry record agreed with the feed when it was read.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "feed",
+            "registry-fallback"
+          ]
+        },
+        "fallbackReason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "title": "AdaptersFeedValue",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "packages"
+          ],
+          "properties": {
+            "packages": {
+              "type": "array",
+              "items": {
+                "title": "AdapterFeedPackage",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "ecosystem",
+                  "name",
+                  "version",
+                  "channel",
+                  "core"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "ecosystem": {
+                    "type": "string",
+                    "enum": [
+                      "npm",
+                      "pypi"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "version": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "channel": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "core": {
+                    "title": "AdapterCoreRange",
+                    "description": "The core range the package declares and the two ends CI tests.",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "name",
+                      "range",
+                      "tested"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "range": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "tested": {
+                        "title": "TestedEnds",
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "lowest",
+                          "highest"
+                        ],
+                        "properties": {
+                          "lowest": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "highest": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "freshness": {
+                "const": "stale"
+              }
+            },
+            "required": [
+              "freshness"
+            ]
+          },
+          "then": {
+            "required": [
+              "staleSince"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "staleSince"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "feed"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "schemaVersion",
+              "generatedAt",
+              "digest",
+              "schemaDigest",
+              "crossChecked",
+              "value"
+            ],
+            "not": {
+              "required": [
+                "fallbackReason"
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "fallbackReason"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "value"
+                  ]
+                },
+                {
+                  "required": [
+                    "digest"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,21 +1,16 @@
 /**
  * The integrations block's structure — which cards exist, in which group and
- * runtime, backed by which slot. Shared by both locales; each locale authors
- * the words for a card id (content/*.tsx), the slots supply every version.
+ * runtime, backed by which package — read from data/integrations.json
+ * (integrations-v1). Shared by both locales; each locale authors the words
+ * for a card id (i18n/<locale>/home.json), the slots supply every version.
+ * Installed with the rest of a content release's data (src/site-data.ts).
  */
-export type FactKind = 'version' | 'registries' | 'core' | 'host' | 'tag' | 'install';
+import type { IntegrationsV1 } from '../contracts';
 
-export type CardDef = {
-  /** Copy key in `SiteContent['integrations'].cards`. */
-  id: string;
-  /** Slot key in release.json `packages`. */
-  slot: string;
-  /** Shown instead of the slot's package name (a subpath or an extra). */
-  display?: string;
-  facts: FactKind[];
-  /** For `host` on a Python extra: the extra's name. */
-  extra?: string;
-  /** For `install`. */
+export type FactKind = IntegrationsV1.FactKind;
+
+export type CardDef = Omit<IntegrationsV1.CardEntry, 'install'> & {
+  /** For `install`: the command for a published version. */
   install?: (version: string) => string;
 };
 
@@ -26,47 +21,24 @@ export type GroupDef =
   | { id: 'core'; cards: CardDef[] }
   | { id: 'adapters' | 'vault'; runtimes: Record<Runtime, CardDef[]> };
 
-export const integrationGroups: GroupDef[] = [
-  {
-    id: 'core',
-    cards: [
-      { id: 'core', slot: 'core', facts: ['registries'] },
-      { id: 'wasm', slot: 'wasm', facts: ['version'] },
-      {
-        id: 'cli',
-        slot: 'cli',
-        facts: ['version', 'install'],
-        install: (v) => `cargo install redact-secret-cli --version ${v} --locked`,
-      },
-    ],
-  },
-  {
-    id: 'adapters',
-    runtimes: {
-      browser: [{ id: 'web-stream', slot: 'core', display: '@redact-secret/core/web-stream', facts: ['version'] }],
-      node: [
-        { id: 'pino', slot: 'adapter-pino', facts: ['version', 'host', 'core'] },
-        { id: 'otel', slot: 'adapter-otel', facts: ['version', 'host', 'core'] },
-        { id: 'masking', slot: 'adapter', facts: ['version', 'core'] },
-        { id: 'ai-context', slot: 'adapter-ai-context', facts: ['version', 'tag', 'core'] },
-        { id: 'mcp', slot: 'adapter-mcp', facts: ['version', 'tag', 'host', 'core'] },
-      ],
-      python: [
-        { id: 'logging', slot: 'adapters-py', facts: ['version', 'core'] },
-        { id: 'otel-py', slot: 'adapters-py', display: 'redact-secret-adapters[otel]', extra: 'otel', facts: ['version', 'host'] },
-        { id: 'masking-py', slot: 'adapters-py', facts: ['version'] },
-      ],
-    },
-  },
-  {
-    id: 'vault',
-    runtimes: {
-      browser: [{ id: 'vault-browser', slot: 'vault', facts: ['version', 'tag', 'core'] }],
-      node: [
-        { id: 'vault-node', slot: 'vault', facts: ['version', 'tag', 'core'] },
-        { id: 'vault-server', slot: 'vault-server', facts: ['version', 'core'] },
-      ],
-      python: [{ id: 'vault-py', slot: 'vault-py', facts: ['version'] }],
-    },
-  },
-];
+function card({ install, ...entry }: IntegrationsV1.CardEntry): CardDef {
+  return install ? { ...entry, install: (version) => install.replaceAll('{version}', version) } : entry;
+}
+
+/** Set by installIntegrations before any render. */
+export let integrationGroups!: GroupDef[];
+
+export function installIntegrations(integrations: IntegrationsV1.IntegrationsV1) {
+  integrationGroups = integrations.groups.map((group) =>
+    'cards' in group
+      ? { id: group.id, cards: group.cards.map(card) }
+      : {
+          id: group.id,
+          runtimes: {
+            browser: group.runtimes.browser.map(card),
+            node: group.runtimes.node.map(card),
+            python: group.runtimes.python.map(card),
+          },
+        },
+  );
+}

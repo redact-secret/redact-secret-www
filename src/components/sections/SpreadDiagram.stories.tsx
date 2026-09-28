@@ -6,7 +6,7 @@ import { SpreadDiagram } from './SpreadDiagram';
 const meta: Meta = {
   title: 'Sections/Parts/SpreadDiagram',
   component: SpreadDiagram,
-  render: (_args, { globals }) => <SpreadDiagram copy={content[globals.locale as Locale].problem} />,
+  render: (_args, { globals }) => <SpreadDiagram copy={content[globals.locale as Locale].home.problem} />,
 };
 
 export default meta;

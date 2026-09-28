@@ -1,16 +1,17 @@
-import type { SiteContent } from '../../content';
+import type { HomeCopy } from '../../content';
+import { plainText, Rich } from '../ui/Rich';
 import styles from './RoutingTable.module.css';
 
 export type RoutingTableProps = {
-  copy: SiteContent['evidence']['routing'];
+  copy: HomeCopy['evidence']['routing'];
 };
 
 /** Routes a visitor to the right tool. No scores, no badges — three rows. */
 export function RoutingTable({ copy }: RoutingTableProps) {
   return (
     <div class={styles.routing}>
-      <h3 class={`h3 ${styles.title}`}>{copy.title}</h3>
-      <div class={styles.scroll} tabIndex={0} role="region" aria-label={String(copy.title)}>
+      <h3 class={`h3 ${styles.title}`}><Rich value={copy.title} /></h3>
+      <div class={styles.scroll} tabIndex={0} role="region" aria-label={plainText(copy.title, {})}>
         <table class={styles.table}>
           <thead>
             <tr>
@@ -21,14 +22,14 @@ export function RoutingTable({ copy }: RoutingTableProps) {
           <tbody>
             {copy.rows.map((row, i) => (
               <tr key={i}>
-                <td>{row.problem}</td>
-                <td>{row.start}</td>
+                <td><Rich value={row.problem} /></td>
+                <td><Rich value={row.start} /></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p class={`tiny ${styles.note}`}>{copy.note}</p>
+      <p class={`tiny ${styles.note}`}><Rich value={copy.note} /></p>
     </div>
   );
 }

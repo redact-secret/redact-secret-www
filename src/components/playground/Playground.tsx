@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { Button, SegmentedControl } from '../ui';
-import type { SiteContent } from '../../content';
+import type { HomeCopy } from '../../content';
+import { plainText, Rich } from '../ui/Rich';
 import { playgroundDefault, playgroundPresetsWithPii, type PlaygroundPreset } from '../../content/shared';
 import {
   EngineLoadError,
@@ -17,7 +18,7 @@ import { RedactedOutput } from './RedactedOutput';
 import styles from './Playground.module.css';
 
 export type PlaygroundProps = {
-  copy: SiteContent['playground'];
+  copy: HomeCopy['playground'];
   /** Swappable for stories; the page uses the real core in a Web Worker. */
   loadEngine?: EngineLoader;
   /** Load on mount instead of when the block nears the viewport. */
@@ -111,7 +112,7 @@ export function Playground({ copy, loadEngine = defaultLoader, eager = false, in
   return (
     <div class={styles.playground} ref={rootRef}>
       <p class={`small ${styles.privacy}`} id="playground-privacy">
-        {copy.privacy}
+        <Rich value={copy.privacy} />
       </p>
 
       <div class={styles.toolbar}>
@@ -163,7 +164,7 @@ export function Playground({ copy, loadEngine = defaultLoader, eager = false, in
             options={piiModes.map((mode) => ({ value: mode, label: copy.piiModes[mode] }))}
           />
         </div>
-        <p class={`tiny ${styles.piiNote}`}>{copy.piiNote}</p>
+        <p class={`tiny ${styles.piiNote}`}><Rich value={copy.piiNote} /></p>
       </div>
 
       <div class={styles.panes}>
@@ -172,7 +173,7 @@ export function Playground({ copy, loadEngine = defaultLoader, eager = false, in
             <label class="eyebrow" for="playground-input">
               {copy.inputLabel}
             </label>
-            <span class="tiny mono">{copy.size(formatBytes(bytes), formatBytes(limits.maxInputBytes))}</span>
+            <span class="tiny mono">{plainText(copy.size, { used: formatBytes(bytes), max: formatBytes(limits.maxInputBytes) })}</span>
           </div>
           {/* Spellcheck, autocorrect, and grammar extensions can send field
               contents off-device — all off (ADR 0001 § 3). */}
@@ -203,7 +204,10 @@ export function Playground({ copy, loadEngine = defaultLoader, eager = false, in
               {copy.outputLabel}
             </span>
             <span class="tiny" aria-live="polite">
-              {result?.ok && copy.findingCount(result.findings.length)}
+              {result?.ok &&
+                plainText(result.findings.length === 1 ? copy.findingCount.one : copy.findingCount.other, {
+                  n: result.findings.length,
+                })}
             </span>
           </div>
           <div class={styles.outputBody} aria-labelledby="playground-output-label" role="region">
@@ -229,7 +233,7 @@ export function Playground({ copy, loadEngine = defaultLoader, eager = false, in
               <RedactedOutput segments={result.segments} activeId={activeId} />
             ) : (
               <p class="small">
-                {copy.errors[result.code] ?? copy.errors.default} <span class="mono">{result.code}</span>
+                {copy.errors[result.code as keyof typeof copy.errors] ?? copy.errors.default} <span class="mono">{result.code}</span>
               </p>
             )}
           </div>
@@ -237,21 +241,28 @@ export function Playground({ copy, loadEngine = defaultLoader, eager = false, in
       </div>
 
       <div class={`tiny ${styles.status}`}>
-        <span>{engineState.status === 'ready' && copy.engine(engineState.engine.version, engineState.engine.artifact)}</span>
+        <span>{engineState.status === 'ready' && (
+            <Rich
+              value={copy.engine}
+              vars={{ version: engineState.engine.version, artifact: engineState.engine.artifact }}
+            />
+          )}</span>
       </div>
 
       {result?.ok && (
         <div class={styles.findings}>
-          <h3 class="h3">{copy.findingsTitle}</h3>
+          <h3 class="h3">
+            <Rich value={copy.findingsTitle} />
+          </h3>
           {result.findings.length > 0 ? (
             <FindingsTable
               findings={result.findings}
               columns={copy.columns}
-              label={String(copy.findingsTitle)}
+              label={plainText(copy.findingsTitle, {})}
               onActivate={setActiveId}
             />
           ) : (
-            <p class={`small ${styles.empty}`}>{copy.noFindings}</p>
+            <p class={`small ${styles.empty}`}><Rich value={copy.noFindings} /></p>
           )}
         </div>
       )}

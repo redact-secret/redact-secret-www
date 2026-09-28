@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/content-current-v1.schema.json",
+  "title": "ContentCurrentV1",
+  "description": "/current.json: the pointer to the live content release and the application release it was rendered by (#11). Written last in a publish, with revalidation cache headers; a pure function of the release, so rolling back to a release restores it byte for byte. Public: it holds identifiers and digests only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "releaseId", "manifest", "rendererRelease", "app"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "content-current-v1" },
+    "releaseId": { "$ref": "common-v1.schema.json#/$defs/digest" },
+    "manifest": { "$ref": "#/$defs/objectRef", "description": "content/<releaseId hex>/manifest.json and its digest." },
+    "rendererRelease": { "$ref": "common-v1.schema.json#/$defs/gitRevision" },
+    "app": { "$ref": "#/$defs/objectRef", "description": "releases/app/<rendererRelease>/release.json (app-release-v1) and its digest." }
+  },
+  "$defs": {
+    "objectRef": {
+      "title": "ObjectRef",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "digest"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^(?!/)(?!.*\\.\\./)[A-Za-z0-9_./-]+$" },
+        "digest": { "$ref": "common-v1.schema.json#/$defs/digest" }
+      }
+    }
+  }
+}

@@ -1,8 +1,8 @@
 import { useState } from 'preact/hooks';
 import { Button, Logo } from '../ui';
-import type { SiteContent } from '../../content';
+import type { ShellCopy } from '../../content';
 import { anchors } from '../../content/shared';
-import type { Locale } from '../../i18n';
+import { homePath, type Locale } from '../../i18n';
 import { NavLinks } from './NavLinks';
 import { ShellControls, type Alternates } from './ShellControls';
 import { SideNav, sideNavId } from './SideNav';
@@ -10,7 +10,7 @@ import styles from './Header.module.css';
 
 export type HeaderProps = {
   locale: Locale;
-  copy: SiteContent['shell'];
+  copy: ShellCopy['header'];
   /** This page in each locale, for the language switch. */
   alternates?: Alternates;
   /** Href of the nav link for the section being viewed. */
@@ -30,15 +30,15 @@ export function Header({ locale, copy, alternates, current }: HeaderProps) {
         {copy.skipToContent}
       </a>
       <div class={`wrap ${styles.inner}`}>
-        <Logo href={`/${locale}/`} />
+        <Logo href={homePath(locale)} />
         <nav class={styles.nav} aria-label={copy.mainNavLabel}>
-          <NavLinks links={copy.nav} current={current} />
+          <NavLinks locale={locale} links={copy.nav} current={current} />
         </nav>
         <div class={styles.end}>
           <div class={styles.controls}>
             <ShellControls locale={locale} copy={copy} alternates={alternates} />
           </div>
-          <Button href={`/${locale}/#${anchors.firstRun}`}>{copy.getStarted}</Button>
+          <Button href={`${homePath(locale)}#${anchors.firstRun}`}>{copy.getStarted}</Button>
           <span class={styles.menu}>
             <Button onClick={() => setMenuOpen(true)} expanded={menuOpen} controls={sideNavId}>
               {copy.menu}

@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/locale-common-v1.schema.json",
+  "title": "LocaleCommonV1",
+  "description": "Shared definitions for the locale copy files under i18n/: plain text, the structured rich-text form (no raw HTML), and links. Internal links name a route ID from src/routes.ts, never a locale path, so the locale path rules stay in code. Not a document schema on its own; the locale-*-v1 schemas $ref its $defs.",
+  "$defs": {
+    "locale": {
+      "title": "LocaleId",
+      "description": "The locale this file is authored for; it must match the file's directory (i18n/<locale>/).",
+      "type": "string",
+      "enum": ["en", "ko"]
+    },
+    "text": {
+      "title": "Text",
+      "description": "Plain text: no markup, no variables. Used where the value may end up in an attribute.",
+      "type": "string",
+      "minLength": 1
+    },
+    "rich": {
+      "title": "Rich",
+      "description": "Rich text: a plain string, or a list of inline nodes rendered in order by src/components/ui/Rich.tsx.",
+      "anyOf": [
+        { "type": "string" },
+        { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/inline" } }
+      ]
+    },
+    "inline": {
+      "title": "Inline",
+      "description": "One inline node. Each object node has exactly one tag key (b, em, code, span, br, a, var, status, dim, flag, placeholder) plus the attributes that tag allows.",
+      "anyOf": [
+        { "type": "string" },
+        { "$ref": "#/$defs/strong" },
+        { "$ref": "#/$defs/emphasis" },
+        { "$ref": "#/$defs/code" },
+        { "$ref": "#/$defs/span" },
+        { "$ref": "#/$defs/lineBreak" },
+        { "$ref": "#/$defs/routeLink" },
+        { "$ref": "#/$defs/urlLink" },
+        { "$ref": "#/$defs/variable" },
+        { "$ref": "#/$defs/status" },
+        { "$ref": "#/$defs/dim" },
+        { "$ref": "#/$defs/flag" },
+        { "$ref": "#/$defs/placeholder" }
+      ]
+    },
+    "strong": {
+      "title": "StrongNode",
+      "description": "<b>",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["b"],
+      "properties": { "b": { "$ref": "#/$defs/rich" } }
+    },
+    "emphasis": {
+      "title": "EmphasisNode",
+      "description": "<em>",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["em"],
+      "properties": { "em": { "$ref": "#/$defs/rich" } }
+    },
+    "code": {
+      "title": "CodeNode",
+      "description": "<code>",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code"],
+      "properties": { "code": { "$ref": "#/$defs/rich" } }
+    },
+    "span": {
+      "title": "SpanNode",
+      "description": "<span> with one of the global type classes (src/style.css).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["span", "class"],
+      "properties": {
+        "span": { "$ref": "#/$defs/rich" },
+        "class": { "type": "string", "enum": ["mono", "tiny", "small", "tiny mono"] }
+      }
+    },
+    "lineBreak": {
+      "title": "LineBreakNode",
+      "description": "<br>: an authored line break (hero and other large headlines break at an explicit point per locale).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["br"],
+      "properties": { "br": { "const": true } }
+    },
+    "routeRef": {
+      "title": "RouteRef",
+      "description": "An internal link target: a route ID from src/routes.ts (home, architecture, architecture/<page>), optionally followed by #<anchor> from src/content/shared.ts anchors; or #<anchor> alone for the current page. Resolved to /… or /ko/… in code.",
+      "type": "string",
+      "pattern": "^(home|architecture(/[a-z0-9-]+)?)?(#[a-z0-9-]+)?$",
+      "minLength": 1
+    },
+    "httpsUrl": {
+      "title": "HttpsUrl",
+      "description": "An external link: an absolute https URL with no credentials.",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://[^/@\\s]+(/[^\\s]*)?$"
+    },
+    "routeLink": {
+      "title": "RouteLinkNode",
+      "description": "<a> to a page on this site, in the page's own locale.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["a", "to"],
+      "properties": { "a": { "$ref": "#/$defs/rich" }, "to": { "$ref": "#/$defs/routeRef" } }
+    },
+    "urlLink": {
+      "title": "UrlLinkNode",
+      "description": "<a> to an external https URL.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["a", "href"],
+      "properties": { "a": { "$ref": "#/$defs/rich" }, "href": { "$ref": "#/$defs/httpsUrl" } }
+    },
+    "variable": {
+      "title": "VariableNode",
+      "description": "A value supplied by the page at render time: a slot (version, date, count) or a fragment the page composes. Never typed into prose (CONVENTIONS.md § Content slots).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["var"],
+      "properties": { "var": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9]*$" } }
+    },
+    "status": {
+      "title": "StatusNode",
+      "description": "A status chip (src/components/ui/StatusChip.tsx) inside a sentence.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "tone"],
+      "properties": {
+        "status": { "$ref": "#/$defs/rich" },
+        "tone": { "type": "string", "enum": ["success", "warning", "danger", "info", "none"] }
+      }
+    },
+    "dim": {
+      "title": "DimNode",
+      "description": "A dimmed span inside a code sample (RichCode's Dim).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dim"],
+      "properties": { "dim": { "$ref": "#/$defs/rich" } }
+    },
+    "flag": {
+      "title": "FlagNode",
+      "description": "A flagged span inside a code sample (RichCode's Flag).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flag"],
+      "properties": { "flag": { "$ref": "#/$defs/rich" } }
+    },
+    "placeholder": {
+      "title": "PlaceholderNode",
+      "description": "A typed placeholder chip (src/components/ui/PlaceholderChip.tsx), e.g. <SECRET_1>.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["placeholder"],
+      "properties": { "placeholder": { "$ref": "#/$defs/rich" } }
+    },
+    "link": {
+      "title": "Link",
+      "description": "A labelled link: internal (to, a route ID) or external (href, an https URL). external marks it with ↗.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label"],
+      "properties": {
+        "label": { "$ref": "#/$defs/text" },
+        "to": { "$ref": "#/$defs/routeRef" },
+        "href": { "$ref": "#/$defs/httpsUrl" },
+        "external": { "type": "boolean" }
+      },
+      "if": { "required": ["to"] },
+      "then": { "not": { "required": ["href"] } },
+      "else": { "required": ["href"] }
+    }
+  }
+}

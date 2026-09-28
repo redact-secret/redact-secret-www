@@ -31,17 +31,34 @@ jobs:
 
       - run: npm ci
 
+      # Offline negative tests: unknown schemaVersion, missing provenance,
+      # stale records, benchmark figures and secret-shaped values must fail.
+      - name: Data contracts — negative tests
+        run: npm run test:data
+
+      # check-data (schemas, provenance, no secrets), generated-type drift,
       # check-slots (engine == quickstart version), tsc, vite build + prerender.
       - run: npm run build
 
       - name: Site build contract (redact-secret-sites)
         run: node scripts/check-build-contract.mjs
 
-      - name: Deterministic build — the same commit twice gives the same site
+      # Offline, against a directory standing in for the bucket: a copy-only
+      # change leaves every asset byte-identical and re-uploads none; rollback
+      # restores HTML and current.json byte for byte; corrupted, partial,
+      # wrong-locale, unknown-version and renderer-mismatched releases never
+      # move current.json or a stable page; a secret-shaped value fails
+      # before any upload and is never echoed.
+      - name: Release planes — offline proofs (content, rollback, invalid releases, secrets)
+        run: npm run test:publish
+
+      - name: Deterministic build — the same commit twice gives the same site and renderer
         run: |
           mv dist "$RUNNER_TEMP/dist-first"
+          mv build/renderer "$RUNNER_TEMP/renderer-first"
           npm run build
           diff -r "$RUNNER_TEMP/dist-first" dist
+          diff -r "$RUNNER_TEMP/renderer-first" build/renderer
 
       - run: npm run build-storybook
 
@@ -124,3 +141,11 @@ jobs:
 
       - name: Negative control — injected faults must fail the checks
         run: node scripts/check-architecture.mjs --negative-control --engine chromium
+
+      # Every page, both locales and the 404: complete with JavaScript off;
+      # with every JSON request failing, hydrated, unchanged and interactive.
+      - name: First paint without JavaScript or JSON
+        run: node scripts/check-first-paint.mjs
+
+      - name: Negative control — without its page data a page stays complete but must not hydrate
+        run: node scripts/check-first-paint.mjs --negative-control --engine chromium

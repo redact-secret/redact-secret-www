@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/locale-architecture-overview-v1.schema.json",
+  "title": "LocaleArchitectureOverviewV1",
+  "description": "i18n/<locale>/architecture/overview.json: the architecture hub (/architecture/) body in one locale. Page titles come from section.json; paths from the route registry.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "locale",
+    "eyebrow",
+    "title",
+    "lede",
+    "claim",
+    "groups",
+    "cards",
+    "repos",
+    "sources"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "locale-architecture-overview-v1"
+    },
+    "locale": {
+      "$ref": "locale-common-v1.schema.json#/$defs/locale"
+    },
+    "eyebrow": {
+      "$ref": "locale-common-v1.schema.json#/$defs/rich"
+    },
+    "title": {
+      "$ref": "locale-common-v1.schema.json#/$defs/rich"
+    },
+    "lede": {
+      "$ref": "locale-common-v1.schema.json#/$defs/rich"
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "line",
+        "sub"
+      ],
+      "properties": {
+        "line": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "sub": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "groups": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine",
+        "evidence",
+        "boundaries"
+      ],
+      "properties": {
+        "engine": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eyebrow",
+            "title"
+          ],
+          "properties": {
+            "eyebrow": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            },
+            "title": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            }
+          }
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eyebrow",
+            "title"
+          ],
+          "properties": {
+            "eyebrow": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            },
+            "title": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            }
+          }
+        },
+        "boundaries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eyebrow",
+            "title"
+          ],
+          "properties": {
+            "eyebrow": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            },
+            "title": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            }
+          }
+        }
+      }
+    },
+    "cards": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "how-it-works",
+        "detection",
+        "support-claims",
+        "evaluation-methods",
+        "adapters",
+        "vault"
+      ],
+      "properties": {
+        "how-it-works": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "question",
+            "body"
+          ],
+          "properties": {
+            "question": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            },
+            "body": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            }
+          }
+        },
+        "detection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "question",
+            "body"
+          ],
+          "properties": {
+            "question": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            },
+            "body": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            }
+          }
+        },
+        "support-claims": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "question",
+            "body"
+          ],
+          "properties": {
+            "question": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            },
+            "body": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            }
+          }
+        },
+        "evaluation-methods": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "question",
+            "body"
+          ],
+          "properties": {
+            "question": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            },
+            "body": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            }
+          }
+        },
+        "adapters": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "question",
+            "body"
+          ],
+          "properties": {
+            "question": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            },
+            "body": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            }
+          }
+        },
+        "vault": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "question",
+            "body"
+          ],
+          "properties": {
+            "question": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            },
+            "body": {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            }
+          }
+        }
+      }
+    },
+    "repos": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "lede",
+        "tableLabel",
+        "head",
+        "rows"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "lede": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "tableLabel": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "head": {
+          "type": "array",
+          "items": {
+            "$ref": "locale-common-v1.schema.json#/$defs/rich"
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "repo",
+              "owns",
+              "mustNot"
+            ],
+            "properties": {
+              "repo": {
+                "$ref": "locale-common-v1.schema.json#/$defs/text"
+              },
+              "owns": {
+                "$ref": "locale-common-v1.schema.json#/$defs/rich"
+              },
+              "mustNot": {
+                "$ref": "locale-common-v1.schema.json#/$defs/rich"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "body"
+      ],
+      "properties": {
+        "label": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "body": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    }
+  }
+}

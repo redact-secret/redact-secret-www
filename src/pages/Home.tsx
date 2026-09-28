@@ -9,26 +9,33 @@ import {
   ProblemSection,
   QuickstartSection,
 } from '../components/sections';
-import { content } from '../content';
+import type { HomeCopy, ShellCopy } from '../content';
 import type { Locale } from '../i18n';
 import { slots } from '../slots';
+
+export type HomeProps = {
+  locale: Locale;
+  /** i18n/<locale>/shell.json */
+  shell: ShellCopy;
+  /** i18n/<locale>/home.json */
+  copy: HomeCopy;
+};
 
 /**
  * The eight blocks in their fixed order (ARCHITECTURE.md § Page structure):
  * problem → live demo → install → architecture → ecosystem → evidence.
  */
-export function Home({ locale }: { locale: Locale }) {
-  const c = content[locale];
+export function Home({ locale, shell, copy }: HomeProps) {
   return (
-    <AppShell content={c}>
-      <HeroSection copy={c.hero} />
-      <ProblemSection copy={c.problem} />
-      <PlaygroundSection copy={c.playground} />
-      <QuickstartSection copy={c.quickstart} core={slots.core} />
-      <BoundarySection copy={c.boundary} />
-      <IntegrationsSection copy={c.integrations} slots={slots} />
-      <EvidenceSection copy={c.evidence} />
-      <FinalCtaSection copy={c.final} />
+    <AppShell locale={locale} copy={shell}>
+      <HeroSection copy={copy.hero} />
+      <ProblemSection copy={copy.problem} />
+      <PlaygroundSection copy={copy.playground} />
+      <QuickstartSection copy={copy.quickstart} core={slots.core} />
+      <BoundarySection locale={locale} copy={copy.boundary} />
+      <IntegrationsSection copy={copy.integrations} slots={slots} />
+      <EvidenceSection copy={copy.evidence} />
+      <FinalCtaSection copy={copy.final} />
     </AppShell>
   );
 }

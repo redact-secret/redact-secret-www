@@ -11,7 +11,7 @@ const findings: SecretFinding[] = [
 const meta = {
   title: 'Playground/FindingsTable',
   component: FindingsTable,
-  args: { findings, columns: content.en.playground.columns, label: 'Findings' },
+  args: { findings, columns: content.en.home.playground.columns, label: 'Findings' },
 } satisfies Meta<typeof FindingsTable>;
 
 export default meta;
@@ -19,6 +19,6 @@ type Story = StoryObj<typeof meta>;
 
 export const English: Story = {};
 export const Korean: Story = {
-  args: { columns: content.ko.playground.columns, label: '탐지 결과' },
+  args: { columns: content.ko.home.playground.columns, label: '탐지 결과' },
   globals: { locale: 'ko' },
 };

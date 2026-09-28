@@ -15,7 +15,7 @@ const meta: Meta = {
   parameters: { layout: 'fullscreen' },
   render: (args, { globals }) => (
     <div class="wrap" style={{ paddingBlock: 'var(--space-8)' }}>
-      <Playground copy={content[globals.locale as Locale].playground} eager {...args} />
+      <Playground copy={content[globals.locale as Locale].home.playground} eager {...args} />
     </div>
   ),
 };
@@ -35,5 +35,5 @@ export const LoadFailed: Story = { args: { loadEngine: failing } };
 export const StaleAfterDeploy: Story = { args: { loadEngine: stale } };
 
 export const Section: Story = {
-  render: (_args, { globals }) => <PlaygroundSection copy={content[globals.locale as Locale].playground} />,
+  render: (_args, { globals }) => <PlaygroundSection copy={content[globals.locale as Locale].home.playground} />,
 };

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/content-manifest-v1.schema.json",
+  "title": "ContentManifestV1",
+  "description": "One locale's content release (#6 § First paint): which content and data files it consists of, their digests, the renderer release that renders them, and the upstream revisions they were read from. The release ID is content-addressed. Consumers fail closed on an unknown schemaVersion, a wrong locale, a missing file or a digest mismatch.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "releaseId", "locale", "rendererRelease", "generatedAt", "sources", "files"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "content-manifest-v1" },
+    "releaseId": {
+      "description": "sha256 over the sorted `path digest` lines of `files`, so the same content always has the same ID.",
+      "$ref": "common-v1.schema.json#/$defs/digest"
+    },
+    "locale": { "type": "string", "enum": ["en", "ko"] },
+    "rendererRelease": {
+      "description": "The application release (full commit of redact-secret-www) whose renderer produced the HTML.",
+      "$ref": "common-v1.schema.json#/$defs/gitRevision"
+    },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "sources": {
+      "description": "Every upstream the content was read from, at its full revision.",
+      "type": "array",
+      "items": {
+        "title": "ManifestSource",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "source", "freshness"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "source": { "$ref": "common-v1.schema.json#/$defs/source" },
+          "freshness": { "$ref": "common-v1.schema.json#/$defs/freshness" },
+          "digest": { "$ref": "common-v1.schema.json#/$defs/digest" }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "title": "ManifestFile",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "schemaVersion", "digest", "bytes"],
+        "properties": {
+          "path": {
+            "description": "Relative to the release root; never absolute, never climbing out.",
+            "type": "string",
+            "pattern": "^(?!/)(?!.*\\.\\./)[A-Za-z0-9_./-]+$"
+          },
+          "schemaVersion": { "description": "The contract the file validates against.", "type": "string", "pattern": "^[a-z][a-z0-9-]*-v[0-9]+$" },
+          "digest": { "$ref": "common-v1.schema.json#/$defs/digest" },
+          "bytes": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

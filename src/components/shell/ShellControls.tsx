@@ -1,13 +1,13 @@
 import { SegmentedControl } from '../ui';
-import type { SiteContent } from '../../content';
-import { localeNames, locales, type Locale } from '../../i18n';
+import type { ShellCopy } from '../../content';
+import { homePath, localeNames, locales, type Locale } from '../../i18n';
 import { useTheme, type Theme } from './useTheme';
 
 export type Alternates = Partial<Record<Locale, string>>;
 
 type Props = {
   locale: Locale;
-  copy: SiteContent['shell'];
+  copy: ShellCopy['header'];
   /** This page in each locale; defaults to that locale's home. */
   alternates?: Alternates;
 };
@@ -20,7 +20,7 @@ export function ShellControls({ locale, copy, alternates }: Props) {
       <SegmentedControl
         label={copy.languageLabel}
         value={locale}
-        options={locales.map((l) => ({ value: l, label: localeNames[l], href: alternates?.[l] ?? `/${l}/`, hrefLang: l }))}
+        options={locales.map((l) => ({ value: l, label: localeNames[l], href: alternates?.[l] ?? homePath(l), hrefLang: l }))}
       />
       <SegmentedControl<Theme>
         label={copy.themeLabel}
