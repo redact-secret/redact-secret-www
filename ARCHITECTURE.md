@@ -279,12 +279,13 @@ adopted).
 
 Resolved: the domain is `www.redactsecret.com`, with the apex redirecting to
 it ([redact-secret-sites decision](https://github.com/redact-secret/redact-secret-sites/blob/main/docs/decisions/2026-09-28-serve-the-hub-on-redactsecret-com.md)).
+The default entry language is English at `/`, with Korean at `/ko/`
+([ADR 0003](./docs/decisions/0003-single-static-site-separate-releases.md)).
 
 | Question | This repository's default until decided | Why it's open |
 | --- | --- | --- |
 | `--sunken` / `--sunken-2` tokens | Local override in this repository's `tokens.css`, not upstream | Needs design-system acceptance; `redact-secret-benchmarks` carries the same local exception today. |
 | Mobile logo minimum width | Ship the mockup's ~60px exception, flagged in the PR | Conflicts with the system's stated 64px minimum; needs explicit sign-off, not a quiet fix. |
-| Default entry language at `/` | Undecided — redirect, content negotiation, and a chooser screen are all on the table | Affects routing and possibly needs a CloudFront Function change in `redact-secret-sites`. |
 | Routing/comparison table in the evidence block | Ship it, built to be deletable without a layout change | Explicitly optional per the content blueprint; can be cut right before launch with no cost either way. |
 | A fourth runtime tab for Rust | Link to a guide instead of adding a tab | No verified first-example Rust snippet existed when the spec was written; promote to a tab once one is confirmed working. |
 | Relationship to the docs site | Nav item links out; no assumption about its design | `/docs/` is out of scope for this repository and not yet a repository itself. |
