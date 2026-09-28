@@ -17,7 +17,7 @@
     "check:data": "node scripts/check-data.mjs",
     "check:data-types": "node scripts/gen-data-types.mjs --check",
     "data:types": "node scripts/gen-data-types.mjs",
-    "test:data": "node scripts/test-data-contracts.mjs",
+    "test:data": "node --test scripts/test-data-contracts.mjs scripts/test-upstream-feeds.mjs",
     "slots:refresh": "node scripts/refresh-slots.mjs",
     "qualify:playground": "npm run build && node scripts/qualify-playground.mjs",
     "check:contract": "node scripts/check-build-contract.mjs",
