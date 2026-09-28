@@ -7,7 +7,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const dist = new URL('../dist/', import.meta.url).pathname;
-const origin = 'https://www.redactsecret.dev';
+const origin = 'https://www.redactsecret.com';
 const failures = [];
 const fail = (message) => failures.push(message);
 
@@ -44,9 +44,11 @@ for (const file of files.filter((f) => f.endsWith('.html'))) {
   }
 }
 
-// README § Domain: build and copy against .dev; .com is reserved elsewhere.
+// README § Domain: the hub lives on .com. .dev is the benchmarks site's domain,
+// so a link to www. or the apex of .dev is a leftover from before the move.
 for (const file of files.filter((f) => /\.(html|js|css|json|svg)$/.test(f))) {
-  if (readFileSync(join(dist, file), 'utf8').includes('redactsecret.com')) fail(`${file}: mentions redactsecret.com`);
+  const text = readFileSync(join(dist, file), 'utf8');
+  if (/(www\.|\/\/)redactsecret\.dev\b/.test(text)) fail(`${file}: refers to www.redactsecret.dev or the .dev apex`);
 }
 
 if (failures.length) {

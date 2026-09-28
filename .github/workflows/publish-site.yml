@@ -1,4 +1,4 @@
-# Publishes www.redactsecret.dev: builds a commit on main and syncs dist/ to
+# Publishes www.redactsecret.com: builds a commit on main and syncs dist/ to
 # the bucket behind the www site stack that redact-secret-sites owns, using
 # the publisher role that repository creates.
 #
@@ -141,7 +141,7 @@ jobs:
         if: steps.config.outputs.ready == 'true'
         run: |
           {
-            echo "### Published www.redactsecret.dev"
+            echo "### Published www.redactsecret.com"
             echo
             echo "- commit: \`$TARGET_SHA\`"
             echo "- engine: \`@redact-secret/core@$(node -p "require('./package.json').dependencies['@redact-secret/core']")\`"
