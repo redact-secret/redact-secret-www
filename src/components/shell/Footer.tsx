@@ -1,7 +1,7 @@
 import { Logo } from '../ui';
 import type { SiteContent } from '../../content';
 import { anchors, siteOrigin } from '../../content/shared';
-import { localeNames, locales, type Locale } from '../../i18n';
+import { homePath, localeNames, locales, type Locale } from '../../i18n';
 import type { Alternates } from './ShellControls';
 import styles from './Footer.module.css';
 
@@ -20,7 +20,7 @@ export function Footer({ locale, copy, alternates }: FooterProps) {
       <div class={`wrap ${styles.inner}`}>
         <div class={styles.cols}>
           <div class={styles.brand}>
-            <Logo href={`/${locale}/`} />
+            <Logo href={homePath(locale)} />
             <p class={`small ${styles.tagline}`}>{copy.tagline}</p>
           </div>
           {copy.columns.map((column) => (
@@ -51,7 +51,7 @@ export function Footer({ locale, copy, alternates }: FooterProps) {
                 {l === locale ? (
                   <b>{localeNames[l]}</b>
                 ) : (
-                  <a href={alternates?.[l] ?? `/${l}/`} hreflang={l} lang={l}>
+                  <a href={alternates?.[l] ?? homePath(l)} hreflang={l} lang={l}>
                     {localeNames[l]}
                   </a>
                 )}

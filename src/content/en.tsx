@@ -12,9 +12,9 @@ export const en: SiteContent = {
     skipToContent: 'Skip to content',
     mainNavLabel: 'Main',
     nav: [
-      { label: 'Playground', href: `/en/#${anchors.playground}` },
-      { label: 'Docs', href: `/en/#${anchors.integrations}` },
-      { label: 'Architecture', href: '/en/architecture/' },
+      { label: 'Playground', href: `/#${anchors.playground}` },
+      { label: 'Docs', href: `/#${anchors.integrations}` },
+      { label: 'Architecture', href: '/architecture/' },
       { label: 'Benchmarks', href: urls.benchmarks, external: true },
       { label: 'GitHub', href: urls.repo, external: true },
       { label: 'Community', href: `#${anchors.community}` },
@@ -33,10 +33,10 @@ export const en: SiteContent = {
       {
         title: 'Product',
         links: [
-          { label: 'Quickstart', href: `/en/#${anchors.firstRun}` },
-          { label: 'Guides', href: `/en/#${anchors.integrations}` },
-          { label: 'Architecture', href: '/en/architecture/' },
-          { label: 'Reference', href: `/en/#${anchors.evidence}` },
+          { label: 'Quickstart', href: `/#${anchors.firstRun}` },
+          { label: 'Guides', href: `/#${anchors.integrations}` },
+          { label: 'Architecture', href: '/architecture/' },
+          { label: 'Reference', href: `/#${anchors.evidence}` },
         ],
       },
       {
@@ -387,7 +387,7 @@ export const en: SiteContent = {
       },
     ],
     links: [
-      { label: 'The architecture, page by page', href: '/en/architecture/' },
+      { label: 'The architecture, page by page', href: '/architecture/' },
       { label: 'Read the architecture', href: urls.architecture },
       { label: 'Safe integration guide', href: urls.safeIntegration },
     ],

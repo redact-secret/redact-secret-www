@@ -1,12 +1,13 @@
 import { AppShell } from '../components/shell';
 import { content } from '../content';
-import { locales } from '../i18n';
+import { homePath, locales } from '../i18n';
 import styles from './NotFound.module.css';
 
 /**
  * One page for every missing path: CloudFront serves /404/index.html with
- * status 404 for both /en/… and /ko/… misses (redact-secret-sites
- * `NotFoundPage`), so the body speaks both languages instead of guessing.
+ * status 404 for misses under both the English (/…) and Korean (/ko/…) route
+ * sets (redact-secret-sites `NotFoundPage`), so the body speaks both
+ * languages and links both homes instead of guessing.
  */
 export function NotFound() {
   return (
@@ -20,7 +21,7 @@ export function NotFound() {
               <h1 class="h2">{copy.title}</h1>
               <p class="lede">{copy.body}</p>
               <p>
-                <a href={`/${locale}/`} hreflang={locale}>
+                <a href={homePath(locale)} hreflang={locale}>
                   {copy.home}
                 </a>
               </p>

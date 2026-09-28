@@ -22,7 +22,7 @@ import {
   type ArchitecturePageId,
 } from '../content/architecture/pages';
 import { architectureShell } from '../content/architecture/shell';
-import { locales, type Locale } from '../i18n';
+import { localePrefix, locales, type Locale } from '../i18n';
 import styles from './Architecture.module.css';
 
 const bodies = { en: enPages, ko: koPages };
@@ -100,7 +100,7 @@ function Hub({ locale }: { locale: Locale }) {
                       title={a.pages[pageId].title}
                       question={h.cards[pageId].question}
                       href={href}
-                      go={href.slice(`/${locale}`.length)}
+                      go={href.slice(localePrefix(locale).length)}
                     >
                       {h.cards[pageId].body}
                     </HubCard>

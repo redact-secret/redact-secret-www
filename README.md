@@ -81,9 +81,11 @@ path), not `spa`: see
 [redact-secret-sites' routing modes](https://github.com/redact-secret/redact-secret-sites/blob/main/ARCHITECTURE.md#routing-modes).
 
 ```text
-index.html                 # Vite entry; prerendered to /, /en/, /ko/, /404/, /{en,ko}/architecture/…
+index.html                 # Vite entry; prerendered to / and /ko/, /architecture/… and /ko/architecture/…, /404/
 src/
   main.tsx                 # routes + per-page <head> (lang, canonical, hreflang)
+  routes.ts                # route registry: pages, alternates, sitemap, legacy /en/ redirects
+  i18n.ts                  # locales; English unprefixed, Korean under /ko/
   content/en.tsx, ko.tsx   # authored prose per locale, typed by content/types.ts
   content/shared.ts        # never translated: URLs, the synthetic fixture, code snippets
   content/architecture/    # section registry, shell copy, hub, en/ and ko/ sub-page bodies

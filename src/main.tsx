@@ -1,20 +1,14 @@
 import { hydrate, LocationProvider, prerender as ssr, Route, Router } from 'preact-iso';
 import { Architecture } from './pages/Architecture';
 import { Home } from './pages/Home';
-import { LocaleChooser } from './pages/LocaleChooser';
 import { NotFound } from './pages/NotFound';
 import { content } from './content';
-import { architecturePages, architecturePath } from './content/architecture/pages';
 import { architectureShell } from './content/architecture/shell';
 import { siteOrigin } from './content/shared';
-import { isLocale, locales, type Locale } from './i18n';
+import { splitLocalePath, type Locale } from './i18n';
+import { alternatesFor, localizedRoutes, pageRoutes, type PageRoute } from './routes';
 import './tokens.css';
 import './style.css';
-
-/** Every architecture page in every locale: /en/architecture/, /ko/architecture/detection/, … */
-const architectureRoutes = locales.flatMap((locale) =>
-  architecturePages.map((page) => ({ locale, id: page.id, path: architecturePath(locale, page.id) })),
-);
 
 /**
  * Directory routing: every page is its own prerendered document with its own
@@ -24,15 +18,17 @@ const architectureRoutes = locales.flatMap((locale) =>
  */
 const noClientNavigation = /(?!)/;
 
+function Page({ locale, page }: { locale: Locale; page: PageRoute['page'] }) {
+  return page.kind === 'home' ? <Home locale={locale} /> : <Architecture locale={locale} id={page.id} />;
+}
+
+/** English at `/`, Korean at `/ko/` (ADR 0003); every other path is the 404 page. */
 export function App() {
   return (
     <LocationProvider scope={noClientNavigation}>
       <Router>
-        <Route path="/" component={LocaleChooser} />
-        <Route path="/en/" component={() => <Home locale="en" />} />
-        <Route path="/ko/" component={() => <Home locale="ko" />} />
-        {architectureRoutes.map((r) => (
-          <Route key={r.path} path={r.path} component={() => <Architecture locale={r.locale} id={r.id} />} />
+        {localizedRoutes.map((r) => (
+          <Route key={r.localized} path={r.localized} component={() => <Page locale={r.locale} page={r.page} />} />
         ))}
         <Route default component={NotFound} />
       </Router>
@@ -46,31 +42,31 @@ if (typeof window !== 'undefined') {
 
 type HeadElement = { type: string; props: Record<string, string> };
 type PageHead = {
+  lang: Locale;
   title: string;
   description: string;
-  /** hreflang → path, when the page exists as a translation in every locale. */
+  /** hreflang → path: every locale's equivalent page, plus x-default (English). */
   alternates?: Record<string, string>;
   noindex?: boolean;
 };
 
-function headFor(path: string, lang: Locale, pageLocale: Locale | undefined): PageHead {
-  const meta = content[lang].meta;
-  const arch = architectureRoutes.find((r) => r.path === path);
-  if (arch) {
-    const a = architectureShell[arch.locale];
-    const page = a.pages[arch.id];
-    const title = `${page.title} — ${arch.id === 'overview' ? 'Redact Secret' : `${a.section} · Redact Secret`}`;
-    return {
-      title,
-      description: page.description,
-      alternates: Object.fromEntries(locales.map((l) => [l, architecturePath(l, arch.id)])),
-    };
-  }
+function headFor(path: string): PageHead {
+  const { locale, path: unprefixed } = splitLocalePath(path);
+  const route = pageRoutes.find((r) => r.path === unprefixed);
+  // Anything else prerendered is the 404 page, served for every missing path.
+  if (!route) return { lang: 'en', title: 'Redact Secret', description: content.en.meta.description, noindex: true };
+
+  const meta = content[locale].meta;
+  const alternates = alternatesFor(unprefixed);
+  if (route.page.kind === 'home') return { lang: locale, title: meta.title, description: meta.description, alternates };
+  const a = architectureShell[locale];
+  const id = route.page.id;
+  const page = a.pages[id];
   return {
-    title: pageLocale ? meta.title : 'Redact Secret',
-    description: meta.description,
-    alternates: pageLocale ? { ...Object.fromEntries(locales.map((l) => [l, `/${l}/`])), 'x-default': '/' } : undefined,
-    noindex: path === '/404/',
+    lang: locale,
+    title: `${page.title} — ${id === 'overview' ? 'Redact Secret' : `${a.section} · Redact Secret`}`,
+    description: page.description,
+    alternates,
   };
 }
 
@@ -79,10 +75,7 @@ export async function prerender(data: { url: string }) {
   // The prerenderer passes paths without a trailing slash; directory
   // routing serves them with one, so that is the canonical form.
   const path = data.url.endsWith('/') ? data.url : `${data.url}/`;
-  const segment = path.split('/')[1] ?? '';
-  const pageLocale: Locale | undefined = isLocale(segment) ? segment : undefined;
-  const lang: Locale = pageLocale ?? 'en';
-  const head = headFor(path, lang, pageLocale);
+  const head = headFor(path);
 
   const elements = new Set<HeadElement>([
     { type: 'link', props: { rel: 'canonical', href: `${siteOrigin}${path}` } },
@@ -97,6 +90,6 @@ export async function prerender(data: { url: string }) {
   return {
     html,
     links,
-    head: { lang, title: head.title, elements },
+    head: { lang: head.lang, title: head.title, elements },
   };
 }

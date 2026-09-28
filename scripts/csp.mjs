@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 
 /** `wasm: false` drops 'wasm-unsafe-eval' so the playground engine must fail — a control. */
 export function proposedCsp({ wasm = true } = {}) {
-  const html = readFileSync(new URL('../dist/en/index.html', import.meta.url), 'utf8');
+  const html = readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
   const inline = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   const themeScriptHash = inline
     .map((body) => `'sha256-${createHash('sha256').update(body).digest('base64')}'`)
