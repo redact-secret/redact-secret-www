@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/locale-architecture-section-v1.schema.json",
+  "title": "LocaleArchitectureSectionV1",
+  "description": "i18n/<locale>/architecture/section.json: the architecture section's shell copy in one locale — section name, sidebar groups, each page's navigation label, <title> and description, and the pager labels. Page order and grouping are the registry's (src/content/architecture/pages.ts), not the copy's.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "locale",
+    "section",
+    "navLabel",
+    "contents",
+    "groups",
+    "pages",
+    "pager"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "locale-architecture-section-v1"
+    },
+    "locale": {
+      "$ref": "locale-common-v1.schema.json#/$defs/locale"
+    },
+    "section": {
+      "$ref": "locale-common-v1.schema.json#/$defs/text"
+    },
+    "navLabel": {
+      "$ref": "locale-common-v1.schema.json#/$defs/text"
+    },
+    "contents": {
+      "$ref": "locale-common-v1.schema.json#/$defs/text"
+    },
+    "groups": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "section",
+        "engine",
+        "evidence",
+        "boundaries"
+      ],
+      "properties": {
+        "section": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "engine": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "evidence": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "boundaries": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        }
+      }
+    },
+    "pages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "overview",
+        "how-it-works",
+        "detection",
+        "support-claims",
+        "evaluation-methods",
+        "adapters",
+        "vault"
+      ],
+      "properties": {
+        "overview": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "nav",
+            "title",
+            "description"
+          ],
+          "properties": {
+            "nav": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "title": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "description": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            }
+          }
+        },
+        "how-it-works": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "nav",
+            "title",
+            "description"
+          ],
+          "properties": {
+            "nav": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "title": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "description": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            }
+          }
+        },
+        "detection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "nav",
+            "title",
+            "description"
+          ],
+          "properties": {
+            "nav": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "title": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "description": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            }
+          }
+        },
+        "support-claims": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "nav",
+            "title",
+            "description"
+          ],
+          "properties": {
+            "nav": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "title": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "description": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            }
+          }
+        },
+        "evaluation-methods": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "nav",
+            "title",
+            "description"
+          ],
+          "properties": {
+            "nav": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "title": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "description": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            }
+          }
+        },
+        "adapters": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "nav",
+            "title",
+            "description"
+          ],
+          "properties": {
+            "nav": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "title": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "description": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            }
+          }
+        },
+        "vault": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "nav",
+            "title",
+            "description"
+          ],
+          "properties": {
+            "nav": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "title": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            },
+            "description": {
+              "$ref": "locale-common-v1.schema.json#/$defs/text"
+            }
+          }
+        }
+      }
+    },
+    "pager": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "prev",
+        "next",
+        "back"
+      ],
+      "properties": {
+        "label": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "prev": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "next": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "back": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        }
+      }
+    }
+  }
+}

@@ -469,6 +469,7 @@ function runCheck(mutate) {
   const dir = mkdtempSync(join(tmpdir(), 'check-feeds-'));
   try {
     cpSync(join(root, 'data'), join(dir, 'data'), { recursive: true });
+    cpSync(join(root, 'i18n'), join(dir, 'i18n'), { recursive: true });
     mutate(dir);
     return spawnSync(process.execPath, [join(root, 'scripts/check-data.mjs'), '--root', dir], { encoding: 'utf8' });
   } finally {

@@ -6,4 +6,14 @@
 export type * as ContentManifestV1 from './content-manifest-v1';
 export type * as EvidenceV1 from './evidence-v1';
 export type * as IntegrationsV1 from './integrations-v1';
+export type * as LocaleArchitectureAdaptersV1 from './locale-architecture-adapters-v1';
+export type * as LocaleArchitectureDetectionV1 from './locale-architecture-detection-v1';
+export type * as LocaleArchitectureEvaluationMethodsV1 from './locale-architecture-evaluation-methods-v1';
+export type * as LocaleArchitectureHowItWorksV1 from './locale-architecture-how-it-works-v1';
+export type * as LocaleArchitectureOverviewV1 from './locale-architecture-overview-v1';
+export type * as LocaleArchitectureSectionV1 from './locale-architecture-section-v1';
+export type * as LocaleArchitectureSupportClaimsV1 from './locale-architecture-support-claims-v1';
+export type * as LocaleArchitectureVaultV1 from './locale-architecture-vault-v1';
+export type * as LocaleHomeV1 from './locale-home-v1';
+export type * as LocaleShellV1 from './locale-shell-v1';
 export type * as ReleaseV1 from './release-v1';

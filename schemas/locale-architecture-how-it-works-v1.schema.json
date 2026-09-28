@@ -1,0 +1,268 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/locale-architecture-how-it-works-v1.schema.json",
+  "title": "LocaleArchitectureHowItWorksV1",
+  "description": "i18n/<locale>/architecture/how-it-works.json: the words of the architecture page 'How it works' in one locale, keyed by section in page order. The structure (components, diagrams, mechanism constants) is the page's template in src/pages/architecture/; counts, versions and commits are vars filled from the slots.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "locale",
+    "head",
+    "atTheBoundary",
+    "theArchitecture",
+    "whatIsInTheBox",
+    "theComparison",
+    "beingHonest",
+    "sources"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "locale-architecture-how-it-works-v1"
+    },
+    "locale": {
+      "$ref": "locale-common-v1.schema.json#/$defs/locale"
+    },
+    "head": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "lede"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "lede": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "atTheBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "lede",
+        "ioCaption",
+        "ioFootnote"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "lede": {
+          "anyOf": [
+            {
+              "$ref": "locale-common-v1.schema.json#/$defs/rich"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "null: this locale deliberately omits the element (authored per locale, CONVENTIONS.md § Bilingual content)."
+        },
+        "ioCaption": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "ioFootnote": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "theArchitecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "lede",
+        "surfaces",
+        "claimSub",
+        "claim",
+        "nodeTitle",
+        "node",
+        "stat1",
+        "stat2",
+        "stat3"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "lede": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "surfaces": {
+          "type": "array",
+          "items": {
+            "$ref": "locale-common-v1.schema.json#/$defs/text"
+          }
+        },
+        "claimSub": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "claim": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "nodeTitle": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "node": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "stat1": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "stat2": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "stat3": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "whatIsInTheBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "cards"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "cards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "body"
+            ],
+            "properties": {
+              "title": {
+                "$ref": "locale-common-v1.schema.json#/$defs/text"
+              },
+              "body": {
+                "$ref": "locale-common-v1.schema.json#/$defs/rich"
+              }
+            }
+          }
+        }
+      }
+    },
+    "theComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "lede",
+        "nodeTitle1",
+        "node1",
+        "nodeTitle2",
+        "node2",
+        "p"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "lede": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "nodeTitle1": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "node1": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "nodeTitle2": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "node2": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "p": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "beingHonest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "limitsTitle",
+        "items",
+        "ruleTitle",
+        "rule"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "limitsTitle": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "locale-common-v1.schema.json#/$defs/rich"
+          }
+        },
+        "ruleTitle": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "rule": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "body"
+      ],
+      "properties": {
+        "label": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "body": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    }
+  }
+}
