@@ -4,7 +4,7 @@
   "head": {
     "eyebrow": "02 · How it detects",
     "title": "Every detector answers the same question: how sure, and why?",
-    "lede": "There are exactly five kinds of why. They are ranked, and the ranking decides everything."
+    "lede": "There are exactly five kinds of why, and they are ranked. Most of what follows comes from that ranking."
   },
   "theLadder": {
     "eyebrow": "The ladder",
@@ -65,7 +65,7 @@
           " credential families"
         ]
       },
-      " stamp their keys with a recognisable opening. Every one of those detectors is the same four-part shape, and this is the little language the whole tier is built from."
+      " stamp their keys with a recognisable opening. Every one of those detectors has the same four-part shape, and the whole tier is written in this small language."
     ],
     "parts": [
       {
@@ -147,7 +147,7 @@
     "eyebrow": "Tier 3",
     "title": "Shapes nobody owns",
     "lede": [
-      "These are not vendor patterns, they are formats. ",
+      "These are general formats that no vendor owns. There are ",
       {
         "var": "structural"
       },
@@ -207,7 +207,7 @@
       }
     ],
     "p1": [
-      "One deliberate exception proves the rule: a JWT is dropped if its payload says it is a Supabase ",
+      "There is one deliberate exception: a JWT is dropped if its payload says it is a Supabase ",
       {
         "code": "anon"
       },
@@ -370,11 +370,11 @@
     "eyebrow": "When tiers disagree",
     "title": "Five tie-breakers, always in this order",
     "lede": [
-      "Two detectors often claim overlapping text. The winner is ",
+      "Two detectors often claim overlapping text. The winner ",
       {
-        "b": "never whoever ran first"
+        "b": "does not depend on which ran first"
       },
-      ": it is a fixed comparison, run top to bottom until something differs."
+      ". A fixed comparison runs top to bottom until something differs."
     ],
     "rows": [
       {
@@ -420,11 +420,11 @@
     "eyebrow": "The little language",
     "title": "There is no regex engine",
     "lede": [
-      "Not “we avoided regex”: the core is allowed ",
+      "The core is allowed ",
       {
         "b": "zero"
       },
-      " outside dependencies, so there is nothing to have a regex engine with. Instead the four-part shape from tier 4 was written down once, and every provider detector is an instance of it."
+      " outside dependencies, so it has no regex engine to use. Instead the four-part shape from tier 4 was written down once, and every provider detector is an instance of it."
     ],
     "cards": [
       {
@@ -456,11 +456,11 @@
     "title": "Your format, their engine",
     "status": "Shipped · Rust · JavaScript · Python · CLI",
     "lede": [
-      "Companies have their own key formats. Adding a detector used to mean writing Rust, so everyone else ran a second scan of their own beside this one, which is exactly the divergence the library exists to prevent. Now you hand over the same four-part shape as plain text. Not a callback: ",
+      "Companies have their own key formats. Adding a detector used to mean writing Rust, so everyone else ran a second scan of their own beside this one, which is exactly the divergence the library exists to prevent. Now you hand over the same four-part shape as plain text, as ",
       {
         "b": "data"
       },
-      "."
+      " rather than a callback."
     ],
     "codeLabel": "Ruleset example",
     "cards": [

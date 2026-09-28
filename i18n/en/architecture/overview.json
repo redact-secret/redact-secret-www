@@ -6,7 +6,7 @@
   "lede": "Detection, overlap resolution, policy and redaction happen inside one Rust core, and JavaScript, Python, Rust and the CLI all call it. This section covers what that core decides, how well those decisions are measured, and what the text passes through on its way in.",
   "claim": {
     "line": "One core, four surfaces.",
-    "sub": "Each language gets a translator, never its own copy of the rules. JavaScript and Python cannot quietly disagree about what a secret is."
+    "sub": "Each language gets a thin translation layer and no copy of the rules, so JavaScript and Python cannot quietly disagree about what a secret is."
   },
   "groups": {
     "engine": {
@@ -51,7 +51,7 @@
   "repos": {
     "eyebrow": "In one line",
     "title": "Four repositories, one direction",
-    "lede": "Dependencies run one way. The vault may use the core's public API; the core and the adapters never depend on the vault. That is what keeps “I installed the scanner” from ever meaning “I created a recoverable copy of my secrets”.",
+    "lede": "Dependencies run one way. The vault may use the core's public API; the core and the adapters never depend on the vault. Because of that, installing the scanner never creates a recoverable copy of your secrets.",
     "tableLabel": "What each repository owns",
     "head": [
       "Repository",

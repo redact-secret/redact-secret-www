@@ -4,7 +4,7 @@
   "head": {
     "eyebrow": "03 · How a support claim is built",
     "title": "GitHub issues six kinds of token. Which ones do you catch?",
-    "lede": "Answering that honestly is the entire job of this structure."
+    "lede": "This structure exists to answer that honestly."
   },
   "theProblem": {
     "eyebrow": "The problem",
@@ -18,7 +18,7 @@
       {
         "code": "ghp_ | gho_ | ghu_ | ghs_ | ghr_"
       },
-      ", five shapes. GitHub issues six. For a long time the sixth was simply not covered, ",
+      ", five shapes. GitHub issues six. For a long time nothing covered the sixth, ",
       {
         "b": "and no rule list would have told you."
       }
@@ -31,8 +31,8 @@
       "OAuth refresh token",
       "Fine-grained PAT, now its own detector"
     ],
-    "claimSub": "One file fixes that list, independently of what the code happens to catch.",
-    "claim": "The unit of a support claim is not “a detector we wrote” but “a credential a provider actually issues”.",
+    "claimSub": "One file records that list, whatever the code happens to catch.",
+    "claim": "A support claim counts credentials a provider actually issues, not detectors we happened to write.",
     "noteTitle": "And it worked",
     "p": [
       "The sixth family sat in the taxonomy as a ",
@@ -47,7 +47,7 @@
       {
         "b": "The gap closed because it was visible"
       },
-      ", which is the argument for the whole design."
+      ". The whole design is built around that."
     ]
   },
   "theThreeInputs": {
@@ -74,7 +74,7 @@
           },
           {
             "term": "Holds",
-            "desc": "A flat list of detector ids and titles. Nothing about quality."
+            "desc": "A flat list of detector ids and titles, with nothing about quality."
           }
         ]
       },
@@ -100,7 +100,7 @@
         "facts": [
           {
             "term": "Written by",
-            "desc": "Running the benchmark corpus. Measurement, not opinion."
+            "desc": "A run of the benchmark corpus."
           },
           {
             "term": "Pinned to",
@@ -123,7 +123,7 @@
       {
         "b": "Note what is missing from all three:"
       },
-      " none of them contains a support claim. The claim only exists after they are joined, which means ",
+      " none of them contains a support claim. A claim exists only after the three are joined, so ",
       {
         "b": "nobody can write one by hand."
       }
@@ -167,7 +167,7 @@
       " fails if either drifts from the JSON."
     ],
     "p": [
-      "The one-way direction matters: the matrix reads the taxonomy, and never the reverse. A rule in the code review makes it explicit — ",
+      "The one-way direction matters: the matrix reads the taxonomy, and never the reverse. A code review rule says so outright: ",
       {
         "b": "variant support must not be inferred from a related family name."
       },
@@ -182,11 +182,11 @@
       {
         "code": "\"detectors\": []"
       },
-      ". That is not a blank, it is ",
+      ". That empty list ",
       {
-        "b": "the instruction that produces an unsupported row"
+        "b": "produces an unsupported row"
       },
-      " in the published table. It is also a worklist: GitHub's sixth token started here."
+      " in the published table, and it doubles as a worklist. GitHub's sixth token started here."
     ],
     "cards": [
       {
@@ -201,7 +201,7 @@
       {
         "chip": "Here",
         "body": [
-          "Names the gap in the same table as the wins, with the reason attached. ",
+          "Lists the gaps in the same table as the wins, each with its reason. ",
           {
             "var": "withoutDetector"
           },
@@ -213,7 +213,7 @@
       }
     ],
     "p": [
-      "And a test enforces it: a zero-detector family ",
+      "A test enforces this: a zero-detector family ",
       {
         "em": "must"
       },
@@ -267,16 +267,16 @@
       }
     ],
     "p": [
-      "The payoff: ",
+      "As a result, ",
       {
         "b": "unsupported"
       },
-      " means “a real credential this project does not catch”, never “a string that resembles our patterns”."
+      " always means “a real credential this project does not catch”. It never means “a string that resembles our patterns”."
     ]
   },
   "whatARowSays": {
     "eyebrow": "What a row says",
-    "title": "Provisional is arithmetic, not a feeling",
+    "title": "A provisional row shows its arithmetic",
     "lede": [
       "When a family falls short, the row carries ",
       {
@@ -307,11 +307,11 @@
       }
     ],
     "p": [
-      "That family's token format is provider-documented, the best evidence tier there is. It was still only provisional, because the fixture coverage behind it was one positive case and three benign controls short. ",
+      "That family's token format is provider-documented, the best evidence tier there is. It was still provisional because its fixtures were one positive case and three benign controls short. ",
       {
         "b": "Nobody can argue with that; somebody can go and write four fixtures."
       },
-      " Most of the matrix has since done exactly that."
+      " Most of the matrix has since been filled in that way."
     ]
   },
   "statusDistribution": {
@@ -349,7 +349,7 @@
       {
         "var": "stable"
       },
-      " stable rows are counted in two separate streams — ",
+      " stable rows are counted in two separate streams: ",
       {
         "b": [
           {
@@ -365,7 +365,7 @@
           }
         ]
       },
-      " were earned by measurement alone because no vendor documentation exists. Evidence tiers are graded again on their own axis (T1 ",
+      " were earned by measurement alone because no vendor documentation exists. Evidence tiers are graded separately (T1 ",
       {
         "var": "T1"
       },
@@ -403,9 +403,9 @@
     "gap": [
       "One release ago they matched exactly. ",
       {
-        "b": "A gap between them is never an error; it is the pin telling you how old the evidence is."
+        "b": "A gap between them is not an error. It shows how old the pinned evidence is."
       },
-      " The page keeps the two side by side instead of merging them into one."
+      " This page shows the two side by side instead of merging them."
     ],
     "versions": [
       "The same goes for versions. ",
@@ -482,7 +482,7 @@
       {
         "b": "It has been wrong through three releases."
       },
-      " The spec preempts this by naming ",
+      " The spec anticipates this by naming ",
       {
         "code": "taxonomy.json"
       },
@@ -492,7 +492,7 @@
       {
         "b": "The general rule:"
       },
-      " prose goes stale, generated files do not. Every count that matters is computed, and CI fails when the written copy drifts from the computed one — which is exactly why the paragraph nobody generates is the one still carrying the old numbers."
+      " prose goes stale and generated files do not. Every count that matters is computed, and CI fails when the written copy drifts from the computed value. That is why the one paragraph nobody generates still carries the old numbers."
     ]
   },
   "sources": {

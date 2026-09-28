@@ -10,7 +10,7 @@
     "eyebrow": "05 · Adapters",
     "title": "The core knows what a secret is. Something has to go and get the text.",
     "lede": [
-      "Six packages whose entire job is fetching and carrying. ",
+      "Six packages that fetch text, hand it to the core and carry the answer back. ",
       {
         "b": "They decide nothing."
       }
@@ -55,7 +55,7 @@
       }
     ],
     "outro": [
-      "That is the whole reason this repository exists, and it closes the gap ",
+      "This repository exists to close that gap, ",
       {
         "b": "without moving the wiring into the core"
       },
@@ -90,11 +90,11 @@
         {
           "b": "by value"
         },
-        ", alongside pino's own path-based ",
+        ", and works alongside pino's own path-based ",
         {
           "code": "redact"
         },
-        " rather than instead of it. pino cannot see a token inside a message string or an error message; this can."
+        ". pino cannot see a token inside a message string or an error message; this can."
       ],
       [
         "Every string and string-array attribute on a span and its events, redacted before the span reaches the next processor. Attribute names are not allowlisted, so OpenInference and GenAI conventions are covered ",
@@ -181,13 +181,12 @@
     ],
     "warning": [
       {
-        "b": "Read the third row twice."
+        "b": "Note the third row."
       },
-      " The tempting behaviour when something is too big to scan is to let it through. ",
+      " Letting a value through because it is too big to scan is how a secret escapes. ",
       {
-        "b": "That is exactly how a secret escapes."
-      },
-      " Here, unscannable means unprintable."
+        "b": "Here, a value that cannot be scanned is not printed either."
+      }
     ],
     "budgetsHeading": "The budgets",
     "budgets": [
@@ -235,9 +234,9 @@
     ],
     "note": [
       {
-        "b": "And it buys independence."
+        "b": "It also keeps releases independent."
       },
-      " The core is released in lockstep across Rust, npm, PyPI and the CLI. These packages are not in that lockstep: ",
+      " The core is released in lockstep across Rust, npm, PyPI and the CLI. These packages are not: ",
       {
         "b": [
           "a new pino release moves ",
@@ -281,10 +280,11 @@
       {
         "b": "deliberately"
       },
-      " not claimed. It may well work. It is not tested, so it is not claimed — ",
+      " not claimed. It may work, but it is untested, and the core holds its detectors to ",
       {
-        "b": "the same discipline the core applies to its detectors."
-      }
+        "b": "the same rule"
+      },
+      "."
     ]
   },
   "beingHonest": {
@@ -334,7 +334,7 @@
         {
           "b": "never"
         },
-        " gain the ability to put a value back — that belongs to a ",
+        " gain the ability to put a value back. Restoration belongs to a ",
         {
           "a": "separate repository",
           "to": "architecture/vault"

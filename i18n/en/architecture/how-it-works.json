@@ -4,7 +4,7 @@
   "head": {
     "eyebrow": "01 · How it works",
     "title": "It finds passwords in text, and crosses them out.",
-    "lede": "That is the whole thing. Everything below is about doing it carefully."
+    "lede": "The rest of this page is about doing that carefully."
   },
   "atTheBoundary": {
     "eyebrow": "At the boundary",
@@ -19,14 +19,14 @@
     "ioCaption": "Input and output",
     "ioFootnote": [
       {
-        "b": "The placeholder is a label, not a code."
+        "b": "The placeholder is only a label."
       },
-      " Nothing turns it back into the key. If you need the original back, that is the ",
+      " Nothing turns it back into the key. If you need the original back, use the ",
       {
         "a": "vault",
         "to": "architecture/vault"
       },
-      "'s job: a separate repository, and something you have to reach for on purpose."
+      ", which lives in a separate repository and has to be added on purpose."
     ]
   },
   "theArchitecture": {
@@ -65,7 +65,7 @@
     ],
     "stat1": "network calls, file reads, env lookups or telemetry inside the core. Same input, same output, always.",
     "stat2": "shared test corpus every language must pass identically, down to the character offsets.",
-    "stat3": "pipeline stages. Detection never doubles as policy, and policy never doubles as detection."
+    "stat3": "pipeline stages. Detection does not make policy decisions, and policy does not detect."
   },
   "whatIsInTheBox": {
     "eyebrow": "What is in the box",
@@ -227,7 +227,7 @@
         {
           "var": "families"
         },
-        " credential families against Gitleaks' several hundred rules. Precision was chosen over recall, deliberately."
+        " credential families against Gitleaks' several hundred rules. It favors precision over recall on purpose."
       ],
       [
         {
@@ -256,7 +256,7 @@
           "status": "Pending",
           "tone": "none"
         },
-        " — availability is not a support claim."
+        ". Being available does not mean being supported."
       ]
     ],
     "ruleTitle": "The rule it repeats loudest",
