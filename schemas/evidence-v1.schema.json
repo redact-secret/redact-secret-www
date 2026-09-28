@@ -1,0 +1,533 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/evidence-v1.schema.json",
+  "title": "EvidenceV1",
+  "description": "data/evidence.json: the counts, limits and names the /architecture/ pages cite, each fact tied to a named source at a full revision. Counts, limits and identifiers only: benchmark scores, rates and bounds stay owned by redact-secret-benchmarks and are never stored here, which is why every number in this schema is an integer.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "observedAt",
+    "sources",
+    "facts"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "evidence-v1"
+    },
+    "observedAt": {
+      "description": "When the facts were last read from their sources as a set. The pages print this date.",
+      "$ref": "common-v1.schema.json#/$defs/timestamp"
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "core",
+        "benchmarks",
+        "adapters",
+        "vault"
+      ],
+      "properties": {
+        "core": {
+          "$ref": "#/$defs/evidenceSource"
+        },
+        "benchmarks": {
+          "$ref": "#/$defs/evidenceSource"
+        },
+        "adapters": {
+          "$ref": "#/$defs/evidenceSource"
+        },
+        "vault": {
+          "$ref": "#/$defs/evidenceSource"
+        }
+      }
+    },
+    "facts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "matrix",
+        "taxonomy",
+        "staleProse",
+        "baseline",
+        "detectors",
+        "coreLimits",
+        "adapterBudgets"
+      ],
+      "properties": {
+        "matrix": {
+          "title": "MatrixFact",
+          "description": "The support matrix the core release ships (redact-secret docs/support-matrix.md, generated).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "value"
+          ],
+          "properties": {
+            "source": {
+              "$ref": "#/$defs/factSource"
+            },
+            "paths": {
+              "$ref": "#/$defs/factPaths"
+            },
+            "note": {
+              "$ref": "#/$defs/factNote"
+            },
+            "value": {
+              "title": "MatrixCounts",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "families",
+                "providers",
+                "status",
+                "stableBasis",
+                "tiers"
+              ],
+              "properties": {
+                "families": {
+                  "$ref": "#/$defs/count"
+                },
+                "providers": {
+                  "$ref": "#/$defs/count"
+                },
+                "status": {
+                  "$ref": "#/$defs/statusCounts"
+                },
+                "stableBasis": {
+                  "$ref": "#/$defs/stableBasisCounts"
+                },
+                "tiers": {
+                  "$ref": "#/$defs/tierCounts"
+                }
+              }
+            }
+          }
+        },
+        "taxonomy": {
+          "title": "TaxonomyFact",
+          "description": "The live taxonomy (redact-secret-benchmarks benchmarks/support/taxonomy.json). Counts only.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "value"
+          ],
+          "properties": {
+            "source": {
+              "$ref": "#/$defs/factSource"
+            },
+            "paths": {
+              "$ref": "#/$defs/factPaths"
+            },
+            "note": {
+              "$ref": "#/$defs/factNote"
+            },
+            "value": {
+              "title": "TaxonomyCounts",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "families",
+                "providers",
+                "withoutDetector"
+              ],
+              "properties": {
+                "families": {
+                  "$ref": "#/$defs/count"
+                },
+                "providers": {
+                  "$ref": "#/$defs/count"
+                },
+                "withoutDetector": {
+                  "$ref": "#/$defs/count"
+                }
+              }
+            }
+          }
+        },
+        "staleProse": {
+          "title": "StaleProseFact",
+          "description": "What the taxonomy spec's prose still says, cited only as an example of prose going stale.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "value"
+          ],
+          "properties": {
+            "source": {
+              "$ref": "#/$defs/factSource"
+            },
+            "paths": {
+              "$ref": "#/$defs/factPaths"
+            },
+            "note": {
+              "$ref": "#/$defs/factNote"
+            },
+            "value": {
+              "title": "StaleProseCounts",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "families",
+                "providers",
+                "dated"
+              ],
+              "properties": {
+                "families": {
+                  "$ref": "#/$defs/count"
+                },
+                "providers": {
+                  "$ref": "#/$defs/count"
+                },
+                "dated": {
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            }
+          }
+        },
+        "baseline": {
+          "title": "BaselineFact",
+          "description": "The name of the frozen regression baseline (baselines/<name>.json). A name, never its contents.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "value"
+          ],
+          "properties": {
+            "source": {
+              "$ref": "#/$defs/factSource"
+            },
+            "paths": {
+              "$ref": "#/$defs/factPaths"
+            },
+            "note": {
+              "$ref": "#/$defs/factNote"
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "detectors": {
+          "title": "DetectorsFact",
+          "description": "Mechanism counts from the core source.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "value"
+          ],
+          "properties": {
+            "source": {
+              "$ref": "#/$defs/factSource"
+            },
+            "paths": {
+              "$ref": "#/$defs/factPaths"
+            },
+            "note": {
+              "$ref": "#/$defs/factNote"
+            },
+            "value": {
+              "title": "DetectorCounts",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "structural",
+                "alphabets"
+              ],
+              "properties": {
+                "structural": {
+                  "$ref": "#/$defs/count"
+                },
+                "alphabets": {
+                  "$ref": "#/$defs/count"
+                }
+              }
+            }
+          }
+        },
+        "coreLimits": {
+          "title": "CoreLimitsFact",
+          "description": "The core's default input and findings limits.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "value"
+          ],
+          "properties": {
+            "source": {
+              "$ref": "#/$defs/factSource"
+            },
+            "paths": {
+              "$ref": "#/$defs/factPaths"
+            },
+            "note": {
+              "$ref": "#/$defs/factNote"
+            },
+            "value": {
+              "title": "CoreLimits",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "inputMiB",
+                "findings"
+              ],
+              "properties": {
+                "inputMiB": {
+                  "$ref": "#/$defs/count"
+                },
+                "findings": {
+                  "$ref": "#/$defs/count"
+                }
+              }
+            }
+          }
+        },
+        "adapterBudgets": {
+          "title": "AdapterBudgetsFact",
+          "description": "The adapter walker's DEFAULT_LIMITS.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "value"
+          ],
+          "properties": {
+            "source": {
+              "$ref": "#/$defs/factSource"
+            },
+            "paths": {
+              "$ref": "#/$defs/factPaths"
+            },
+            "note": {
+              "$ref": "#/$defs/factNote"
+            },
+            "value": {
+              "title": "AdapterBudgets",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "depth",
+                "arrayLength",
+                "objectKeys",
+                "leaves",
+                "stringChars"
+              ],
+              "properties": {
+                "depth": {
+                  "$ref": "#/$defs/count"
+                },
+                "arrayLength": {
+                  "$ref": "#/$defs/count"
+                },
+                "objectKeys": {
+                  "$ref": "#/$defs/count"
+                },
+                "leaves": {
+                  "$ref": "#/$defs/count"
+                },
+                "stringChars": {
+                  "$ref": "#/$defs/count"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "count": {
+      "description": "A count or a limit. Integers only: a rate or a score is never stored here.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "evidenceSource": {
+      "title": "EvidenceSource",
+      "description": "A named source the facts cite, at one full revision, with when it was read and whether that reading is still current.",
+      "type": "object",
+      "required": [
+        "source",
+        "observedAt",
+        "freshness"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "description": "A registry source must pin the version, its git revision and its repository.",
+          "oneOf": [
+            {
+              "$ref": "common-v1.schema.json#/$defs/repositorySource"
+            },
+            {
+              "$ref": "common-v1.schema.json#/$defs/registrySource"
+            }
+          ]
+        },
+        "observedAt": {
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        },
+        "freshness": {
+          "$ref": "common-v1.schema.json#/$defs/freshness"
+        },
+        "staleSince": {
+          "$ref": "common-v1.schema.json#/$defs/timestamp"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "freshness": {
+                "const": "stale"
+              }
+            },
+            "required": [
+              "freshness"
+            ]
+          },
+          "then": {
+            "required": [
+              "staleSince"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "staleSince"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "source": {
+                "properties": {
+                  "kind": {
+                    "const": "registry"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "source": {
+                "required": [
+                  "version",
+                  "revision",
+                  "repository"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "statusCounts": {
+      "title": "StatusCounts",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stable",
+        "unsupported",
+        "provisional",
+        "pending"
+      ],
+      "properties": {
+        "stable": {
+          "$ref": "#/$defs/count"
+        },
+        "unsupported": {
+          "$ref": "#/$defs/count"
+        },
+        "provisional": {
+          "$ref": "#/$defs/count"
+        },
+        "pending": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "stableBasisCounts": {
+      "title": "StableBasisCounts",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "documented",
+        "empirical"
+      ],
+      "properties": {
+        "documented": {
+          "$ref": "#/$defs/count"
+        },
+        "empirical": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "tierCounts": {
+      "title": "TierCounts",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "T1",
+        "T2",
+        "T3",
+        "T0"
+      ],
+      "properties": {
+        "T1": {
+          "$ref": "#/$defs/count"
+        },
+        "T2": {
+          "$ref": "#/$defs/count"
+        },
+        "T3": {
+          "$ref": "#/$defs/count"
+        },
+        "T0": {
+          "$ref": "#/$defs/count"
+        }
+      }
+    },
+    "factSource": {
+      "description": "A key of `sources`.",
+      "type": "string",
+      "enum": [
+        "core",
+        "benchmarks",
+        "adapters",
+        "vault"
+      ],
+      "title": "FactSource"
+    },
+    "factPaths": {
+      "description": "Files at that source's revision the value was read or computed from.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "factNote": {
+      "description": "A provenance caveat a reviewer should see (not rendered).",
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
