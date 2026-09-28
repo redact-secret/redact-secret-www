@@ -1,6 +1,6 @@
 ---
 decision_id: decision-demo-pii-opt-in-in-playground
-status: proposed
+status: accepted
 scope: redact-secret-www
 title: Demonstrate opt-in PII detection in the playground
 decided_at: 2026-09-28
@@ -50,6 +50,15 @@ no PII marketing copy, no PII claims outside the playground.
    skips them and the demo would show nothing.
 4. The default input mixes credential and PII lines, so switching PII on
    changes the output of the same text.
+
+## Verification
+
+Accepted 2026-09-28. In Chromium 153, Firefox 155, and WebKit 26.6,
+`npm run qualify:playground` switches from PII off to Global on the same
+text and checks the finding count (3 → 8 after typing), that switching mode
+fetches only the engine's own same-origin assets, and that typing with PII on
+makes no request
+([record](../qualification/playground-2026-09-28.md)).
 
 ## Consequences
 

@@ -14,7 +14,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "check:slots": "node scripts/check-slots.mjs",
-    "slots:refresh": "node scripts/refresh-slots.mjs"
+    "slots:refresh": "node scripts/refresh-slots.mjs",
+    "qualify:playground": "npm run build && node scripts/qualify-playground.mjs"
   },
   "dependencies": {
     "@redact-secret/core": "0.1.0-beta.10",
@@ -25,6 +26,7 @@
     "@babel/core": "^7.29.7",
     "@preact/preset-vite": "^2.10.6",
     "@storybook/preact-vite": "^10.6.0",
+    "playwright": "1.63.0",
     "preact-render-to-string": "^6.7.0",
     "storybook": "^10.6.0",
     "typescript": "^7.0.2",

@@ -104,6 +104,9 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   transmission, no persistence, spellcheck and autofill off, metadata-only
   findings. No form or endpoint accepts visitor text. Any change that
   loosens one of those rules needs a new decision record.
+- Run `npm run qualify:playground` (Chromium, Firefox, WebKit) before
+  merging a change to the playground or a `@redact-secret/core` bump, and
+  commit the record it writes under `docs/qualification/`.
 
 ## Design system
 
