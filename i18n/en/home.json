@@ -26,7 +26,7 @@
     "proof": "One local detection core. Integrations for the paths your data takes.",
     "io": {
       "caption": "One scan",
-      "footnote": "Synthetic fixture, never a live credential. The finding metadata records the family, the offset and the length — never the value."
+      "footnote": "Synthetic fixture, not a live credential. The finding metadata records the family, offset, and length of the match, never the value."
     }
   },
   "problem": {
@@ -82,9 +82,9 @@
   },
   "integrations": {
     "eyebrow": "Core, adapters, and vault",
-    "title": "Use the core directly — or connect the host you already use.",
+    "title": "Use the core directly, or connect it to the host you already use.",
     "lede": [
-      "One Rust detection core sits behind every package. Adapters wire it into logging, tracing, and AI workflows without recreating detection rules in each host; the vault is a separate, opt-in way to restore what was redacted. ",
+      "One Rust detection core sits behind every package. Adapters wire it into logging, tracing, and AI workflows, so no host has to recreate the detection rules. The vault is a separate, opt-in way to restore what was redacted. ",
       {
         "b": "Each card states what that package does not cover."
       }
@@ -97,7 +97,7 @@
       },
       "adapters": {
         "title": "Adapters",
-        "lede": "Host integrations. They decide nothing — they carry text into the core and its answer back out.",
+        "lede": "Host integrations. They make no decisions of their own: they pass text to the core and hand its answer back.",
         "href": "https://github.com/redact-secret/redact-secret-adapters"
       },
       "vault": {
@@ -140,7 +140,7 @@
           },
           "; not meant to be imported directly."
         ],
-        "coverage": "Runs on the page or in a Worker — the playground above uses it."
+        "coverage": "Runs on the page or in a Worker. The playground above uses it."
       },
       "cli": {
         "title": "CLI",
@@ -169,7 +169,7 @@
       },
       "ai-context": {
         "title": "AI context",
-        "description": "Builds model context from user input and tool results — fail-closed and all-or-nothing.",
+        "description": "Builds model context from user input and tool results. Fail-closed and all-or-nothing.",
         "coverage": "Binary and encoded values are blocked, not decoded. Model output is not covered."
       },
       "mcp": {
@@ -180,7 +180,7 @@
       "logging": {
         "title": "Python logging",
         "description": "A logging.Filter that adds value-based redaction to the standard library.",
-        "coverage": "Runs only where attached — put it on every emitting handler, not the logger."
+        "coverage": "Runs only where attached, so put it on every emitting handler rather than on the logger."
       },
       "otel-py": {
         "title": "OpenTelemetry Python",
@@ -205,7 +205,7 @@
       "vault-server": {
         "title": "Vault server",
         "description": "Authorizes every restore by principal, tenant, source, destination, and value path.",
-        "coverage": "In-memory backend only; persistent stores are a proposal, not a package."
+        "coverage": "In-memory backend only. Persistent stores are proposed but not packaged."
       },
       "vault-py": {
         "title": "Vault (Python)",
@@ -275,7 +275,7 @@
         {
           "code": "latest"
         },
-        " points at it today — the command pins it anyway, because ",
+        " points at it today. The command pins it anyway, because ",
         {
           "code": "latest"
         },
@@ -303,7 +303,7 @@
     },
     "why": {
       "title": "Why the version is written out",
-      "body": "Package state is read from the release record at build time and stamped with its observation date, in one place. It is never retyped into translated prose."
+      "body": "Package state comes from one place, the release record, read at build time and shown with the date it was checked. It is never retyped into translated prose."
     },
     "expect": {
       "title": "What you should see",
@@ -312,14 +312,14 @@
         {
           "code": "result.findings"
         },
-        " describes the family, offset and length — and carries no plaintext."
+        " describes the family, offset, and length, and carries no plaintext."
       ]
     }
   },
   "playground": {
     "eyebrow": "Playground",
     "title": "Try it on your own text.",
-    "lede": "Edit the input and watch the output change. The detection core runs as WebAssembly in this tab — the same engine the packages ship.",
+    "lede": "Edit the input and watch the output change. The detection core runs as WebAssembly in this tab, the same engine the packages ship.",
     "privacy": [
       {
         "b": "Nothing you type leaves this browser tab."
@@ -421,7 +421,7 @@
       {
         "b": "An empty finding list is not proof that content is safe"
       },
-      " — without a key name or other context, a generic value like this one is not detected."
+      ". Without a key name or other context, a generic value like this one is not detected."
     ],
     "errors": {
       "INPUT_LIMIT_EXCEEDED": "The input is over the playground limit of 32 KB.",
@@ -449,7 +449,7 @@
       {
         "key": "03 · Core",
         "title": "Redact Secret",
-        "description": "detection, overlap resolution, policy, redaction — in your process",
+        "description": "detection, overlap resolution, policy, and redaction, all in your process",
         "core": true
       },
       {
@@ -466,7 +466,7 @@
     "pillars": [
       {
         "title": "Browser: preventive",
-        "body": "A scan in the client catches a pasted credential before it leaves the device. Clients can be modified or skipped, so this is useful — and it is never enforcement."
+        "body": "A scan in the client catches a pasted credential before it leaves the device. Clients can be modified or skipped, so this scan helps but never enforces anything."
       },
       {
         "title": "Server: authoritative",
@@ -520,7 +520,7 @@
       },
       {
         "title": "Release status",
-        "body": "Every published version with its source revision, artifact set, and registry state — including the runs that did not complete.",
+        "body": "Every published version with its source revision, artifact set, and registry state, including the runs that did not complete.",
         "go": "Release record →",
         "href": "https://github.com/redact-secret/redact-secret/blob/main/docs/releases/status.md"
       },
@@ -553,7 +553,7 @@
           ]
         }
       ],
-      "note": "These tools solve different problems and are complementary. This table routes you; it is not a score."
+      "note": "These tools solve different problems and complement each other. The table points you to a starting place; it does not score them."
     },
     "limits": {
       "title": "Limits",

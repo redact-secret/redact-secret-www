@@ -39,12 +39,12 @@
     "adapters": {
       "nav": "Adapters",
       "title": "Adapters",
-      "description": "The packages between your host and the engine. They decide nothing."
+      "description": "Packages that carry text between your host and the engine. They decide nothing."
     },
     "vault": {
       "nav": "Vault",
       "title": "Vault",
-      "description": "The one place allowed to keep an original, built to make that hard."
+      "description": "The one place allowed to keep an original, and it is built to make keeping one hard."
     }
   },
   "pager": {

@@ -76,7 +76,7 @@
           {
             "placeholder": "<rsv_…>"
           },
-          " — 128 random bits, bound to one vault and one capture. ",
+          " is 128 random bits, bound to one vault and one capture. ",
           {
             "b": "The original stays behind, in memory, on the trusted side."
           }
@@ -101,9 +101,9 @@
     "eyebrow": "The central rule",
     "title": "A token alone grants nothing",
     "lede": [
-      "This is the idea the whole design turns on. ",
+      "The whole design depends on this rule. ",
       {
-        "b": "Holding the receipt is not permission to collect."
+        "b": "Holding the receipt does not entitle anyone to collect."
       },
       " At restore time, a server integration resolves who is asking and why from ",
       {
@@ -272,7 +272,7 @@
         {
           "em": "separately"
         },
-        " — ",
+        ". ",
         {
           "b": "Worker mode is not an implicit upgrade"
         },
@@ -326,11 +326,11 @@
         {
           "b": "Memory cannot be wiped on demand."
         },
-        " No library can guarantee a managed-runtime string has been erased from every copy. The repository ",
+        " No library can guarantee a managed-runtime string has been erased from every copy, and the repository ",
         {
-          "b": "says so outright"
+          "b": "says so directly"
         },
-        " rather than implying otherwise."
+        "."
       ],
       [
         {

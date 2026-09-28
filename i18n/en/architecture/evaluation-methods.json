@@ -4,7 +4,7 @@
   "head": {
     "eyebrow": "04 · Evaluation methods",
     "title": "The scanner never gets a vote on whether it was right",
-    "lede": "Ten test methods. One rule underneath all of them."
+    "lede": "There are ten test methods, and one rule holds for all of them."
   },
   "theRule": {
     "eyebrow": "The rule",
@@ -14,9 +14,9 @@
       {
         "em": "before"
       },
-      " any scanner touches the bytes. Not as a nicety, but as ",
+      " any scanner touches the bytes. ",
       {
-        "b": "the thing that makes a number mean anything"
+        "b": "Without that order, the numbers mean nothing"
       },
       "."
     ],
@@ -43,7 +43,7 @@
       }
     ],
     "p": [
-      "Scanners are even kept in the dark: adapters get only the fixture's identity and its bytes, ",
+      "Scanners never see the answer: adapters get only the fixture's identity and its bytes, ",
       {
         "b": "never the expectation, never the evidence tier."
       }
@@ -53,7 +53,7 @@
     "eyebrow": "How a result is graded",
     "title": "Five answers, not two",
     "lede": [
-      "“Did it find the secret?” is too blunt. The true span is known to the byte, so the grade is about ",
+      "“Did it find the secret?” is too blunt. The true span is known to the byte, so the grade asks ",
       {
         "em": "which bytes"
       },
@@ -90,15 +90,15 @@
       {
         "b": "Overbroad"
       },
-      ": swallowing the paragraph around the key hides the key but destroys the log line. Only a span inside its authored allowance passes."
+      ": swallowing the paragraph around the key hides the key but ruins the log line. Only a span inside its authored allowance passes."
     ],
-    "claim": "Catching 31 of 32 bytes is not a near miss. It is a leak."
+    "claim": "Catching 31 of 32 bytes is a leak, not a near miss."
   },
   "theTenMethods": {
     "eyebrow": "The ten methods",
-    "title": "Each one asks a different way to be wrong",
+    "title": "Each one looks for a different way to be wrong",
     "lede": [
-      "They are numbered because they are a sequence: everything after the first is ",
+      "They are numbered because they run in order: everything after the first is ",
       {
         "em": "derived"
       },
@@ -110,7 +110,7 @@
         "body": "one credential, one simplest case"
       },
       {
-        "title": "Then prove it is fussy, not greedy",
+        "title": "Then check it only takes what it should",
         "body": "a detector that matches more text looks better on positives alone"
       },
       {
@@ -133,7 +133,7 @@
           },
           " a scanner runs. ",
           {
-            "b": "Passing this alone earns no support claim at all."
+            "b": "Passing this alone earns no support claim."
           }
         ]
       },
@@ -167,7 +167,7 @@
           {
             "b": "inside and outside"
           },
-          " it, or a written reason why that pair is meaningless. Catches off-by-one ranges and accidental substring matches — down to end of file, no final newline, CRLF, and touching the next token."
+          " it, or a written reason why that pair is meaningless. This catches off-by-one ranges and accidental substring matches, down to end of file, a missing final newline, CRLF, and a key touching the next token."
         ]
       },
       {
@@ -200,14 +200,14 @@
           {
             "b": "survive every supported wrapper"
           },
-          ", and each context is reported separately so one big family cannot hide one weak one."
+          ". Each context is reported separately, so strong results in one cannot hide a weak one."
         ]
       },
       {
         "title": "Benign lookalikes",
         "ask": "Does it stay silent on things that merely look like keys?",
         "gist": [
-          "Deliberately close to the real thing, each one probing a specific way to overmatch. Policy-based controls are counted in a ",
+          "Each is deliberately close to the real thing and probes one specific way to overmatch. Policy-based controls are counted in a ",
           {
             "b": "separate denominator"
           },
@@ -233,11 +233,11 @@
         "title": "Generated mutations",
         "ask": "What about the thousand variants nobody would hand-write?",
         "gist": [
-          "Explicitly ",
+          "The spec says this is ",
           {
             "b": "not fuzzing"
           },
-          ": variants are generated before any scan, each tagged in advance as preserve, invalidate or review-required, and bounded in count and cost. With operator v3, seed 41 and the source hash, ",
+          ". Variants are generated before any scan, each tagged in advance as preserve, invalidate or review-required, and bounded in count and cost. With operator v3, seed 41 and the source hash, ",
           {
             "b": "a clean checkout reproduces them byte for byte"
           },
@@ -263,11 +263,11 @@
         "title": "Holdout evaluation",
         "ask": "How does it do on cases it was never tuned against?",
         "gist": [
-          "The exam nobody studied for. The ordinary development command ",
+          "This is the exam nobody studied for. The ordinary development command ",
           {
             "b": "cannot even read"
           },
-          " the holdout corpus, the candidate is frozen before the cases are revealed, and touching the candidate afterwards voids the run. A newer rule closes the last loophole: ",
+          " the holdout corpus. The candidate is frozen before the cases are revealed, and touching it afterwards voids the run. A newer rule closes the last loophole: ",
           {
             "b": "holdout results may never be used to pick scorer thresholds or weights"
           },
@@ -288,7 +288,7 @@
               ".json"
             ]
           },
-          " — fixture hashes, versions, every outcome). A new ",
+          ": fixture hashes, versions, every outcome). A new ",
           {
             "b": "Partial"
           },
@@ -306,14 +306,14 @@
     ]
   },
   "theEscapeHatch": {
-    "eyebrow": "The escape hatch",
+    "eyebrow": "A third bucket",
     "title": "There is a third answer",
     "lede": [
       "Real formats are ambiguous at the edges. A suite that forces every case into pass or fail ",
       {
         "b": "starts inventing facts."
       },
-      " So these methods keep a third bucket."
+      " So these methods keep a third answer."
     ],
     "cards": [
       {
@@ -340,13 +340,13 @@
       {
         "b": "T0"
       },
-      " evidence: observable, inspectable, and deliberately unscored."
+      " evidence, which can be observed and inspected but is deliberately left unscored."
     ],
     "note": [
       {
         "b": "Why this matters:"
       },
-      " the alternative is settling ambiguity by seeing what the scanners did, which is exactly the loop the whole suite exists to break."
+      " otherwise ambiguity gets settled by looking at what the scanners did, and the whole suite exists to break that loop."
     ]
   },
   "whatItAllBuys": {
@@ -355,7 +355,7 @@
     "cards": [
       {
         "chip": "Proven",
-        "body": "That on these exact bytes, at this exact version, with these pinned tool versions, the scanner behaved as reviewers said it should — and that anyone can reproduce it from a clean checkout."
+        "body": "That on these exact bytes, at this exact version, with these pinned tool versions, the scanner behaved as reviewers said it should, and anyone can reproduce that from a clean checkout."
       },
       {
         "chip": "Not proven",
@@ -366,13 +366,13 @@
           },
           " coverage. Method 09 adds that holdout does not establish production accuracy either. ",
           {
-            "b": "Ten green methods describe the corpus, not the world."
+            "b": "Ten green methods describe the corpus, not real-world traffic."
           }
         ]
       }
     ],
     "p": [
-      "Which is why no single method is enough on its own, and why the support matrix grades a family on ",
+      "No single method is enough on its own. That is also why the support matrix grades a family on ",
       {
         "b": "how many of these it has cleared"
       },
