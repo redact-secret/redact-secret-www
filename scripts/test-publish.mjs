@@ -14,6 +14,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, test } from 'node:test';
 import { root } from './data/contracts.mjs';
+import { validateFeedPayload } from './publish/dispatch-payload.mjs';
 import { decide } from './publish/plan.mjs';
 import {
   contentPrefix,
@@ -340,4 +341,22 @@ test('plan: content only when the application tree is the deployed one', () => {
   assert.equal(decide({ currentText: '<html>', target: COPY_1, git: git(true) }).decision, 'app');
   assert.equal(decide({ currentText: cur, target: COPY_1, git: { hasCommit: () => false, sameAppTree: () => true } }).decision, 'app');
   assert.throws(() => decide({ currentText: cur, target: 'main', git: git(true) }));
+});
+
+test('upstream dispatch payload: exactly {feed, revision}, strictly shaped', () => {
+  const ok = { feed: 'product', revision: 'f'.repeat(40) };
+  assert.deepEqual(validateFeedPayload(JSON.stringify(ok)), ok);
+  for (const bad of [
+    '',
+    'null',
+    '[]',
+    JSON.stringify({ feed: 'product' }),
+    JSON.stringify({ ...ok, extra: 'x' }),
+    JSON.stringify({ ...ok, feed: 'benchmarks' }),
+    JSON.stringify({ ...ok, revision: 'main' }),
+    JSON.stringify({ ...ok, revision: `${'f'.repeat(40)}\nfeed=adapters` }),
+    JSON.stringify({ ...ok, feed: ['product'] }),
+  ]) {
+    assert.equal(validateFeedPayload(bad), null, bad);
+  }
 });
