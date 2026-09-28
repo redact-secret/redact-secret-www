@@ -6,7 +6,7 @@ import { LimitsBlock } from './LimitsBlock';
 const meta: Meta = {
   title: 'Sections/Parts/LimitsBlock',
   component: LimitsBlock,
-  render: (_args, { globals }) => <LimitsBlock copy={content[globals.locale as Locale].evidence.limits} />,
+  render: (_args, { globals }) => <LimitsBlock copy={content[globals.locale as Locale].home.evidence.limits} />,
 };
 
 export default meta;

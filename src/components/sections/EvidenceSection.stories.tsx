@@ -9,7 +9,7 @@ const meta: Meta = {
   component: EvidenceSection,
   parameters: { layout: 'fullscreen' },
   render: (_args, { globals }) => {
-    const c = content[globals.locale as Locale];
+    const c = content[globals.locale as Locale].home;
     return <EvidenceSection copy={c.evidence} />;
   },
 };
@@ -25,6 +25,6 @@ export const Dark: Story = { globals: { theme: 'dark' } };
 /** Launch option: the routing table removed, layout unchanged. */
 export const WithoutRoutingTable: Story = {
   render: (_args, { globals }) => (
-    <EvidenceSection copy={content[globals.locale as Locale].evidence} showRouting={false} />
+    <EvidenceSection copy={content[globals.locale as Locale].home.evidence} showRouting={false} />
   ),
 };

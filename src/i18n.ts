@@ -16,6 +16,13 @@ export const localeNames: Record<Locale, string> = {
   ko: '한국어',
 };
 
+const numberLocales: Record<Locale, string> = { en: 'en-US', ko: 'ko-KR' };
+
+/** A count in the locale's digit grouping: `10000` → `10,000`. */
+export function formatNumber(locale: Locale, value: number) {
+  return value.toLocaleString(numberLocales[locale]);
+}
+
 /** `''` for English, `/ko` for Korean. */
 export function localePrefix(locale: Locale) {
   return locale === defaultLocale ? '' : `/${locale}`;

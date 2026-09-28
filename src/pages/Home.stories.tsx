@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/preact-vite';
+import { content } from '../content';
 import type { Locale } from '../i18n';
 import { Home } from './Home';
 
@@ -6,7 +7,10 @@ const meta: Meta = {
   title: 'Pages/Landing',
   component: Home,
   parameters: { layout: 'fullscreen' },
-  render: (_args, { globals }) => <Home locale={globals.locale as Locale} />,
+  render: (_args, { globals }) => {
+    const locale = globals.locale as Locale;
+    return <Home locale={locale} shell={content[locale].shell} copy={content[locale].home} />;
+  },
 };
 
 export default meta;

@@ -1,15 +1,16 @@
 import { Ruled, StatusChip, type StatusTone } from '../ui';
-import type { SiteContent } from '../../content';
+import type { HomeCopy } from '../../content';
 import type { CardDef, FactKind } from '../../content/integrations';
-import type { IntegrationCopy } from '../../content/types';
 import { statusOf, type PackageSlot, type PackageStatus } from '../../slots';
+import { Rich } from '../ui/Rich';
 import styles from './PackageCard.module.css';
 
 export type PackageCardProps = {
   def: CardDef;
   slot: PackageSlot;
-  copy: IntegrationCopy;
-  labels: Pick<SiteContent['integrations'], 'terms' | 'statusLabels' | 'notPublished'>;
+  /** What the card says; `coverage` — what the package does NOT cover — is required (spec § 07). */
+  copy: HomeCopy['integrations']['cards'][keyof HomeCopy['integrations']['cards']];
+  labels: Pick<HomeCopy['integrations'], 'terms' | 'statusLabels' | 'notPublished'>;
 };
 
 const tones: Record<PackageStatus, StatusTone> = {
@@ -74,14 +75,18 @@ export function PackageCard({ def, slot, copy, labels }: PackageCardProps) {
   return (
     <Ruled as="article">
       <div class={styles.head}>
-        <h4 class={styles.title}>{copy.title}</h4>
+        <h4 class={styles.title}>
+          <Rich value={copy.title} />
+        </h4>
         <StatusChip tone={tones[status]}>{labels.statusLabels[status]}</StatusChip>
       </div>
       <p class={styles.pkg}>
         {def.display ?? slot.name}{' '}
         {!slot.unpublished && <span class={`tiny ${styles.registry}`}>({registryNames[slot.registry]})</span>}
       </p>
-      <p class={styles.desc}>{copy.description}</p>
+      <p class={styles.desc}>
+        <Rich value={copy.description} />
+      </p>
       {facts.length > 0 && (
         <dl class={styles.facts}>
           {facts.map((fact) => (
@@ -92,7 +97,9 @@ export function PackageCard({ def, slot, copy, labels }: PackageCardProps) {
           ))}
         </dl>
       )}
-      <p class="tiny">{copy.coverage}</p>
+      <p class="tiny">
+        <Rich value={copy.coverage} />
+      </p>
     </Ruled>
   );
 }

@@ -10,7 +10,7 @@ const meta: Meta = {
   render: (_args, { globals }) => {
     const locale = globals.locale as Locale;
     return (
-      <AppShell content={content[locale]}>
+      <AppShell locale={locale} copy={content[locale].shell}>
         <div class="wrap" style={{ paddingBlock: 'var(--space-16)', minHeight: '50vh' }}>
           <p class="lede">Page content goes here.</p>
         </div>

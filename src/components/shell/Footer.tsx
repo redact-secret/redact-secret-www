@@ -1,13 +1,15 @@
 import { Logo } from '../ui';
-import type { SiteContent } from '../../content';
+import type { ShellCopy } from '../../content';
 import { anchors, siteOrigin } from '../../content/shared';
 import { homePath, localeNames, locales, type Locale } from '../../i18n';
+import { linkHref } from '../../routes';
+import { Rich } from '../ui/Rich';
 import type { Alternates } from './ShellControls';
 import styles from './Footer.module.css';
 
 export type FooterProps = {
   locale: Locale;
-  copy: SiteContent['footer'];
+  copy: ShellCopy['footer'];
   alternates?: Alternates;
 };
 
@@ -21,22 +23,31 @@ export function Footer({ locale, copy, alternates }: FooterProps) {
         <div class={styles.cols}>
           <div class={styles.brand}>
             <Logo href={homePath(locale)} />
-            <p class={`small ${styles.tagline}`}>{copy.tagline}</p>
+            <p class={`small ${styles.tagline}`}>
+              <Rich value={copy.tagline} />
+            </p>
           </div>
           {copy.columns.map((column) => (
             <div key={column.title}>
               <h2 class={styles.title}>{column.title}</h2>
               <ul class={styles.links}>
-                {column.links.map((link) => (
-                  <li key={link.href}>
-                    <a href={link.href}>
-                      {link.label}
-                      {link.external && <span aria-hidden="true"> ↗</span>}
-                    </a>
-                  </li>
-                ))}
+                {column.links.map((link) => {
+                  const href = linkHref(locale, link);
+                  return (
+                    <li key={href}>
+                      <a href={href}>
+                        {link.label}
+                        {link.external && <span aria-hidden="true"> ↗</span>}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
-              {column === community && <p class={`tiny ${styles.channel}`}>{copy.channelNote}</p>}
+              {column === community && (
+                <p class={`tiny ${styles.channel}`}>
+                  <Rich value={copy.channelNote} />
+                </p>
+              )}
             </div>
           ))}
         </div>
@@ -57,7 +68,7 @@ export function Footer({ locale, copy, alternates }: FooterProps) {
                 )}
               </>
             ))}{' '}
-            — {copy.languageNote}
+            — <Rich value={copy.languageNote} />
           </p>
         </div>
       </div>

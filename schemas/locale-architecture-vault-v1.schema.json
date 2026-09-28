@@ -1,0 +1,375 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/locale-architecture-vault-v1.schema.json",
+  "title": "LocaleArchitectureVaultV1",
+  "description": "i18n/<locale>/architecture/vault.json: the words of the architecture page 'Vault' in one locale, keyed by section in page order. The structure (components, diagrams, mechanism constants) is the page's template in src/pages/architecture/; counts, versions and commits are vars filled from the slots.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "locale",
+    "statusLabels",
+    "head",
+    "theTension",
+    "theShapeOfIt",
+    "theCentralRule",
+    "aTrapItClosesOnPurpose",
+    "whatMayBeKept",
+    "thePieces",
+    "beingHonest",
+    "sources"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "locale-architecture-vault-v1"
+    },
+    "locale": {
+      "$ref": "locale-common-v1.schema.json#/$defs/locale"
+    },
+    "statusLabels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "released",
+        "alpha",
+        "unpublished"
+      ],
+      "properties": {
+        "released": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "alpha": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "unpublished": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        }
+      }
+    },
+    "head": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "lede"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "lede": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "theTension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "cards",
+        "note"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "cards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "body"
+            ],
+            "properties": {
+              "title": {
+                "$ref": "locale-common-v1.schema.json#/$defs/text"
+              },
+              "body": {
+                "$ref": "locale-common-v1.schema.json#/$defs/rich"
+              }
+            }
+          }
+        },
+        "note": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "theShapeOfIt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "steps",
+        "claimSub",
+        "claim"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "body",
+              "arrow"
+            ],
+            "properties": {
+              "title": {
+                "$ref": "locale-common-v1.schema.json#/$defs/text"
+              },
+              "body": {
+                "$ref": "locale-common-v1.schema.json#/$defs/rich"
+              },
+              "arrow": {
+                "$ref": "locale-common-v1.schema.json#/$defs/text"
+              }
+            }
+          }
+        },
+        "claimSub": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "claim": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "theCentralRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "lede",
+        "gates",
+        "note"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "lede": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "gates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "body"
+            ],
+            "properties": {
+              "title": {
+                "$ref": "locale-common-v1.schema.json#/$defs/text"
+              },
+              "body": {
+                "$ref": "locale-common-v1.schema.json#/$defs/text"
+              }
+            }
+          }
+        },
+        "note": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "aTrapItClosesOnPurpose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "lede",
+        "cards",
+        "p"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "lede": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "cards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "chip",
+              "body"
+            ],
+            "properties": {
+              "chip": {
+                "$ref": "locale-common-v1.schema.json#/$defs/text"
+              },
+              "body": {
+                "$ref": "locale-common-v1.schema.json#/$defs/rich"
+              }
+            }
+          }
+        },
+        "p": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "whatMayBeKept": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "rows",
+        "note"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "term",
+              "body"
+            ],
+            "properties": {
+              "term": {
+                "$ref": "locale-common-v1.schema.json#/$defs/text"
+              },
+              "body": {
+                "$ref": "locale-common-v1.schema.json#/$defs/rich"
+              }
+            }
+          }
+        },
+        "note": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "thePieces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "tiles",
+        "contractLabel",
+        "p"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "tiles": {
+          "type": "array",
+          "items": {
+            "$ref": "locale-common-v1.schema.json#/$defs/rich"
+          }
+        },
+        "contractLabel": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "p": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "beingHonest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eyebrow",
+        "title",
+        "limitsTitle",
+        "items",
+        "trapTitle",
+        "trap"
+      ],
+      "properties": {
+        "eyebrow": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "title": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "limitsTitle": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "locale-common-v1.schema.json#/$defs/rich"
+          }
+        },
+        "trapTitle": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "trap": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "body",
+        "atCommit"
+      ],
+      "properties": {
+        "label": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text"
+        },
+        "body": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        },
+        "atCommit": {
+          "$ref": "locale-common-v1.schema.json#/$defs/rich"
+        }
+      }
+    }
+  }
+}

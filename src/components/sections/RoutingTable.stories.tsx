@@ -6,7 +6,7 @@ import { RoutingTable } from './RoutingTable';
 const meta: Meta = {
   title: 'Sections/Parts/RoutingTable',
   component: RoutingTable,
-  render: (_args, { globals }) => <RoutingTable copy={content[globals.locale as Locale].evidence.routing} />,
+  render: (_args, { globals }) => <RoutingTable copy={content[globals.locale as Locale].home.evidence.routing} />,
 };
 
 export default meta;

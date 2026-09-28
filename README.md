@@ -86,22 +86,26 @@ data/
   integrations.json        # which packages the page lists, where, and the integrations cards (integrations-v1)
   release.json             # versions, tags, ranges, dates per package + the upstream feeds — `npm run slots:refresh`, committed (release-v1)
   evidence.json            # counts and limits the architecture pages cite, each at a source revision (evidence-v1)
-schemas/                   # versioned JSON Schemas (draft 2020-12) for data/; see CONVENTIONS.md § Data contracts
+i18n/
+  en/, ko/                 # every visitor-visible word, per locale: shell.json, home.json,
+                           # architecture/{section,overview,how-it-works,…}.json (locale-*-v1)
+schemas/                   # versioned JSON Schemas (draft 2020-12) for data/ and i18n/; see CONVENTIONS.md § Data contracts
 src/
   main.tsx                 # routes + per-page <head> (lang, canonical, hreflang)
   routes.ts                # route registry: pages, alternates, sitemap, legacy /en/ redirects
   i18n.ts                  # locales; English unprefixed, Korean under /ko/
-  content/en.tsx, ko.tsx   # authored prose per locale, typed by content/types.ts
+  content/index.ts         # the one loader: imports i18n/** statically (ContentBundle)
   content/shared.ts        # never translated: URLs, the synthetic fixture, code snippets
-  content/architecture/    # section registry, shell copy, hub, en/ and ko/ sub-page bodies
+  content/architecture/    # the architecture section's page registry
   slots/index.ts           # the page's read-only view of data/ (versions, dates, counts)
   contracts/               # TypeScript types GENERATED from schemas/ (`npm run data:types`)
-  components/ui/           # primitives (Button, StatusChip, Tabs, …) + stories
+  components/ui/           # primitives (Button, StatusChip, Tabs, Rich — the rich-text renderer, …) + stories
   components/shell/        # Header, SideNav, Footer, AppShell + stories
   components/sections/     # the page blocks and their parts + stories
   components/architecture/ # the architecture section's shell and diagrams + stories
   pages/Home.tsx           # the landing page: shell + eight blocks
   pages/Architecture.tsx   # one architecture page: section shell + hub or sub-page body
+  pages/architecture/      # one template per sub-page, shared by both locales
   tokens.css               # design-system tokens (+ documented local exceptions)
   style.css                # global base and type classes, tokens only
 public/

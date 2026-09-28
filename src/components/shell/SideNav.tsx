@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'preact/hooks';
 import { Button } from '../ui';
-import type { SiteContent } from '../../content';
+import type { ShellCopy } from '../../content';
 import type { Locale } from '../../i18n';
 import { NavLinks } from './NavLinks';
 import { ShellControls, type Alternates } from './ShellControls';
@@ -10,7 +10,7 @@ export const sideNavId = 'side-nav';
 
 export type SideNavProps = {
   locale: Locale;
-  copy: SiteContent['shell'];
+  copy: ShellCopy['header'];
   open: boolean;
   onClose: () => void;
   alternates?: Alternates;
@@ -49,7 +49,7 @@ export function SideNav({ locale, copy, open, onClose, alternates, current }: Si
           <Button onClick={onClose}>{copy.closeMenu}</Button>
         </div>
         <nav aria-label={copy.mainNavLabel}>
-          <NavLinks links={copy.nav} direction="vertical" onNavigate={onClose} current={current} />
+          <NavLinks locale={locale} links={copy.nav} direction="vertical" onNavigate={onClose} current={current} />
         </nav>
         <div class={styles.controls}>
           <ShellControls locale={locale} copy={copy} alternates={alternates} />

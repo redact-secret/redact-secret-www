@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "locale-shell-v1",
+  "locale": "ko",
+  "header": {
+    "skipToContent": "본문으로 건너뛰기",
+    "mainNavLabel": "주 메뉴",
+    "nav": [
+      {
+        "label": "플레이그라운드",
+        "to": "home#playground"
+      },
+      {
+        "label": "문서",
+        "to": "home#integrations"
+      },
+      {
+        "label": "아키텍처",
+        "to": "architecture"
+      },
+      {
+        "label": "벤치마크",
+        "href": "https://benchmarks.redactsecret.dev",
+        "external": true
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/redact-secret/redact-secret",
+        "external": true
+      },
+      {
+        "label": "커뮤니티",
+        "to": "#community"
+      }
+    ],
+    "getStarted": "시작하기",
+    "languageLabel": "언어",
+    "themeLabel": "테마",
+    "themeLight": "라이트",
+    "themeDark": "다크",
+    "menu": "메뉴",
+    "closeMenu": "메뉴 닫기"
+  },
+  "footer": {
+    "tagline": "실행 중 데이터와 AI 컨텍스트를 위한 결정적 비밀값 탐지·치환. MIT 라이선스.",
+    "columns": [
+      {
+        "title": "제품",
+        "links": [
+          {
+            "label": "빠른 시작",
+            "to": "home#first-run"
+          },
+          {
+            "label": "가이드",
+            "to": "home#integrations"
+          },
+          {
+            "label": "아키텍처",
+            "to": "architecture"
+          },
+          {
+            "label": "참조 문서",
+            "to": "home#evidence"
+          }
+        ]
+      },
+      {
+        "title": "근거",
+        "links": [
+          {
+            "label": "릴리스 (영문)",
+            "href": "https://github.com/redact-secret/redact-secret/blob/main/docs/releases/status.md"
+          },
+          {
+            "label": "지원 매트릭스 (영문)",
+            "href": "https://github.com/redact-secret/redact-secret/blob/main/docs/support-matrix.md"
+          },
+          {
+            "label": "벤치마크 (영문)",
+            "href": "https://benchmarks.redactsecret.dev",
+            "external": true
+          }
+        ]
+      },
+      {
+        "title": "커뮤니티",
+        "links": [
+          {
+            "label": "GitHub Issues",
+            "href": "https://github.com/redact-secret/redact-secret/issues"
+          },
+          {
+            "label": "보안 신고 (영문)",
+            "href": "https://github.com/redact-secret/redact-secret/blob/main/SECURITY.md"
+          },
+          {
+            "label": "GitHub",
+            "href": "https://github.com/redact-secret/redact-secret",
+            "external": true
+          }
+        ]
+      }
+    ],
+    "channelNote": "Slack·Discord는 운영 채널이 준비된 후에만 연결합니다. 공개 채널에 실제 자격 증명을 올리지 마세요.",
+    "languageNote": "영어 원문으로 연결되는 링크는 그 사실을 표시합니다."
+  },
+  "notFound": {
+    "title": "페이지를 찾을 수 없습니다",
+    "body": "존재하지 않는 페이지입니다.",
+    "home": "홈으로 가기"
+  }
+}

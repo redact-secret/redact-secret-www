@@ -1,10 +1,10 @@
 import type { SecretFinding } from '@redact-secret/core';
-import type { SiteContent } from '../../content';
+import type { HomeCopy } from '../../content';
 import styles from './FindingsTable.module.css';
 
 export type FindingsTableProps = {
   findings: readonly SecretFinding[];
-  columns: SiteContent['playground']['columns'];
+  columns: HomeCopy['playground']['columns'];
   label: string;
   onActivate?: (id: string | undefined) => void;
 };

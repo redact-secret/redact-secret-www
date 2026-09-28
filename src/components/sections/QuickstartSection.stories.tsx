@@ -9,7 +9,7 @@ const meta: Meta = {
   component: QuickstartSection,
   parameters: { layout: 'fullscreen' },
   render: (_args, { globals }) => {
-    const c = content[globals.locale as Locale];
+    const c = content[globals.locale as Locale].home;
     return <QuickstartSection copy={c.quickstart} core={slots.core} />;
   },
 };

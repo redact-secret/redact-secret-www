@@ -8,7 +8,7 @@ const meta: Meta = {
   component: FlowBand,
   parameters: { layout: 'fullscreen' },
   render: (_args, { globals }) => {
-    const { boundary } = content[globals.locale as Locale];
+    const { boundary } = content[globals.locale as Locale].home;
     return (
       <div style={{ background: 'var(--brand-green)', padding: 'var(--space-8)' }}>
         <FlowBand label={boundary.flowLabel} steps={boundary.flow} />

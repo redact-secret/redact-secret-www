@@ -1,0 +1,384 @@
+{
+  "schemaVersion": "locale-architecture-adapters-v1",
+  "locale": "en",
+  "statusLabels": {
+    "released": "Released",
+    "alpha": "Alpha",
+    "unpublished": "Not published"
+  },
+  "head": {
+    "eyebrow": "05 · Adapters",
+    "title": "The core knows what a secret is. Something has to go and get the text.",
+    "lede": [
+      "Six packages whose entire job is fetching and carrying. ",
+      {
+        "b": "They decide nothing."
+      }
+    ]
+  },
+  "theProblemItSolves": {
+    "eyebrow": "The problem it solves",
+    "title": "A copied example is a fork you now own",
+    "intro": "The core repository ships worked examples of wiring a logger or a tracer into the scanner. You could copy the file. From that moment you owned it: no version, no changelog, no notice when the host SDK's contract moved, and no way for the project to fix wiring it had written itself.",
+    "cards": [
+      {
+        "chip": "Before",
+        "body": [
+          "Copy ",
+          {
+            "code": "pino-redact.mjs"
+          },
+          " out of the examples folder. It works today. ",
+          {
+            "b": "Nobody tells you"
+          },
+          " when pino's next major changes the hook signature."
+        ]
+      },
+      {
+        "chip": "Now",
+        "body": [
+          {
+            "code": [
+              "npm install ",
+              {
+                "var": "adapterPinoName"
+              }
+            ]
+          },
+          ". A declared pino range, ",
+          {
+            "b": "tested at both ends"
+          },
+          ", with its own changelog inside the tarball."
+        ]
+      }
+    ],
+    "outro": [
+      "That is the whole reason this repository exists, and it closes the gap ",
+      {
+        "b": "without moving the wiring into the core"
+      },
+      "."
+    ]
+  },
+  "whereTheySit": {
+    "eyebrow": "Where they sit",
+    "title": "Between your host and the engine",
+    "nodeTitle1": "Your host",
+    "node1": "A pino logger, an OpenTelemetry span, a Python log record, an MCP tool result, a model prompt.",
+    "arrow1": "the adapter carries the text in",
+    "claimSub": "It decides what a secret is. The adapter does not.",
+    "claim": "The Redact Secret core",
+    "arrow2": "and carries the answer back out",
+    "nodeTitle2": "The same host, sanitized",
+    "node2": "The log line, the span attribute or the tool result goes on to its destination with nothing secret in it."
+  },
+  "thePackages": {
+    "eyebrow": "The packages",
+    "title": "Six of them, on two registries",
+    "tiles": [
+      [
+        "The shared base everything else is built on: one primitive for masking a string, and the ",
+        {
+          "b": "bounded walker"
+        },
+        " that finds strings inside nested objects. Install it directly only when writing your own integration."
+      ],
+      [
+        "Redacts ",
+        {
+          "b": "by value"
+        },
+        ", alongside pino's own path-based ",
+        {
+          "code": "redact"
+        },
+        " rather than instead of it. pino cannot see a token inside a message string or an error message; this can."
+      ],
+      [
+        "Every string and string-array attribute on a span and its events, redacted before the span reaches the next processor. Attribute names are not allowlisted, so OpenInference and GenAI conventions are covered ",
+        {
+          "b": "without hardcoding either"
+        },
+        "."
+      ],
+      [
+        "A framework-neutral boundary for AI work: user input, tool results, a constructed context and streamed text, sanitized before any of it reaches a model. ",
+        {
+          "b": "It names no model vendor, agent framework or transport."
+        }
+      ],
+      [
+        "The Model Context Protocol boundary: a tool's result, optionally its arguments, and what a client reads with ",
+        {
+          "code": "resources/read"
+        },
+        ". A thin specialization of the package above, adding only the MCP shape. ",
+        {
+          "b": "It imports no MCP SDK, even for types."
+        }
+      ],
+      [
+        "Python's standard library has no value-based redaction at all. This filter adds it, and the ",
+        {
+          "code": "[otel]"
+        },
+        " extra covers spans."
+      ]
+    ],
+    "pythonMeta": "logging filter",
+    "note": [
+      "A masking-callback host such as Langfuse ",
+      {
+        "b": "needs no dedicated package"
+      },
+      ": the shared walker is the whole integration."
+    ],
+    "observed": [
+      "Versions and host ranges were read from the npm and PyPI registries on ",
+      {
+        "var": "observedAt"
+      },
+      "."
+    ]
+  },
+  "theDesignRule": {
+    "eyebrow": "The design rule",
+    "title": "When in doubt, print a marker",
+    "lede": [
+      "Every adapter shares one primitive for masking a string, and that primitive ",
+      {
+        "b": "never lets an error put text on the wire."
+      },
+      " These markers are public API: they are what a host sees, and they change only in a major version."
+    ],
+    "markersLabel": "Adapter markers",
+    "head": [
+      "Marker",
+      "When"
+    ],
+    "markers": [
+      [
+        "A ",
+        {
+          "code": "block"
+        },
+        " finding. The ",
+        {
+          "b": "entire leaf"
+        },
+        " is replaced, not just the matched span."
+      ],
+      "Any failure inside the core call, including an uninitialized core. Never the original text, and never the error's own message.",
+      [
+        "A value past a walk budget. ",
+        {
+          "b": "It is never scanned, and never passed through unmasked."
+        }
+      ],
+      "A self-referencing object."
+    ],
+    "warning": [
+      {
+        "b": "Read the third row twice."
+      },
+      " The tempting behaviour when something is too big to scan is to let it through. ",
+      {
+        "b": "That is exactly how a secret escapes."
+      },
+      " Here, unscannable means unprintable."
+    ],
+    "budgetsHeading": "The budgets",
+    "budgets": [
+      "max depth",
+      "max array length",
+      "max object keys",
+      "max total leaves"
+    ],
+    "budgetsNote": [
+      "Plus a ",
+      {
+        "var": "stringChars"
+      },
+      "-character cap per string. Elements and keys beyond a limit are ",
+      {
+        "b": "dropped, not passed through."
+      },
+      " Every bound is overridable per call."
+    ]
+  },
+  "whyItStaysSmall": {
+    "eyebrow": "Why it stays small",
+    "title": "Four things from the core, and nothing else",
+    "rows": [
+      "Load the engine.",
+      "And the shape of what it returns.",
+      "As an array.",
+      [
+        "Whether it is ",
+        {
+          "code": "block"
+        },
+        " or ",
+        {
+          "code": "warn"
+        },
+        "."
+      ]
+    ],
+    "p": [
+      "That surface is what the declared compatibility range protects. Because these packages are written in TypeScript against the core's own exported types, a change to it ",
+      {
+        "b": "fails the build rather than degrading silently."
+      }
+    ],
+    "note": [
+      {
+        "b": "And it buys independence."
+      },
+      " The core is released in lockstep across Rust, npm, PyPI and the CLI. These packages are not in that lockstep: ",
+      {
+        "b": [
+          "a new pino release moves ",
+          {
+            "code": "adapter-pino"
+          },
+          " and nothing else."
+        ]
+      }
+    ]
+  },
+  "whatSupportedMeansHere": {
+    "eyebrow": "What “supported” means here",
+    "title": "A range you can check, not a guess",
+    "lede": [
+      "Every published adapter states the host range it supports and runs a test against a ",
+      {
+        "b": "real instance of that host, at both ends of the declared range"
+      },
+      ", in CI."
+    ],
+    "rangesLabel": "Declared host range per adapter",
+    "head": [
+      "Adapter",
+      "Declared range",
+      "Verified by"
+    ],
+    "verifiedBy": [
+      "a real pino logger writing to a captured stream",
+      [
+        "a real span passed through ",
+        {
+          "code": "onEnd"
+        }
+      ],
+      "a real logger with the filter attached",
+      "a real span through a real tracer provider"
+    ],
+    "p": [
+      "A pino major outside the declared range is ",
+      {
+        "b": "deliberately"
+      },
+      " not claimed. It may well work. It is not tested, so it is not claimed — ",
+      {
+        "b": "the same discipline the core applies to its detectors."
+      }
+    ]
+  },
+  "beingHonest": {
+    "eyebrow": "Being honest",
+    "title": "What is not here",
+    "noteTitle": "Deliberately out of scope",
+    "items": [
+      [
+        {
+          "b": "Detection."
+        },
+        " Deciding what a secret is stays in the core, always."
+      ],
+      [
+        {
+          "b": "Stream adapters."
+        },
+        " Node ",
+        {
+          "code": "Transform"
+        },
+        " and Web ",
+        {
+          "code": "TransformStream"
+        },
+        " ship inside the core itself, as ",
+        {
+          "code": "./node-stream"
+        },
+        " and ",
+        {
+          "code": "./web-stream"
+        },
+        "."
+      ],
+      [
+        {
+          "b": "LangChain, and a Langfuse package."
+        },
+        " A masking-callback host needs no package; the shared walker is the integration."
+      ],
+      [
+        {
+          "b": "Restoration."
+        },
+        " Adapters sanitize outbound sinks. They ",
+        {
+          "b": "never"
+        },
+        " gain the ability to put a value back — that belongs to a ",
+        {
+          "a": "separate repository",
+          "to": "architecture/vault"
+        },
+        ", and these packages do not depend on it."
+      ]
+    ]
+  },
+  "sources": {
+    "label": "Sources.",
+    "body": [
+      {
+        "code": "README.md"
+      },
+      " and ",
+      {
+        "code": "ARCHITECTURE.md"
+      },
+      " in ",
+      {
+        "code": [
+          {
+            "var": "adaptersRepo"
+          }
+        ]
+      },
+      {
+        "var": "atCommit"
+      },
+      ", plus each package's own README and changelog. Versions were read from the npm and PyPI registries on ",
+      {
+        "var": "observedAt"
+      },
+      ", not from the repository."
+    ],
+    "atCommit": [
+      " at ",
+      {
+        "code": [
+          {
+            "var": "commit"
+          }
+        ]
+      }
+    ]
+  }
+}

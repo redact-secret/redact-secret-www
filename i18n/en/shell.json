@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "locale-shell-v1",
+  "locale": "en",
+  "header": {
+    "skipToContent": "Skip to content",
+    "mainNavLabel": "Main",
+    "nav": [
+      {
+        "label": "Playground",
+        "to": "home#playground"
+      },
+      {
+        "label": "Docs",
+        "to": "home#integrations"
+      },
+      {
+        "label": "Architecture",
+        "to": "architecture"
+      },
+      {
+        "label": "Benchmarks",
+        "href": "https://benchmarks.redactsecret.dev",
+        "external": true
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/redact-secret/redact-secret",
+        "external": true
+      },
+      {
+        "label": "Community",
+        "to": "#community"
+      }
+    ],
+    "getStarted": "Get started",
+    "languageLabel": "Language",
+    "themeLabel": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "menu": "Menu",
+    "closeMenu": "Close menu"
+  },
+  "footer": {
+    "tagline": "Deterministic secret detection and redaction for runtime data and AI context. MIT licensed.",
+    "columns": [
+      {
+        "title": "Product",
+        "links": [
+          {
+            "label": "Quickstart",
+            "to": "home#first-run"
+          },
+          {
+            "label": "Guides",
+            "to": "home#integrations"
+          },
+          {
+            "label": "Architecture",
+            "to": "architecture"
+          },
+          {
+            "label": "Reference",
+            "to": "home#evidence"
+          }
+        ]
+      },
+      {
+        "title": "Evidence",
+        "links": [
+          {
+            "label": "Releases",
+            "href": "https://github.com/redact-secret/redact-secret/blob/main/docs/releases/status.md"
+          },
+          {
+            "label": "Support matrix",
+            "href": "https://github.com/redact-secret/redact-secret/blob/main/docs/support-matrix.md"
+          },
+          {
+            "label": "Benchmarks",
+            "href": "https://benchmarks.redactsecret.dev",
+            "external": true
+          }
+        ]
+      },
+      {
+        "title": "Community",
+        "links": [
+          {
+            "label": "GitHub Issues",
+            "href": "https://github.com/redact-secret/redact-secret/issues"
+          },
+          {
+            "label": "Security reporting",
+            "href": "https://github.com/redact-secret/redact-secret/blob/main/SECURITY.md"
+          },
+          {
+            "label": "GitHub",
+            "href": "https://github.com/redact-secret/redact-secret",
+            "external": true
+          }
+        ]
+      }
+    ],
+    "channelNote": "Slack and Discord links appear only once maintained channels exist. Never post a live credential in a public channel.",
+    "languageNote": "Korean pages that link an English original label it as such."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This page does not exist.",
+    "home": "Go to the home page"
+  }
+}

@@ -5,7 +5,7 @@
 //   node scripts/check-data.mjs --no-stale   also fail on a stale record
 //   node scripts/check-data.mjs --root <dir> validate a copy (the negative tests)
 //
-// Checks, all fail-closed: every data/ file is registered; each file's
+// Checks, all fail-closed: every data/ and i18n/ file is registered; each file's
 // schemaVersion is known and of the right family; the schema passes; the
 // files agree with each other and with the upstream feeds recorded in
 // release.json; every record has provenance; no benchmark
@@ -23,6 +23,7 @@ import {
   unregisteredFiles,
   validateDocument,
 } from './data/contracts.mjs';
+import { illustrative } from './data/illustrative.mjs';
 
 const args = process.argv.slice(2);
 const failOnStale = args.includes('--no-stale');
@@ -39,6 +40,7 @@ if (root === repoRoot) for (const file of unregisteredFiles()) errors.push(`${fi
 
 // 2. Schema, per file, fail-closed on schemaVersion.
 const docs = {};
+const valid = []; // every schema-valid file, for the secret scan (several share a family)
 for (const { path, family } of registeredFiles()) {
   const full = join(root, path);
   if (!existsSync(full)) {
@@ -55,7 +57,10 @@ for (const { path, family } of registeredFiles()) {
   const found = validateDocument(ajv, schemas.documents, doc, { family, label: path });
   errors.push(...found);
   errors.push(...benchmarkBoundaryViolations(doc, path));
-  if (!found.length) docs[family] = { path, doc };
+  if (!found.length) {
+    docs[family] = { path, doc };
+    valid.push({ label: path, doc });
+  }
 }
 
 const day = (t) => t.slice(0, 10);
@@ -162,8 +167,8 @@ if (evidence) {
   }
 }
 
-// 4. No plaintext secret in any committed data (the synthetic fixture keeps its marker).
-errors.push(...(await secretFindings(Object.values(docs).map(({ path, doc }) => ({ label: path, doc })))));
+// 4. No plaintext secret in any committed data or locale copy (the synthetic fixture keeps its marker).
+errors.push(...(await secretFindings(valid, { illustrative })));
 
 // In GitHub Actions a stale record is also an annotation on the run, so it
 // cannot scroll past unseen.

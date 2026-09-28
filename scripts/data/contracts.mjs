@@ -22,16 +22,20 @@ export const SCHEMA_BASE = 'https://www.redactsecret.com/schemas/';
  * Committed files and the contract family each must declare. A file's
  * `schemaVersion` picks the exact schema; the family pins which schemas it
  * may pick, so data/release.json can never validate as evidence.
- * `dir` targets take every *.json below the directory (recursively).
+ * `dir` targets take every *.json below the directory (recursively); their
+ * `family` may be a function of the file's repository-relative path.
  */
 export const targets = [
   { path: 'data/integrations.json', family: 'integrations' },
   { path: 'data/release.json', family: 'release' },
   { path: 'data/evidence.json', family: 'evidence' },
+  // Locale copy (CONVENTIONS.md § Bilingual content): i18n/<locale>/<name>.json
+  // is family locale-<name>, e.g. i18n/ko/architecture/vault.json → locale-architecture-vault.
+  { dir: 'i18n', family: (path) => `locale-${path.split('/').slice(2).join('-').replace(/\.json$/, '')}` },
 ];
 
 /** Every directory whose *.json files must all be registered in `targets`. */
-export const governedDirs = ['data'];
+export const governedDirs = ['data', 'i18n'];
 
 const familyOf = (schemaVersion) => schemaVersion.replace(/-v\d+$/, '');
 
@@ -77,7 +81,11 @@ export function registeredFiles() {
   const out = [];
   for (const target of targets) {
     if (target.path) out.push({ path: target.path, family: target.family });
-    else for (const file of walkJson(join(root, target.dir))) out.push({ path: rel(file), family: target.family });
+    else
+      for (const file of walkJson(join(root, target.dir))) {
+        const path = rel(file);
+        out.push({ path, family: typeof target.family === 'function' ? target.family(path) : target.family });
+      }
   }
   return out;
 }
@@ -154,10 +162,11 @@ export function benchmarkBoundaryViolations(doc, label) {
 /**
  * Scans every string leaf with the published core the page itself runs.
  * Only the committed synthetic fixture (its value carries the SYNTHETIC
- * marker) may be found. Reports the pointer and detector type, never the
- * matched text.
+ * marker) may be found, or a reviewed illustrative format listed in
+ * `illustrative`. Reports the pointer and detector type, never the matched
+ * text.
  */
-export async function secretFindings(docs) {
+export async function secretFindings(docs, { illustrative = [] } = {}) {
   const { initialize, scanAndRedact } = await import('@redact-secret/core');
   await initialize();
   const out = [];
@@ -168,6 +177,9 @@ export async function secretFindings(docs) {
       // so multi-byte locales cannot shift what counts as marked.)
       const unmarked = text.replace(/[A-Za-z0-9_]*SYNTHETIC_[A-Za-z0-9_]*/g, 'x');
       for (const f of scanAndRedact(unmarked).findings ?? []) {
+        // A reviewed illustrative format in locale copy (scripts/data/illustrative.mjs):
+        // exempt only when the whole string and the detector both match.
+        if (illustrative.some((x) => x.text === text && x.detector === f.detector && label.startsWith(x.under))) continue;
         out.push(`${label}${pointer}: ${f.type} finding (${f.detector}); a synthetic example must carry the SYNTHETIC_ marker`);
       }
     }

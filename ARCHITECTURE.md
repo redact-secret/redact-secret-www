@@ -88,9 +88,10 @@ trust — what decides, why to believe it, what sits outside the core
   registry is `src/content/architecture/pages.ts`; its order is the sidebar
   and pager order.
 - **Language.** All seven pages are authored in both locales, like the
-  landing page: the hub in `src/content/architecture/hub.tsx`, the six
-  sub-pages in `src/content/architecture/en/` and `ko/`, sharing one
-  component structure. The English pages are written from the English
+  landing page: one template per page (`src/pages/architecture/`, the hub in
+  `src/pages/Architecture.tsx`) holds the structure for both, and the words
+  are `i18n/{en,ko}/architecture/<page>.json` (see
+  [§ Bilingual model](#bilingual-model)). The English pages are written from the English
   originals the Korean pages were first drafted from, so the site no longer
   links out to those drafts. Every page names both locales (and
   `x-default` → English) as hreflang alternates; the language switch goes
@@ -132,9 +133,36 @@ translation appended to an English layout — see
 [CONVENTIONS.md](./CONVENTIONS.md#bilingual-content) for what is shared
 between locales and what each locale authors on its own.
 
+**Copy is data, structure is code.** Every visitor-visible word is in
+`i18n/<locale>/`: `shell.json`, `home.json`, and `architecture/<page>.json`
+per page (plus `architecture/section.json` for the section's sidebar,
+titles and pager), each under its own JSON Schema
+(`schemas/locale-*-v1.schema.json`, types generated into `src/contracts/`).
+Markup is a small structured rich-text form rendered by one component
+(`src/components/ui/Rich.tsx`) — no HTML strings. Internal links in copy are
+route IDs (`architecture/vault`, `home#playground`) that `src/routes.ts`
+resolves per locale; versions, dates, counts and commits are `var` nodes the
+page fills from the slots. Components and page templates take the copy
+objects as props and never fetch: `src/content/index.ts` is the only loader,
+importing every file statically so the build prerenders complete HTML and
+hydrates from the same objects, and `App`/`prerender` in `src/main.tsx`
+accept any validated `ContentBundle` in its place — the seam a content-only
+publish (#11) renders through. `npm run build` checks the copy first
+(`check-data`: schema and secret scan; `check-i18n`: files, en/ko parity,
+links, a 32 KiB per-page budget, and no key left unread by any page).
+
+```text
+i18n/<locale>/*.json ─ check-data (schema, secrets) ─ check-i18n (parity, links, size, unread keys)
+        └─ src/content/index.ts (static import) ─ src/main.tsx App({ content })
+              └─ src/pages/* templates ─ components (props only) ─ Rich (inline nodes, route IDs → paths)
+```
+
 Routing lives in one registry, `src/routes.ts`: every indexable page by its
 English path, with the Korean path derived by `localePath()` in
 `src/i18n.ts`. The same registry feeds:
+
+- **Links in copy**: the route IDs `i18n/**` names (`routeIds`, `routeHref`),
+  so a copy file never holds a locale path.
 
 - **`<head>`** (`src/main.tsx`): `lang`, a canonical URL for the page's own
   path, and `hreflang` `en` / `ko` alternates at the equivalent paths plus
@@ -315,8 +343,8 @@ this is where each is met here:
 ```text
 pull request / push to main
   └─▶ .github/workflows/ci.yml
-        data-contract tests → build (check-data, type drift, check-slots,
-        tsc, prerender) → build contract → deterministic
+        data-contract and i18n tests → build (check-data, check-i18n, type
+        drift, check-slots, tsc, prerender) → build contract → deterministic
         rebuild → Storybook; playground qualification in Chromium, Firefox,
         WebKit (+ negative control, + proposed CSP); architecture pages in
         the same three engines under the proposed CSP (+ negative control)

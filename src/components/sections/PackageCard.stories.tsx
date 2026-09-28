@@ -11,11 +11,11 @@ const defs = new Map<string, CardDef>(
 
 function render(id: string) {
   return (_args: unknown, { globals }: { globals: Record<string, unknown> }) => {
-    const copy = content[globals.locale as Locale].integrations;
+    const copy = content[globals.locale as Locale].home.integrations;
     const def = defs.get(id)!;
     return (
       <div style={{ maxWidth: '380px' }}>
-        <PackageCard def={def} slot={slots.packages[def.slot]} copy={copy.cards[id]} labels={copy} />
+        <PackageCard def={def} slot={slots.packages[def.slot]} copy={copy.cards[id as keyof typeof copy.cards]} labels={copy} />
       </div>
     );
   };
