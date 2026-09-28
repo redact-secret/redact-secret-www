@@ -159,11 +159,24 @@ this is where each is met here:
 ### Publish flow
 
 ```text
-push to main
+pull request / push to main
+  └─▶ .github/workflows/ci.yml
+        build (check-slots, tsc, prerender) → build contract → deterministic
+        rebuild → Storybook; playground qualification in Chromium, Firefox,
+        WebKit (+ negative control, + proposed CSP)
+push to main, CI green
   └─▶ .github/workflows/publish-site.yml (environment: production)
-        npm ci → npm run build → assume redactsecret-publisher-production
-        → sync dist/ to the www stack's bucket → invalidate /*
+        npm ci → npm run build → build contract → assume
+        redactsecret-publisher-production → sync dist/ to the www stack's
+        bucket → invalidate /*
 ```
+
+Publishing is triggered by a successful CI run for a push to main, and builds
+that run's commit; pull requests and forks never publish. A manual dispatch
+takes a commit on main, which is how a rollback is done.
+`scripts/check-build-contract.mjs` checks `dist/` against the build contract
+table above (pages present, canonical URLs, root-relative references, hashed
+`assets/`, no `.com`) in both workflows.
 
 The workflow reads `PUBLISHER_ROLE_ARN` and `SITE_STACK` from the GitHub
 `production` environment — no account ID, bucket name, or role ARN is
@@ -177,7 +190,9 @@ and
 [`scripts/publish-site.sh`](https://github.com/redact-secret/redact-secret-sites/blob/main/scripts/publish-site.sh)
 for the exact sequence.
 
-Before this repository's workflow can run, `redact-secret-sites` must add
+Until the `production` environment has `PUBLISHER_ROLE_ARN` and `SITE_STACK`,
+the publish job stops with a warning rather than failing. Before it can
+publish, `redact-secret-sites` must add
 this repository's OIDC subject to `ProductionSubjects` and deploy a
 `redactsecret-site-www-prod` stack — both are `redact-secret-sites` changes,
 tracked there, not here.
