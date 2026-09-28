@@ -1,0 +1,36 @@
+.flow {
+  display: grid;
+}
+
+.node {
+  border: var(--hairline) solid var(--line);
+  padding: var(--space-4) var(--space-6);
+  display: grid;
+  gap: var(--space-1);
+}
+
+.marked {
+  border-left: var(--space-1) solid var(--ink);
+}
+
+.title {
+  font: 700 var(--text-lg) / var(--leading-xl) var(--font-merri);
+}
+
+.desc {
+  font: 400 var(--text-md) / var(--leading-code) var(--font-roboto);
+  color: var(--ink-muted);
+}
+
+.desc :global(b) {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.arrow {
+  justify-self: center;
+  text-align: center;
+  font: 400 var(--text-sm) / var(--leading-sm) var(--font-roboto);
+  color: var(--ink-muted);
+  padding-block: var(--space-3);
+}

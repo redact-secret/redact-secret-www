@@ -3,7 +3,7 @@ import { Button } from '../ui';
 import type { SiteContent } from '../../content';
 import type { Locale } from '../../i18n';
 import { NavLinks } from './NavLinks';
-import { ShellControls } from './ShellControls';
+import { ShellControls, type Alternates } from './ShellControls';
 import styles from './SideNav.module.css';
 
 export const sideNavId = 'side-nav';
@@ -13,13 +13,15 @@ export type SideNavProps = {
   copy: SiteContent['shell'];
   open: boolean;
   onClose: () => void;
+  alternates?: Alternates;
+  current?: string;
 };
 
 /**
  * The header's nav, language, and theme controls for widths below 1040px.
  * A modal <dialog>: focus is trapped, Escape and the backdrop close it.
  */
-export function SideNav({ locale, copy, open, onClose }: SideNavProps) {
+export function SideNav({ locale, copy, open, onClose, alternates, current }: SideNavProps) {
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -47,10 +49,10 @@ export function SideNav({ locale, copy, open, onClose }: SideNavProps) {
           <Button onClick={onClose}>{copy.closeMenu}</Button>
         </div>
         <nav aria-label={copy.mainNavLabel}>
-          <NavLinks links={copy.nav} direction="vertical" onNavigate={onClose} />
+          <NavLinks links={copy.nav} direction="vertical" onNavigate={onClose} current={current} />
         </nav>
         <div class={styles.controls}>
-          <ShellControls locale={locale} copy={copy} />
+          <ShellControls locale={locale} copy={copy} alternates={alternates} />
         </div>
       </div>
     </dialog>

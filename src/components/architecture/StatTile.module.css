@@ -1,0 +1,18 @@
+.stat {
+  border-top: var(--rule) solid var(--ink);
+  padding-top: var(--space-3);
+  display: grid;
+  gap: var(--space-1);
+  align-content: start;
+}
+
+.value {
+  font: 800 2.125rem / 1.2 var(--font-mont);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.label {
+  font: 400 var(--text-sm) / var(--leading-sm) var(--font-roboto);
+  color: var(--ink-muted);
+}

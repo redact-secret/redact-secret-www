@@ -1,0 +1,43 @@
+.pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-16);
+  border-top: var(--hairline) solid var(--line);
+  padding-top: var(--space-6);
+}
+
+.pager a {
+  display: grid;
+  gap: var(--space-1);
+  color: var(--ink);
+}
+
+.pager a:hover {
+  text-decoration: none;
+}
+
+.pager a:hover .title {
+  color: var(--link);
+}
+
+.kicker {
+  font: 700 var(--text-2xs) / var(--leading-2xs) var(--font-mont);
+  letter-spacing: var(--track);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.title {
+  font: 600 var(--text-base) / var(--leading-lg) var(--font-roboto);
+}
+
+.next {
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .pager {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

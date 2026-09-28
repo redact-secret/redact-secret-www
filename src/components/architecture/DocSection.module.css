@@ -1,0 +1,33 @@
+.sec {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.sec + .sec {
+  margin-top: var(--space-16);
+}
+
+.head {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 68ch;
+}
+
+.sec > p {
+  max-width: var(--measure);
+}
+
+.sec > p:not([class]) {
+  font: var(--type-body);
+}
+
+.sec > p b,
+.sec > p strong {
+  font-weight: 600;
+}
+
+@media (max-width: 860px) {
+  .sec + .sec {
+    margin-top: var(--space-12);
+  }
+}

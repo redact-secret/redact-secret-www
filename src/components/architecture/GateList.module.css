@@ -1,0 +1,28 @@
+.gates {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: var(--hairline) solid var(--ink);
+}
+
+.gate {
+  display: grid;
+  grid-template-columns: var(--space-8) minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  border-bottom: var(--hairline) solid var(--line);
+}
+
+.n {
+  font: 600 var(--text-sm) / var(--leading-sm) var(--font-mono);
+  color: var(--ink-muted);
+}
+
+.text {
+  font: 400 var(--text-ml) / 1.55 var(--font-roboto);
+}
+
+.text b {
+  font-weight: 600;
+}

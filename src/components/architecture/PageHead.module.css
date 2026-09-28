@@ -1,0 +1,12 @@
+.head {
+  display: grid;
+  gap: var(--space-4);
+  max-width: var(--measure);
+  margin-bottom: var(--space-12);
+}
+
+@media (max-width: 860px) {
+  .head {
+    margin-bottom: var(--space-8);
+  }
+}

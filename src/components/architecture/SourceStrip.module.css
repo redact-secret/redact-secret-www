@@ -1,0 +1,16 @@
+.strip {
+  margin-top: var(--space-12);
+  border-top: var(--hairline) solid var(--line);
+  padding-top: var(--space-4);
+}
+
+.strip p {
+  font: 400 var(--text-xs) / var(--leading-xs) var(--font-roboto);
+  color: var(--ink-muted);
+  max-width: 76ch;
+}
+
+.strip :global(b) {
+  color: var(--ink);
+  font-weight: 600;
+}
