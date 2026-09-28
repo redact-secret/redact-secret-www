@@ -1,6 +1,6 @@
 ---
 decision_id: decision-add-browser-only-playground
-status: proposed
+status: accepted
 scope: redact-secret-www
 title: Add a browser-only redaction playground
 decided_at: 2026-09-28
@@ -17,8 +17,8 @@ review and a decision record before any input surface lands.
 
 The maintainer has asked for one, modeled on comparable projects'
 interactive demos: paste text, see it redacted immediately. This record
-proposes the boundary that surface must stay inside. It is **proposed**, not
-accepted, until the security review below is done.
+sets the boundary that surface must stay inside. It was accepted on
+2026-09-28, once the security review below was complete.
 
 ## Decision
 
@@ -80,10 +80,34 @@ visitor's browser (its WebAssembly build), and nowhere else.
 - Bumping `@redact-secret/core` changes live behavior on the page and must be
   treated like a content change: re-check the presets' expected output.
 
-## Security review checklist (to accept this record)
+## Security review checklist
 
-- [ ] Network panel: typing produces no request.
-- [ ] Storage panel: typing writes nothing.
-- [ ] Input field attributes verified in Chrome, Safari, Firefox.
-- [ ] Engine version and preset outputs re-verified on each core bump.
-- [ ] CSP follow-up filed in `redact-secret-sites`.
+Completed 2026-09-28 against `@redact-secret/core@0.1.0-beta.10`. Evidence:
+[`docs/qualification/playground-2026-09-28.md`](../qualification/playground-2026-09-28.md),
+produced by `npm run qualify:playground` (Playwright; Chromium 153,
+Firefox 155, WebKit 26.6).
+
+- [x] **Network: typing produces no request.** Checked two ways in all three
+  engines, with PII off and on: requests the browser reports for the page and
+  its workers, and requests the local server received. A negative control
+  (`--negative-control`, which leaks each keystroke) makes all six leak
+  checks fail.
+- [x] **Storage: typing writes nothing.** No cookies, localStorage,
+  sessionStorage, IndexedDB, or Cache Storage entries, and the URL and
+  history are unchanged, in all three engines.
+- [x] **Input field attributes verified in Chrome, Safari, Firefox.**
+  `spellcheck` is `false` as each engine reports it, and the autocomplete,
+  autocorrect, autocapitalize, Grammarly, and LanguageTool attributes are
+  set, in Chromium, WebKit (Safari's engine), and Firefox.
+- [x] **Engine version and preset outputs re-verified on each core bump.**
+  Done for `0.1.0-beta.10` (Node and all three browser engines). Ongoing:
+  `npm run qualify:playground` asserts the finding counts per PII mode, and
+  `scripts/check-slots.mjs` fails the build if the engine and the quickstart
+  disagree — rerun both on every bump.
+- [x] **CSP follow-up filed in `redact-secret-sites`:**
+  [redact-secret-sites#3](https://github.com/redact-secret/redact-secret-sites/issues/3).
+  The proposed policy (`connect-src 'self'`, `worker-src 'self'`,
+  `'wasm-unsafe-eval'`, a hash for the one inline script) was verified
+  enforcing in all three engines with `--csp`; dropping `'wasm-unsafe-eval'`
+  breaks the engine in every engine, as a control. Until it is deployed,
+  rule 1 is enforced by review and this qualification, not by the browser.

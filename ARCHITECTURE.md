@@ -33,7 +33,7 @@ re-opens:
 | --- | --- | --- |
 | Numbers in the hero? | No. No version, detector count, or accuracy figure above the fold. | Keeps the first screen about the product, not a claim to defend. |
 | A competitor scorecard? | No. At most one neutral routing table, in the evidence section, removable without touching layout. | The project shares its detection boundary with other tools; a scorecard would misstate that. |
-| A live playground? | Browser-only, proposed in [ADR 0001](./docs/decisions/0001-browser-only-playground.md): the published core runs as WebAssembly in the visitor's browser; input is never transmitted or stored. | Accepting visitor text turns a marketing page into a data-handling surface; the ADR sets that boundary and its review checklist. |
+| A live playground? | Browser-only, per [ADR 0001](./docs/decisions/0001-browser-only-playground.md): the published core runs as WebAssembly in the visitor's browser; input is never transmitted or stored. | Accepting visitor text turns a marketing page into a data-handling surface; the ADR sets that boundary and its review checklist. |
 | Benchmark numbers copied here? | No. Links to `benchmarks.redactsecret.dev` with a sentence on what that page guarantees. | One source of truth for measured numbers; this site is not it. |
 | PII content? | Only as the playground's opt-in switch (off by default); no PII copy or claims elsewhere. | PII detection shipped as opt-in in `0.1.0-beta.10` (npm `beta` tag). See [ADR 0002](./docs/decisions/0002-pii-toggle-in-playground.md). |
 | Community chat links (Slack, Discord)? | No, until a channel is actually staffed. | An unattended channel linked from a security tool's marketing page is worse than no channel. |
