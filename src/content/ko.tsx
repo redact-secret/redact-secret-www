@@ -15,9 +15,9 @@ export const ko: SiteContent = {
     skipToContent: '본문으로 건너뛰기',
     mainNavLabel: '주 메뉴',
     nav: [
-      { label: '플레이그라운드', href: `#${anchors.playground}` },
-      { label: '문서', href: `#${anchors.integrations}` },
-      { label: '아키텍처', href: `#${anchors.boundary}` },
+      { label: '플레이그라운드', href: `/ko/#${anchors.playground}` },
+      { label: '문서', href: `/ko/#${anchors.integrations}` },
+      { label: '아키텍처', href: '/ko/architecture/' },
       { label: '벤치마크', href: urls.benchmarks, external: true },
       { label: 'GitHub', href: urls.repo, external: true },
       { label: '커뮤니티', href: `#${anchors.community}` },
@@ -36,10 +36,10 @@ export const ko: SiteContent = {
       {
         title: '제품',
         links: [
-          { label: '빠른 시작', href: `#${anchors.firstRun}` },
-          { label: '가이드', href: `#${anchors.integrations}` },
-          { label: '아키텍처', href: `#${anchors.boundary}` },
-          { label: '참조 문서', href: `#${anchors.evidence}` },
+          { label: '빠른 시작', href: `/ko/#${anchors.firstRun}` },
+          { label: '가이드', href: `/ko/#${anchors.integrations}` },
+          { label: '아키텍처', href: '/ko/architecture/' },
+          { label: '참조 문서', href: `/ko/#${anchors.evidence}` },
         ],
       },
       {
@@ -372,6 +372,7 @@ export const ko: SiteContent = {
       },
     ],
     links: [
+      { label: '아키텍처, 한 장씩', href: '/ko/architecture/' },
       { label: `아키텍처 읽기${englishOnly}`, href: urls.architecture },
       { label: `안전한 연동 가이드${englishOnly}`, href: urls.safeIntegration },
     ],

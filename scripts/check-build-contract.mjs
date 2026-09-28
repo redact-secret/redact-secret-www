@@ -21,7 +21,15 @@ function walk(dir) {
 const files = walk(dist).map((path) => relative(dist, path));
 
 // 1. Static output, one directory, every locale route prerendered.
-for (const page of ['index.html', 'en/index.html', 'ko/index.html', '404/index.html']) {
+const architecture = ['', 'how-it-works/', 'detection/', 'support-claims/', 'evaluation-methods/', 'adapters/', 'vault/'];
+const pages = [
+  'index.html',
+  'en/index.html',
+  'ko/index.html',
+  '404/index.html',
+  ...['en', 'ko'].flatMap((l) => architecture.map((sub) => `${l}/architecture/${sub}index.html`)),
+];
+for (const page of pages) {
   if (!files.includes(page)) fail(`missing ${page}`);
 }
 
@@ -37,6 +45,15 @@ for (const file of files.filter((f) => f.endsWith('.html'))) {
   const path = `/${file.replace(/index\.html$/, '')}`;
   const canonical = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
   if (canonical !== `${origin}${path}`) fail(`${file}: canonical is ${canonical ?? 'missing'}, expected ${origin}${path}`);
+
+  // The six architecture pages exist only in Korean; at an /en/ URL they are
+  // a labelled copy and must stay out of search (ARCHITECTURE.md § Architecture section).
+  if (/^en\/architecture\/[^/]+\/index\.html$/.test(file) && !html.includes('<meta name="robots" content="noindex">')) {
+    fail(`${file}: Korean-only page at an /en/ URL is not noindex`);
+  }
+
+  // The proposed CSP (style-src 'self') blocks inline style attributes.
+  if (/<[a-z][^>]*\sstyle="/i.test(html)) fail(`${file}: inline style attribute`);
 
   // 4. Root-relative (or absolute https) references only.
   for (const [, attr, url] of html.matchAll(/\s(src|href)="([^"]*)"/g)) {
