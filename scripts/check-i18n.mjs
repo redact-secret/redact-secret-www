@@ -161,7 +161,9 @@ try {
 
   // 5. Render every page from tracked copy: unused keys, and render errors.
   if (!errors.length) {
-    const main = await server.ssrLoadModule('/src/main.tsx');
+    const renderer = await server.ssrLoadModule('/src/render.tsx');
+    const { siteDataFiles } = await server.ssrLoadModule('/src/site-data.ts');
+    const data = Object.fromEntries(Object.entries(siteDataFiles).map(([k, p]) => [k, JSON.parse(readFileSync(join(root, p), 'utf8'))]));
     const reads = {};
     const content = {};
     for (const locale of locales) {
@@ -176,17 +178,14 @@ try {
         },
       };
     }
-    const paths = [...routes.localizedRoutes.map((r) => r.localized), routes.notFoundPath];
+    const paths = renderer.pagePaths;
     for (const path of paths) {
-      // The prerenderer's router reads the location being rendered.
-      globalThis.location = new URL(path, 'https://www.redactsecret.com');
       try {
-        await main.prerender({ url: path }, content);
+        await renderer.prerender({ url: path }, content, data);
       } catch (e) {
         errors.push(`${path}: render failed: ${e.message}`);
       }
     }
-    delete globalThis.location;
     for (const locale of locales) {
       for (const name of expected) {
         const seen = reads[locale][name];

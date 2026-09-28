@@ -1,16 +1,17 @@
 /**
- * Build-time content slots: the page's read-only view of the versioned data
- * contracts in data/ (schemas/, CONVENTIONS.md § Data contracts). Every
- * version, range, tag, date and count on the page comes from here — never
- * from prose in either locale. scripts/check-data.mjs validates the files
- * before the build reads them; the types are generated from the schemas.
+ * Content slots: the page's read-only view of the versioned data contracts
+ * in data/ (schemas/, CONVENTIONS.md § Data contracts). Every version, range,
+ * tag, date and count on the page comes from here — never from prose in
+ * either locale. scripts/check-data.mjs validates the files before anything
+ * renders them; the types are generated from the schemas.
+ *
+ * Nothing here imports data/*.json: the data is part of a content release
+ * (#11), not of the application bundle. The renderer and the browser each
+ * call installSiteData (src/site-data.ts) once, with the release's files,
+ * before rendering; `slots` and `evidence` are live bindings read at render
+ * time.
  */
-import releaseJson from '../../data/release.json';
-import evidenceJson from '../../data/evidence.json';
 import type { EvidenceV1, ReleaseV1 } from '../contracts';
-
-const release = releaseJson as unknown as ReleaseV1.ReleaseV1;
-const evidenceData = evidenceJson as unknown as EvidenceV1.EvidenceV1;
 
 export type PackageStatus = 'released' | 'alpha' | 'unpublished';
 
@@ -57,29 +58,31 @@ function oldest(records: PackageRecord[]): string {
   return day(dates.sort()[0]);
 }
 
-const records = Object.entries(release.packages).filter((e): e is [string, PackageRecord] => Boolean(e[1]));
-const packages = Object.fromEntries(records.map(([id, record]) => [id, toSlot(record)]));
+function releaseSlots(release: ReleaseV1.ReleaseV1): ReleaseSlots {
+  const records = Object.entries(release.packages).filter((e): e is [string, PackageRecord] => Boolean(e[1]));
+  const packages = Object.fromEntries(records.map(([id, record]) => [id, toSlot(record)]));
 
-function required(id: string): PackageSlot {
-  const slot = packages[id];
-  if (!slot?.version) throw new Error(`data/release.json: package "${id}" has no published version`);
-  return slot;
+  function required(id: string): PackageSlot {
+    const slot = packages[id];
+    if (!slot?.version) throw new Error(`data/release.json: package "${id}" has no published version`);
+    return slot;
+  }
+
+  const coreSlot = required('core');
+  const coreRecord = release.packages.core!;
+
+  return {
+    observedAt: oldest(records.map(([, r]) => r)),
+    core: {
+      observedAt: oldest([coreRecord, release.packages.cli!]),
+      npm: coreSlot.version!,
+      npmLatest: coreSlot.latest ?? coreSlot.version!,
+      pypi: coreSlot.pypi?.version ?? '',
+      crate: required('cli').version!,
+    },
+    packages,
+  };
 }
-
-const coreSlot = required('core');
-const coreRecord = release.packages.core!;
-
-export const slots: ReleaseSlots = {
-  observedAt: oldest(records.map(([, r]) => r)),
-  core: {
-    observedAt: oldest([coreRecord, release.packages.cli!]),
-    npm: coreSlot.version!,
-    npmLatest: coreSlot.latest ?? coreSlot.version!,
-    pypi: coreSlot.pypi?.version ?? '',
-    crate: required('cli').version!,
-  },
-  packages,
-};
 
 export function statusOf(slot: PackageSlot): PackageStatus {
   if (slot.unpublished) return 'unpublished';
@@ -134,7 +137,7 @@ export type Measurement = {
   freshness: ReleaseV1.Freshness;
 };
 
-function measurementView(): Measurement {
+function measurementView(release: ReleaseV1.ReleaseV1): Measurement {
   const feed = release.feeds?.product;
   if (!feed) throw new Error('data/release.json: no product feed record (run npm run slots:refresh)');
   const m = feed.value.supportMatrix;
@@ -149,22 +152,34 @@ function measurementView(): Measurement {
   };
 }
 
-const { sources, facts } = evidenceData;
+function evidenceSlots(evidenceData: EvidenceV1.EvidenceV1, release: ReleaseV1.ReleaseV1): EvidenceSlots {
+  const { sources, facts } = evidenceData;
+  return {
+    observedAt: day(evidenceData.observedAt),
+    sources: {
+      core: sourceView(sources.core),
+      benchmarks: sourceView(sources.benchmarks),
+      adapters: sourceView(sources.adapters),
+      vault: sourceView(sources.vault),
+    },
+    matrix: facts.matrix.value,
+    taxonomy: facts.taxonomy.value,
+    staleProse: facts.staleProse.value,
+    baseline: facts.baseline.value,
+    detectors: facts.detectors.value,
+    coreLimits: facts.coreLimits.value,
+    adapterBudgets: facts.adapterBudgets.value,
+    measurement: measurementView(release),
+  };
+}
 
-export const evidence: EvidenceSlots = {
-  observedAt: day(evidenceData.observedAt),
-  sources: {
-    core: sourceView(sources.core),
-    benchmarks: sourceView(sources.benchmarks),
-    adapters: sourceView(sources.adapters),
-    vault: sourceView(sources.vault),
-  },
-  matrix: facts.matrix.value,
-  taxonomy: facts.taxonomy.value,
-  staleProse: facts.staleProse.value,
-  baseline: facts.baseline.value,
-  detectors: facts.detectors.value,
-  coreLimits: facts.coreLimits.value,
-  adapterBudgets: facts.adapterBudgets.value,
-  measurement: measurementView(),
-};
+/** The release's package slots; set by installReleaseData before any render. */
+export let slots!: ReleaseSlots;
+/** The architecture pages' cited facts; set by installReleaseData before any render. */
+export let evidence!: EvidenceSlots;
+
+/** Derives `slots` and `evidence` from a content release's data/release.json and data/evidence.json. */
+export function installReleaseData(release: ReleaseV1.ReleaseV1, evidenceData: EvidenceV1.EvidenceV1) {
+  slots = releaseSlots(release);
+  evidence = evidenceSlots(evidenceData, release);
+}
