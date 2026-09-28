@@ -43,7 +43,10 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Bilingual content
 
-- `/en/` and `/ko/` are equals. Korean is authored for its own page, not
+- English (served at `/`, no prefix) and Korean (`/ko/`) are equals; English
+  being the default entry locale
+  ([ADR 0003](./docs/decisions/0003-single-static-site-separate-releases.md))
+  does not make Korean secondary. Korean is authored for its own page, not
   translated in place from the English layout — a Korean sentence that is
   much longer or shorter than its English counterpart is expected, not a
   bug.
@@ -60,6 +63,16 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
 - Hero and other large headline breaks are explicit `<br>` tags per locale,
   authored at the intended break point — never left to wrap based on
   viewport width.
+- Never hand-write a locale path. Use `homePath(locale)` or
+  `localePath(locale, path)` from `src/i18n.ts`, and `architecturePath()`
+  for architecture pages, so English stays unprefixed and Korean stays under
+  `/ko/`. No internal link points into `/en/` — those paths are legacy
+  redirects only, until 2027-03-31; the build contract fails a page that
+  links to one.
+- A new top-level page goes into `pageRoutes` in `src/routes.ts` (the
+  architecture pages come from their own registry), which gives it both
+  locale routes, canonical and `hreflang` tags, a sitemap entry, and a legacy
+  `/en/` redirect; add its paths to `scripts/check-build-contract.mjs`.
 - A page in one locale that links to a resource only available in the
   other (e.g., an English-only upstream `SECURITY.md`) says so in the link
   text. Do not switch a visitor's locale silently by following a link.
@@ -120,7 +133,10 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   under the proposed CSP (`scripts/csp.mjs`, shared with the playground
   qualification) and fails on a page error, a console error, a missing
   claim or a second one, a wrong `lang`, a broken sidebar, language switch,
-  or link, or a sideways scroll at 360px or 1280px. CI runs it with a
+  or link, or a sideways scroll at 360px or 1280px — for both the English
+  (`/architecture/…`) and Korean (`/ko/architecture/…`) route sets. It also
+  checks both homes' language switch and alternates, and that every legacy
+  `/en/…` path lands on its path-equivalent English page. CI runs it with a
   negative control that must fail.
 
 ## Synthetic data

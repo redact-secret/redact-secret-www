@@ -11,7 +11,7 @@ nothing on the page calls back to this repository, the product repository,
 or any API at request time.
 
 ```text
-build (Vite + TS)  ──▶  dist/en/*, dist/ko/*, dist/assets/*
+build (Vite + TS)  ──▶  dist/* (English), dist/ko/* (Korean), dist/assets/*
                           │
                           ▼
 redact-secret-sites: redactsecret-site-www-prod (S3 + CloudFront)
@@ -66,7 +66,8 @@ accounting.
 
 ## Architecture section
 
-`/{en,ko}/architecture/` is a hub plus six pages, in the order a reader builds
+`/architecture/` (English) and `/ko/architecture/` (Korean) are a hub plus
+six pages, in the order a reader builds
 trust — what decides, why to believe it, what sits outside the core
 ([design spec](https://claude.ai/artifact/8drsKw3xovoR13xjq4sPhR),
 [mockup](https://claude.ai/artifact/HhdGeEQQs9REsfWotjwZSw)):
@@ -91,9 +92,12 @@ trust — what decides, why to believe it, what sits outside the core
   sub-pages in `src/content/architecture/en/` and `ko/`, sharing one
   component structure. The English pages are written from the English
   originals the Korean pages were first drafted from, so the site no longer
-  links out to those drafts. Every page names both locales as hreflang
-  alternates; `scripts/check-build-contract.mjs` fails a build where one is
-  missing or a page is `noindex`.
+  links out to those drafts. Every page names both locales (and
+  `x-default` → English) as hreflang alternates; the language switch goes
+  to the same page in the other locale (`/architecture/vault/` ↔
+  `/ko/architecture/vault/`). `scripts/check-build-contract.mjs` fails a
+  build where an alternate is wrong or a page is `noindex`. Cross-links use
+  `architecturePath(locale, id)`, never a hand-written path.
 - **Green budget.** One `Claim` block per page carries the page's single
   checkable sentence (design spec § 03); the sidebar's current-page rule is
   the only other green. A second claim means the page is split wrong.
@@ -119,11 +123,35 @@ Deliberate departures from the mockup:
 
 ## Bilingual model
 
-Two directory-routed locales, `/en/` and `/ko/`, built from the same block
-structure and the same code examples, with independently authored prose.
-Korean is not a translation appended to an English layout — see
+Two directory-routed locales on one host
+([ADR 0003](./docs/decisions/0003-single-static-site-separate-releases.md)):
+English without a prefix (`/`, `/architecture/…`) and Korean under `/ko/`
+(`/ko/`, `/ko/architecture/…`), built from the same block structure and the
+same code examples, with independently authored prose. Korean is not a
+translation appended to an English layout — see
 [CONVENTIONS.md](./CONVENTIONS.md#bilingual-content) for what is shared
 between locales and what each locale authors on its own.
+
+Routing lives in one registry, `src/routes.ts`: every indexable page by its
+English path, with the Korean path derived by `localePath()` in
+`src/i18n.ts`. The same registry feeds:
+
+- **`<head>`** (`src/main.tsx`): `lang`, a canonical URL for the page's own
+  path, and `hreflang` `en` / `ko` alternates at the equivalent paths plus
+  `x-default` → English.
+- **`sitemap.xml`**, listing both route sets with the same alternates, and
+  **`robots.txt`**, which points at it (emitted by `vite.config.ts`).
+- **Legacy `/en/**` redirects.** English used to live under `/en/`. Until
+  2027-03-31 each old path redirects to the same path without the prefix
+  (`/en/architecture/vault/` → `/architecture/vault/`), never everything to
+  `/`. The permanent 301 is a CloudFront Function in `redact-secret-sites`
+  ([#13](https://github.com/redact-secret/redact-secret-www/issues/13));
+  until it is live, the build writes a fallback document at each legacy
+  path — canonical to the new URL, `noindex`, `meta refresh`, and a visible
+  link, with no script. Once the 301 is live, those objects are never
+  reached.
+- **404.** One `noindex` page, `/404/index.html`, which CloudFront serves for
+  a miss in either route set; it speaks both languages and links both homes.
 
 Layout consequences that follow from this:
 
@@ -210,7 +238,7 @@ this is where each is met here:
 | Root-relative paths | Site is served from `/` of `www.redactsecret.com` |
 | Declared runtime | `package.json` `engines` states the supported Node range |
 | Deterministic build | Same commit, same output |
-| Canonical URLs | Every page declares `<link rel="canonical">` for its own locale path; no client-side route changes to account for, since this is `directory` mode, not `spa` |
+| Canonical URLs | Every page declares `<link rel="canonical">` for its own locale path (English unprefixed, Korean under `/ko/`), with `hreflang` alternates and `x-default` → English; no client-side route changes to account for, since this is `directory` mode, not `spa` |
 
 ### Publish flow
 
@@ -232,8 +260,12 @@ Publishing is triggered by a successful CI run for a push to main, and builds
 that run's commit; pull requests and forks never publish. A manual dispatch
 takes a commit on main, which is how a rollback is done.
 `scripts/check-build-contract.mjs` checks `dist/` against the build contract
-table above (pages present, canonical URLs, root-relative references, hashed
-`assets/`, no leftover `.dev` hub URL) in both workflows.
+table above (every page in both route sets present and nothing else,
+canonical URLs, `hreflang`/`x-default`, the 404 page `noindex`, each legacy
+`/en/**` document pointing at its path-equivalent page, `sitemap.xml`
+listing exactly the indexable pages with matching alternates, `robots.txt`
+referencing it, root-relative references, hashed `assets/`, no leftover
+`.dev` hub URL) in both workflows.
 
 The workflow reads `PUBLISHER_ROLE_ARN` and `SITE_STACK` from the GitHub
 `production` environment — no account ID, bucket name, or role ARN is
