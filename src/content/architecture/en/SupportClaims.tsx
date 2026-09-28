@@ -21,7 +21,7 @@ import { StatusChip } from '../../../components/ui';
 import type { Locale } from '../../../i18n';
 import { evidence } from '../../../slots';
 
-const { matrix, taxonomy, staleProse, sources } = evidence;
+const { matrix, taxonomy, staleProse, sources, measurement } = evidence;
 
 /** `2026-09-21` → `September 21`. */
 function monthDay(date: string) {
@@ -341,6 +341,20 @@ export function SupportClaims(_props: { locale: Locale }) {
           One release ago they matched exactly.{' '}
           <b>A gap between them is never an error; it is the pin telling you how old the evidence is.</b> The page keeps
           the two side by side instead of merging them into one.
+        </p>
+        <p>
+          The same goes for versions.{' '}
+          {measurement.measured ? (
+            <>
+              The shipped matrix was measured on <code>{measurement.measured}</code>
+            </>
+          ) : (
+            <>The shipped matrix does not record which version it measured</>
+          )}{' '}
+          (benchmarks at <code>{measurement.benchmarks}</code>); the current release is{' '}
+          <code>{measurement.released}</code>, and its drift gate{' '}
+          {measurement.gated ? 'ran against exactly this matrix' : 'has not run against this matrix'}. Both come from
+          the product's site feed at <code>{measurement.commit}</code>, read on {measurement.observedAt}.
         </p>
         <Note tone="warning" title="The third number to distrust">
           <p>

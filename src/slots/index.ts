@@ -110,7 +110,44 @@ export type EvidenceSlots = {
   detectors: Facts['detectors']['value'];
   coreLimits: Facts['coreLimits']['value'];
   adapterBudgets: Facts['adapterBudgets']['value'];
+  /**
+   * From the product feed (data/release.json feeds.product): the version the
+   * support matrix was measured on next to the version that is released. The
+   * two can differ; the pages show both rather than let the release stand in
+   * for the measurement.
+   */
+  measurement: Measurement;
 };
+
+export type Measurement = {
+  /** The product version the benchmark run measured, or null if the matrix does not record one. */
+  measured: string | null;
+  /** The released version the feed describes. */
+  released: string;
+  /** Short benchmarks commit the matrix is pinned to. */
+  benchmarks: string;
+  /** Whether the release's support-matrix drift gate ran against exactly this matrix. */
+  gated: boolean;
+  /** Short product commit the feed was read at, and when. */
+  commit: string;
+  observedAt: string;
+  freshness: ReleaseV1.Freshness;
+};
+
+function measurementView(): Measurement {
+  const feed = release.feeds?.product;
+  if (!feed) throw new Error('data/release.json: no product feed record (run npm run slots:refresh)');
+  const m = feed.value.supportMatrix;
+  return {
+    measured: m.measuredProductVersion,
+    released: feed.value.release.version,
+    benchmarks: m.benchmarksRevision.slice(0, 7),
+    gated: m.gatedLatestRelease,
+    commit: feed.source.revision.slice(0, 7),
+    observedAt: day(feed.observedAt),
+    freshness: feed.freshness,
+  };
+}
 
 const { sources, facts } = evidenceData;
 
@@ -129,4 +166,5 @@ export const evidence: EvidenceSlots = {
   detectors: facts.detectors.value,
   coreLimits: facts.coreLimits.value,
   adapterBudgets: facts.adapterBudgets.value,
+  measurement: measurementView(),
 };
