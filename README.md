@@ -11,10 +11,12 @@ follow the main repository's convention).
 
 ## What this is
 
-A single bilingual (English / Korean) static page that answers, in order:
+A bilingual (English / Korean) static landing page that answers, in order:
 what the product is, why runtime redaction matters, which of your tools it
 integrates with, how fast you can try it, where the trust boundary sits, and
-where the evidence lives. It links out — to the docs site, to
+where the evidence lives — plus an architecture section (`/architecture/`: a
+bilingual hub and six Korean pages) on how the core decides, how those
+decisions are measured, and what lives outside it. It links out — to the docs site, to
 `benchmarks.redactsecret.dev`, and to the product repository — rather than
 duplicating their content.
 
@@ -49,6 +51,10 @@ Not in scope for this repository:
 - [beta.11 site design spec](https://claude.ai/artifact/1ZobCPHRNENSJnfBNvUjas)
   — the seven page blocks, component inventory, bilingual rules, and open
   questions.
+- [Architecture section mockup](https://claude.ai/artifact/HhdGeEQQs9REsfWotjwZSw)
+  and [its design spec](https://claude.ai/artifact/8drsKw3xovoR13xjq4sPhR) —
+  the hub and six pages, the shared shell, the nine section components, and
+  the one-claim-per-page rule.
 
 Both are private Claude artifacts owned by this repository's maintainer; ask
 for access rather than assuming a public link. Neither is a live site —
@@ -75,17 +81,21 @@ path), not `spa`: see
 [redact-secret-sites' routing modes](https://github.com/redact-secret/redact-secret-sites/blob/main/ARCHITECTURE.md#routing-modes).
 
 ```text
-index.html                 # Vite entry; prerendered to / (locale chooser), /en/, /ko/, /404/
+index.html                 # Vite entry; prerendered to /, /en/, /ko/, /404/, /{en,ko}/architecture/…
 src/
   main.tsx                 # routes + per-page <head> (lang, canonical, hreflang)
   content/en.tsx, ko.tsx   # authored prose per locale, typed by content/types.ts
   content/shared.ts        # never translated: URLs, the synthetic fixture, code snippets
+  content/architecture/    # section registry, shell copy, bilingual hub, ko/ (six Korean pages)
   slots/catalog.json       # which packages the page lists, and on which registry
   slots/release.json       # versions, tags, ranges, dates — written by `npm run slots:refresh`, committed
+  slots/evidence.json      # counts and limits the architecture pages cite, with source commits
   components/ui/           # primitives (Button, StatusChip, Tabs, …) + stories
   components/shell/        # Header, SideNav, Footer, AppShell + stories
   components/sections/     # the page blocks and their parts + stories
+  components/architecture/ # the architecture section's shell and diagrams + stories
   pages/Home.tsx           # the landing page: shell + eight blocks
+  pages/Architecture.tsx   # one architecture page: section shell + hub or Korean body
   tokens.css               # design-system tokens (+ documented local exceptions)
   style.css                # global base and type classes, tokens only
 public/

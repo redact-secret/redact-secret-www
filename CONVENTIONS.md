@@ -5,8 +5,9 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Scope
 
-- This repository holds one bilingual marketing/navigation page, its build,
-  and its publish workflow. It never holds documentation content (that is a
+- This repository holds one bilingual marketing/navigation page, the
+  architecture section (`/architecture/`), its build, and its publish
+  workflow. It never holds documentation content (that is a
   separate, not-yet-created repository), scanning logic, benchmark results,
   or PII content. The one exception is the playground's opt-in PII switch and
   its synthetic PII fixtures
@@ -82,10 +83,36 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   crates.io for every package in `src/slots/catalog.json` and rewrites
   `src/slots/release.json`. Review the diff and commit it; a card shows only
   what is published, never a version a repository merely declares.
+- Counts and limits the architecture pages cite (family and provider
+  counts, status distribution, evidence tiers, budgets) live in
+  `src/slots/evidence.json`, each group tied to the file and commit it was
+  read from. Refresh it by hand from those files, update `observedAt` and
+  the commits, and let `npm run check:slots` confirm the counts still add
+  up. Mechanism constants that describe code behaviour (an entropy
+  threshold, a minimum length) may stay in prose; anything that changes
+  when the matrix or a release changes may not.
 - If `npm install <package>` alone would not select the version being
   shown (e.g., `latest` points elsewhere), say so next to the install
   command rather than leaving a visitor to find out the hard way — this
   belongs in the quickstart block, not the hero.
+
+## Architecture pages
+
+- One `Claim` (the brand-green block) per page, holding one sentence that
+  can be checked against code or a spec. If a page seems to need two, split
+  the page. When the code changes, the claim changes with it.
+- The six sub-pages are Korean; their English originals are linked from
+  `architectureOriginals` in `src/content/shared.ts`. Cross-links inside a
+  body use `architecturePath(locale, id)`, so a page at an `/en/` URL never
+  links silently into `/ko/`.
+- Adding a page: add it to `src/content/architecture/pages.ts` (order is
+  sidebar and pager order), its shell copy in both locales in `shell.tsx`,
+  its body under `ko/` (or both locales, for a bilingual page), and its path
+  to `scripts/check-build-contract.mjs`.
+- Every page ends with a `SourceStrip`: which files, at which commit, read
+  on which date.
+- No `style` attribute anywhere — the proposed CSP forbids inline styles.
+  Diagrams are rules and grids in CSS Modules.
 
 ## Synthetic data
 
