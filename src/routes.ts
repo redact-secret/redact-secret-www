@@ -7,7 +7,8 @@
  * checks the output.
  */
 import { architecturePages, architecturePath, type ArchitecturePageId } from './content/architecture/pages';
-import { defaultLocale, localePath, locales, type Locale } from './i18n';
+import { anchors } from './content/shared';
+import { defaultLocale, homePath, localePath, locales, type Locale } from './i18n';
 
 export type PageRoute = { path: string; page: { kind: 'home' } | { kind: 'architecture'; id: ArchitecturePageId } };
 
@@ -19,6 +20,42 @@ export const pageRoutes: readonly PageRoute[] = [
     page: { kind: 'architecture' as const, id: p.id },
   })),
 ];
+
+/**
+ * Route IDs: how locale copy (i18n/**) names an internal link target, so the
+ * copy never carries a locale path. `home`, `architecture` (the hub), and
+ * `architecture/<page>`.
+ */
+export type RouteId = 'home' | 'architecture' | `architecture/${Exclude<ArchitecturePageId, 'overview'>}`;
+
+export const routeIds: readonly RouteId[] = pageRoutes.map((r) =>
+  r.page.kind === 'home' ? 'home' : r.page.id === 'overview' ? 'architecture' : (`architecture/${r.page.id}` as RouteId),
+);
+
+/** In-page anchor IDs a link may name after `#`. */
+export const anchorIds: readonly string[] = Object.values(anchors);
+
+/**
+ * Resolves a route reference from locale copy — `home#playground`,
+ * `architecture/vault`, or `#community` (this page) — to a root-relative
+ * href in `locale`. An unknown route or anchor is an error, never a guess.
+ */
+export function routeHref(locale: Locale, ref: string): string {
+  const [id, anchor] = ref.split('#', 2) as [string, string | undefined];
+  if (anchor !== undefined && !anchorIds.includes(anchor)) throw new Error(`unknown anchor in link "${ref}"`);
+  const hash = anchor === undefined ? '' : `#${anchor}`;
+  if (id === '') return hash;
+  const route = pageRoutes.find((_r, i) => routeIds[i] === id);
+  if (!route) throw new Error(`unknown route in link "${ref}"`);
+  return `${route.page.kind === 'home' ? homePath(locale) : architecturePath(locale, route.page.id)}${hash}`;
+}
+
+/** The href of a copy link (i18n/**): a route reference resolved in `locale`, or its external URL. */
+export function linkHref(locale: Locale, link: { to?: string; href?: string }): string {
+  if (link.to !== undefined) return routeHref(locale, link.to);
+  if (link.href !== undefined) return link.href;
+  throw new Error('a link needs `to` or `href`');
+}
 
 /** Every indexable page in every locale: `/`, `/ko/`, `/architecture/vault/`, `/ko/architecture/vault/`, … */
 export const localizedRoutes = locales.flatMap((locale) =>

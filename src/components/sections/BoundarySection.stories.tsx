@@ -9,8 +9,8 @@ const meta: Meta = {
   component: BoundarySection,
   parameters: { layout: 'fullscreen' },
   render: (_args, { globals }) => {
-    const c = content[globals.locale as Locale];
-    return <BoundarySection copy={c.boundary} />;
+    const c = content[globals.locale as Locale].home;
+    return <BoundarySection locale={globals.locale as Locale} copy={c.boundary} />;
   },
 };
 

@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/preact-vite';
 import { architecturePages, type ArchitecturePageId } from '../content/architecture/pages';
+import { content } from '../content';
 import type { Locale } from '../i18n';
-import { Architecture } from './Architecture';
+import { Architecture, type ArchitecturePageCopy } from './Architecture';
 
 type Args = { page: ArchitecturePageId };
 
@@ -10,7 +11,17 @@ const meta: Meta<Args> = {
   parameters: { layout: 'fullscreen' },
   argTypes: { page: { control: 'select', options: architecturePages.map((p) => p.id) } },
   args: { page: 'overview' },
-  render: ({ page }, { globals }) => <Architecture locale={globals.locale as Locale} id={page} />,
+  render: ({ page }, { globals }) => {
+    const c = content[globals.locale as Locale];
+    return (
+      <Architecture
+        locale={globals.locale as Locale}
+        shell={c.shell}
+        section={c.architecture.section}
+        page={{ id: page, copy: c.architecture.pages[page] } as ArchitecturePageCopy}
+      />
+    );
+  },
 };
 
 export default meta;

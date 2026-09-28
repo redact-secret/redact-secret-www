@@ -1,5 +1,5 @@
 import { SegmentedControl } from '../ui';
-import type { SiteContent } from '../../content';
+import type { ShellCopy } from '../../content';
 import { homePath, localeNames, locales, type Locale } from '../../i18n';
 import { useTheme, type Theme } from './useTheme';
 
@@ -7,7 +7,7 @@ export type Alternates = Partial<Record<Locale, string>>;
 
 type Props = {
   locale: Locale;
-  copy: SiteContent['shell'];
+  copy: ShellCopy['header'];
   /** This page in each locale; defaults to that locale's home. */
   alternates?: Alternates;
 };

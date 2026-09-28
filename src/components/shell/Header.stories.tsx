@@ -9,7 +9,7 @@ const meta: Meta = {
   parameters: { layout: 'fullscreen' },
   render: (_args, { globals }) => {
     const locale = globals.locale as Locale;
-    return <Header locale={locale} copy={content[locale].shell} />;
+    return <Header locale={locale} copy={content[locale].shell.header} />;
   },
 };
 

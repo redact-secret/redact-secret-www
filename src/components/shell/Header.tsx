@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { Button, Logo } from '../ui';
-import type { SiteContent } from '../../content';
+import type { ShellCopy } from '../../content';
 import { anchors } from '../../content/shared';
 import { homePath, type Locale } from '../../i18n';
 import { NavLinks } from './NavLinks';
@@ -10,7 +10,7 @@ import styles from './Header.module.css';
 
 export type HeaderProps = {
   locale: Locale;
-  copy: SiteContent['shell'];
+  copy: ShellCopy['header'];
   /** This page in each locale, for the language switch. */
   alternates?: Alternates;
   /** Href of the nav link for the section being viewed. */
@@ -32,7 +32,7 @@ export function Header({ locale, copy, alternates, current }: HeaderProps) {
       <div class={`wrap ${styles.inner}`}>
         <Logo href={homePath(locale)} />
         <nav class={styles.nav} aria-label={copy.mainNavLabel}>
-          <NavLinks links={copy.nav} current={current} />
+          <NavLinks locale={locale} links={copy.nav} current={current} />
         </nav>
         <div class={styles.end}>
           <div class={styles.controls}>

@@ -14,8 +14,8 @@ const meta: Meta = {
     const [open, setOpen] = useState(true);
     return (
       <div style={{ padding: 'var(--space-4)' }}>
-        <Button onClick={() => setOpen(true)}>{content[locale].shell.menu}</Button>
-        <SideNav locale={locale} copy={content[locale].shell} open={open} onClose={() => setOpen(false)} />
+        <Button onClick={() => setOpen(true)}>{content[locale].shell.header.menu}</Button>
+        <SideNav locale={locale} copy={content[locale].shell.header} open={open} onClose={() => setOpen(false)} />
       </div>
     );
   },

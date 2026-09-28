@@ -1,11 +1,12 @@
 import { Band, CodeBlock, Ruled, SectionHeader, Tabs, VersionSlot } from '../ui';
-import type { SiteContent } from '../../content';
+import type { HomeCopy } from '../../content';
+import { Rich } from '../ui/Rich';
 import { anchors, snippets } from '../../content/shared';
 import type { CoreSlot } from '../../slots';
 import styles from './QuickstartSection.module.css';
 
 export type QuickstartSectionProps = {
-  copy: SiteContent['quickstart'];
+  copy: HomeCopy['quickstart'];
   core: CoreSlot;
 };
 
@@ -19,9 +20,12 @@ export function QuickstartSection({ copy, core }: QuickstartSectionProps) {
     snippets.python,
     snippets.cli,
   ];
+  // Both variants are authored; the slot picks one (npm `latest` has moved before).
+  const { same, moved } = copy.pinLatest;
+  const latest = core.npmLatest === core.npm ? same : moved;
   return (
     <Band id={anchors.firstRun} labelledBy="first-run-title">
-      <SectionHeader id="first-run-title" eyebrow={copy.eyebrow} title={copy.title} lede={copy.lede} />
+      <SectionHeader id="first-run-title" eyebrow={<Rich value={copy.eyebrow} />} title={<Rich value={copy.title} />} lede={<Rich value={copy.lede} />} />
       <div class={styles.grid}>
         <div>
           <Tabs
@@ -37,17 +41,27 @@ export function QuickstartSection({ copy, core }: QuickstartSectionProps) {
               ),
             }))}
           />
-          <p class={`small ${styles.rust}`}>{copy.rustNote}</p>
+          <p class={`small ${styles.rust}`}><Rich value={copy.rustNote} /></p>
         </div>
         <div class={styles.side}>
-          <VersionSlot label={copy.pinLabel}>{copy.pin(core)}</VersionSlot>
+          <VersionSlot label={copy.pinLabel}>
+            <Rich
+              value={copy.pin}
+              vars={{
+                npm: core.npm,
+                observedAt: core.observedAt,
+                pypi: core.pypi,
+                latest: <Rich value={latest} vars={{ npmLatest: core.npmLatest }} />,
+              }}
+            />
+          </VersionSlot>
           <Ruled>
-            <h3 class="h3">{copy.why.title}</h3>
-            <p class="small">{copy.why.body}</p>
+            <h3 class="h3"><Rich value={copy.why.title} /></h3>
+            <p class="small"><Rich value={copy.why.body} /></p>
           </Ruled>
           <Ruled>
-            <h3 class="h3">{copy.expect.title}</h3>
-            <p class="small">{copy.expect.body}</p>
+            <h3 class="h3"><Rich value={copy.expect.title} /></h3>
+            <p class="small"><Rich value={copy.expect.body} /></p>
           </Ruled>
         </div>
       </div>

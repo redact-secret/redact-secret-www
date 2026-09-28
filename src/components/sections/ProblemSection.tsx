@@ -1,17 +1,18 @@
 import { Band, SectionHeader } from '../ui';
-import type { SiteContent } from '../../content';
+import type { HomeCopy } from '../../content';
+import { Rich } from '../ui/Rich';
 import { anchors } from '../../content/shared';
 import { SpreadDiagram } from './SpreadDiagram';
 
 export type ProblemSectionProps = {
-  copy: SiteContent['problem'];
+  copy: HomeCopy['problem'];
 };
 
 /** Block 2 — why does this matter? */
 export function ProblemSection({ copy }: ProblemSectionProps) {
   return (
     <Band id={anchors.problem} labelledBy="problem-title">
-      <SectionHeader id="problem-title" eyebrow={copy.eyebrow} title={copy.title} lede={copy.lede} />
+      <SectionHeader id="problem-title" eyebrow={<Rich value={copy.eyebrow} />} title={<Rich value={copy.title} />} lede={<Rich value={copy.lede} />} />
       <SpreadDiagram copy={copy} />
     </Band>
   );
