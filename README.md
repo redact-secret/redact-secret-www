@@ -82,14 +82,18 @@ path), not `spa`: see
 
 ```text
 index.html                 # Vite entry; prerendered to /, /en/, /ko/, /404/, /{en,ko}/architecture/…
+data/
+  integrations.json        # which packages the page lists, where, and the integrations cards (integrations-v1)
+  release.json             # versions, tags, ranges, dates per package — `npm run slots:refresh`, committed (release-v1)
+  evidence.json            # counts and limits the architecture pages cite, each at a source revision (evidence-v1)
+schemas/                   # versioned JSON Schemas (draft 2020-12) for data/; see CONVENTIONS.md § Data contracts
 src/
   main.tsx                 # routes + per-page <head> (lang, canonical, hreflang)
   content/en.tsx, ko.tsx   # authored prose per locale, typed by content/types.ts
   content/shared.ts        # never translated: URLs, the synthetic fixture, code snippets
   content/architecture/    # section registry, shell copy, hub, en/ and ko/ sub-page bodies
-  slots/catalog.json       # which packages the page lists, and on which registry
-  slots/release.json       # versions, tags, ranges, dates — written by `npm run slots:refresh`, committed
-  slots/evidence.json      # counts and limits the architecture pages cite, with source commits
+  slots/index.ts           # the page's read-only view of data/ (versions, dates, counts)
+  contracts/               # TypeScript types GENERATED from schemas/ (`npm run data:types`)
   components/ui/           # primitives (Button, StatusChip, Tabs, …) + stories
   components/shell/        # Header, SideNav, Footer, AppShell + stories
   components/sections/     # the page blocks and their parts + stories
