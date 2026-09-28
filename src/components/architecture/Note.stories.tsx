@@ -24,7 +24,7 @@ export const Info: Story = {
     title: undefined,
     children: (
       <p>
-        <b>This page is written in Korean.</b> Its English original is linked here.
+        <b>A Korean URL never serves English silently.</b> Links to English-only resources say so.
       </p>
     ),
   },

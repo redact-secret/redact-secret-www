@@ -5,7 +5,6 @@ import {
   DocSection,
   HubCard,
   HubGrid,
-  Note,
   PageHead,
   Pager,
   SourceStrip,
@@ -13,6 +12,7 @@ import {
 import { AppShell } from '../components/shell';
 import { content } from '../content';
 import { hub } from '../content/architecture/hub';
+import { enPages } from '../content/architecture/en';
 import { koPages } from '../content/architecture/ko';
 import {
   architectureGroups,
@@ -22,14 +22,14 @@ import {
   type ArchitecturePageId,
 } from '../content/architecture/pages';
 import { architectureShell } from '../content/architecture/shell';
-import { architectureOriginals } from '../content/shared';
 import { locales, type Locale } from '../i18n';
 import styles from './Architecture.module.css';
 
+const bodies = { en: enPages, ko: koPages };
+
 /**
- * One page of the architecture section (design spec § 02): the hub in both
- * locales, or one of the six Korean pages. At an /en/ URL a Korean page is
- * labelled as such above its body and links its English original (§ 04).
+ * One page of the architecture section (design spec § 02): the hub or one of
+ * the six sub-pages, every one authored in both locales.
  */
 export function Architecture({ locale, id }: { locale: Locale; id: ArchitecturePageId }) {
   const c = content[locale];
@@ -45,7 +45,7 @@ export function Architecture({ locale, id }: { locale: Locale; id: ArchitectureP
   const index = architecturePages.findIndex((p) => p.id === id);
   const prev = architecturePages[(index - 1 + architecturePages.length) % architecturePages.length];
   const next = architecturePages[(index + 1) % architecturePages.length];
-  const Body = isSubPage(id) ? koPages[id] : undefined;
+  const Body = isSubPage(id) ? bodies[locale][id] : undefined;
 
   return (
     <AppShell content={c} alternates={alternates} current={architecturePath(locale, 'overview')}>
@@ -56,19 +56,10 @@ export function Architecture({ locale, id }: { locale: Locale; id: ArchitectureP
         contents={a.contents}
         groups={groups}
       >
-        {isSubPage(id) && Body ? (
-          <>
-            {locale !== 'ko' && (
-              <div class={styles.langnote}>
-                <Note tone="info">
-                  <p>{a.writtenInKorean(architectureOriginals[id])}</p>
-                </Note>
-              </div>
-            )}
-            <article lang="ko">
-              <Body locale={locale} />
-            </article>
-          </>
+        {Body ? (
+          <article>
+            <Body locale={locale} />
+          </article>
         ) : (
           <Hub locale={locale} />
         )}

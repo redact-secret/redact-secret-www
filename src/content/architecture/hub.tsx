@@ -1,7 +1,7 @@
 /**
- * The architecture hub — the one page of the section authored in both
- * locales (design spec § 04). Titles and paths of the six pages come from
- * ./shell.tsx and ./pages.ts; this file holds only the hub's own prose.
+ * The architecture hub, authored in both locales. Titles and paths of the
+ * six pages come from ./shell.tsx and ./pages.ts; this file holds only the
+ * hub's own prose.
  */
 import type { ComponentChildren } from 'preact';
 import type { Locale } from '../../i18n';
@@ -108,8 +108,7 @@ export const hub: Record<Locale, HubCopy> = {
         <>
           The core from <code>README.md</code> and <code>ARCHITECTURE.md</code>; family counts and statuses from the
           generated <code>docs/support-matrix.md</code>; versions from the package registries; methods and taxonomy
-          from <code>docs/specs/</code> in the benchmarks repository. Each page states its own sources. The six pages
-          below are written in Korean; each links its English original.
+          from <code>docs/specs/</code> in the benchmarks repository. Each page states its own sources.
         </>
       ),
     },

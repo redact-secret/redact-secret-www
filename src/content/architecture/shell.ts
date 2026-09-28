@@ -1,13 +1,10 @@
 /**
  * Shell copy for the architecture section, per locale: sidebar, pager,
  * section bar, and each page's <title> and description. The hub's body is
- * ./hub.tsx; the six Korean-only bodies are ./ko/.
+ * ./hub.tsx; the six sub-page bodies are ./en/ and ./ko/.
  */
-import type { ComponentChildren } from 'preact';
 import type { Locale } from '../../i18n';
 import type { ArchitectureGroup, ArchitecturePageId } from './pages';
-
-type Rich = ComponentChildren;
 
 export type ArchitectureShellCopy = {
   /** Section name in the section bar and the <title> suffix. */
@@ -18,11 +15,6 @@ export type ArchitectureShellCopy = {
   groups: Record<ArchitectureGroup, string>;
   pages: Record<ArchitecturePageId, { nav: string; title: string; description: string }>;
   pager: { label: string; prev: string; next: string; back: string };
-  /**
-   * Shown above a Korean-only page served at an /en/ URL, so an English URL
-   * never serves Korean silently (design spec § 04).
-   */
-  writtenInKorean: (original: { title: string; href: string }) => Rich;
 };
 
 export const architectureShell: Record<Locale, ArchitectureShellCopy> = {
@@ -41,45 +33,35 @@ export const architectureShell: Record<Locale, ArchitectureShellCopy> = {
       'how-it-works': {
         nav: 'How it works',
         title: 'How it works',
-        description: 'Four surfaces over one core, the four pipeline stages, and what it is not. Written in Korean.',
+        description: 'Four surfaces over one core, the four pipeline stages, and what it is not.',
       },
       detection: {
         nav: 'How it detects',
         title: 'How it detects',
-        description: 'Five tiers of evidence, fixed tie-breakers, no regex engine, and your own rulesets. Written in Korean.',
+        description: 'Five tiers of evidence, fixed tie-breakers, no regex engine, and your own rulesets.',
       },
       'support-claims': {
         nav: 'Support claims',
         title: 'How a support claim is built',
-        description: 'Three files answer three questions; a support claim exists only once they are joined. Written in Korean.',
+        description: 'Three files answer three questions; a support claim exists only once they are joined.',
       },
       'evaluation-methods': {
         nav: 'Evaluation methods',
         title: 'Evaluation methods',
-        description: 'Ten ways a detector can be wrong, graded five ways over byte ranges. Written in Korean.',
+        description: 'Ten ways a detector can be wrong, graded five ways over byte ranges.',
       },
       adapters: {
         nav: 'Adapters',
         title: 'Adapters',
-        description: 'The packages between your host and the engine. They decide nothing. Written in Korean.',
+        description: 'The packages between your host and the engine. They decide nothing.',
       },
       vault: {
         nav: 'Vault',
         title: 'Vault',
-        description: 'The one place allowed to keep an original, built to make that hard. Written in Korean.',
+        description: 'The one place allowed to keep an original, built to make that hard.',
       },
     },
     pager: { label: 'Architecture pages', prev: '← Previous', next: 'Next →', back: 'Back →' },
-    writtenInKorean: (original) => (
-      <>
-        <b>This page is written in Korean.</b> Its English original is the{' '}
-        <a href={original.href} hreflang="en">
-          “{original.title}”
-        </a>{' '}
-        source page. A Korean URL never silently serves English, and an English URL never silently serves Korean —
-        the label is always shown.
-      </>
-    ),
   },
   ko: {
     section: '아키텍처',
@@ -125,7 +107,5 @@ export const architectureShell: Record<Locale, ArchitectureShellCopy> = {
       },
     },
     pager: { label: '아키텍처 페이지', prev: '← 이전', next: '다음 →', back: '돌아가기 →' },
-    // Korean pages are the originals; this label only appears on /en/ URLs.
-    writtenInKorean: () => null,
   },
 };

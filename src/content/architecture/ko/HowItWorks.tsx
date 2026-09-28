@@ -191,7 +191,7 @@ export function HowItWorks({ locale }: { locale: Locale }) {
 
       <SourceStrip label="출처.">
         아키텍처·파이프라인·프로파일·한계는 <code>README.md</code>와 <code>ARCHITECTURE.md</code>, 계열 수와 상태는
-        생성된 <code>docs/support-matrix.md</code>, 버전은 <code>docs/releases/status.md</code>. 영어 원문은{' '}
+        생성된 <code>docs/support-matrix.md</code>, 버전은 <code>docs/releases/status.md</code>.{' '}
         {observedAt}에 <code>main</code> <code>{sources.core.commit}</code>, <code>{sources.core.release}</code> 기준으로
         확인되었습니다.
       </SourceStrip>

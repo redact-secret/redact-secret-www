@@ -23,19 +23,6 @@ export const urls = {
   benchmarksRepo: 'https://github.com/redact-secret/redact-secret-benchmarks',
 };
 
-/**
- * The maintained English originals of the six Korean architecture pages
- * (ARCHITECTURE.md § Architecture section). Today they are Claude artifacts,
- * not all of them public; this is the one place to repoint them.
- */
-export const architectureOriginals = {
-  'how-it-works': { title: 'Redact Secret, Explained Simply', href: 'https://claude.ai/artifact/PYAyyJJyw3y8Z7bv8kbaRz' },
-  detection: { title: 'Five Ways to Spot a Secret', href: 'https://claude.ai/artifact/EBi87s24WKWkQ5GRd3FsGf' },
-  'support-claims': { title: 'Six Tokens, One Unit', href: 'https://claude.ai/artifact/N8uU2ggPmfpabv9FbvKeor' },
-  'evaluation-methods': { title: 'Ten Ways to Fail', href: 'https://claude.ai/artifact/6Mp8qtXfkb7gQ7v5xDdy8C' },
-  adapters: { title: 'The Last Mile', href: 'https://claude.ai/artifact/CoCvaELwwV6csC5ZbYE4Gw' },
-  vault: { title: 'The Undo Button', href: 'https://claude.ai/artifact/AA91WGw9DE2XZCzwt8kHBq' },
-} as const;
 
 /** In-page anchors shared by nav, footer, and sections. */
 export const anchors = {

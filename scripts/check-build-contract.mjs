@@ -46,10 +46,15 @@ for (const file of files.filter((f) => f.endsWith('.html'))) {
   const canonical = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
   if (canonical !== `${origin}${path}`) fail(`${file}: canonical is ${canonical ?? 'missing'}, expected ${origin}${path}`);
 
-  // The six architecture pages exist only in Korean; at an /en/ URL they are
-  // a labelled copy and must stay out of search (ARCHITECTURE.md § Architecture section).
-  if (/^en\/architecture\/[^/]+\/index\.html$/.test(file) && !html.includes('<meta name="robots" content="noindex">')) {
-    fail(`${file}: Korean-only page at an /en/ URL is not noindex`);
+  // Every architecture page is authored in both locales, so each names both
+  // as alternates (ARCHITECTURE.md § Architecture section).
+  const arch = file.match(/^(en|ko)\/(architecture\/.*)index\.html$/);
+  if (arch) {
+    for (const l of ['en', 'ko']) {
+      const alternate = `<link rel="alternate" hreflang="${l}" href="${origin}/${l}/${arch[2]}">`;
+      if (!html.includes(alternate)) fail(`${file}: missing hreflang ${l} alternate`);
+    }
+    if (html.includes('content="noindex"')) fail(`${file}: architecture page is noindex`);
   }
 
   // The proposed CSP (style-src 'self') blocks inline style attributes.

@@ -4,7 +4,7 @@ import { Home } from './pages/Home';
 import { LocaleChooser } from './pages/LocaleChooser';
 import { NotFound } from './pages/NotFound';
 import { content } from './content';
-import { architecturePages, architecturePath, isSubPage } from './content/architecture/pages';
+import { architecturePages, architecturePath } from './content/architecture/pages';
 import { architectureShell } from './content/architecture/shell';
 import { siteOrigin } from './content/shared';
 import { isLocale, locales, type Locale } from './i18n';
@@ -60,10 +60,6 @@ function headFor(path: string, lang: Locale, pageLocale: Locale | undefined): Pa
     const a = architectureShell[arch.locale];
     const page = a.pages[arch.id];
     const title = `${page.title} — ${arch.id === 'overview' ? 'Redact Secret' : `${a.section} · Redact Secret`}`;
-    // The hub is authored in both locales; the six pages exist only in Korean,
-    // so their /en/ URL is a labelled copy of the Korean body and stays out of
-    // search (design spec § 04).
-    if (isSubPage(arch.id)) return { title, description: page.description, noindex: arch.locale !== 'ko' };
     return {
       title,
       description: page.description,

@@ -19,8 +19,7 @@ type Story = StoryObj<Args>;
 export const Hub: Story = {};
 export const HubKorean: Story = { globals: { locale: 'ko' } };
 export const DetectionKorean: Story = { args: { page: 'detection' }, globals: { locale: 'ko' } };
-/** A Korean-only page at an /en/ URL: the language label sits above the body. */
-export const DetectionAtEnglishUrl: Story = { args: { page: 'detection' } };
+export const DetectionEnglish: Story = { args: { page: 'detection' } };
 export const SupportClaimsDark: Story = { args: { page: 'support-claims' }, globals: { locale: 'ko', theme: 'dark' } };
 export const EvaluationMethodsMobile: Story = {
   args: { page: 'evaluation-methods' },
