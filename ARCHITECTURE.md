@@ -3,18 +3,20 @@
 ## Overview
 
 A static landing page plus a seven-page architecture section, built once per
-locale, with no server and no runtime API. Preact components are prerendered
-to HTML at build time and hydrated in the browser for tab switching, theme,
-and the playground only — every link, including the language switch, loads a
-prerendered document; nothing is routed client-side —
-nothing on the page calls back to this repository, the product repository,
-or any API at request time.
+locale, with no server and no runtime API. Preact components are rendered
+to complete HTML ahead of time — by the build, and by a content publish
+through the same renderer artifact — and hydrated in the browser for tab
+switching, theme, and the playground only — every link, including the
+language switch, loads a prerendered document; nothing is routed
+client-side — nothing on the page calls back to this repository, the
+product repository, or any API at request time.
 
 ```text
-build (Vite + TS)  ──▶  dist/* (English), dist/ko/* (Korean), dist/assets/*
+application release: build (Vite + TS) ─▶ dist/assets/* (hashed) + renderer artifact
+content release:     i18n/ + data/ ─ deployed renderer ─▶ every page's HTML + current.json
                           │
                           ▼
-redact-secret-sites: redactsecret-site-www-prod (S3 + CloudFront)
+redact-secret-sites: redactsecret-site-www-prod (one S3 bucket + one CloudFront distribution)
                           │
                           ▼
                  www.redactsecret.com  (+ apex 301, per redact-secret-sites)
@@ -143,18 +145,32 @@ Markup is a small structured rich-text form rendered by one component
 route IDs (`architecture/vault`, `home#playground`) that `src/routes.ts`
 resolves per locale; versions, dates, counts and commits are `var` nodes the
 page fills from the slots. Components and page templates take the copy
-objects as props and never fetch: `src/content/index.ts` is the only loader,
-importing every file statically so the build prerenders complete HTML and
-hydrates from the same objects, and `App`/`prerender` in `src/main.tsx`
-accept any validated `ContentBundle` in its place — the seam a content-only
-publish (#11) renders through. `npm run build` checks the copy first
-(`check-data`: schema and secret scan; `check-i18n`: files, en/ko parity,
-links, a 32 KiB per-page budget, and no key left unread by any page).
+objects as props and never fetch.
+
+**The application bundle holds no copy and no data.** The renderer
+(`src/render.tsx`, built into the self-contained `build/renderer/renderer.mjs`)
+takes a content release's files — `i18n/<locale>/**.json` and `data/*.json`
+— as arguments and writes every page's complete HTML into the application
+release's template (`build/renderer/template.html`, Vite's `index.html` with
+the hashed asset references). Each page embeds only its own copy slice and
+the release's data as inert `<script type="application/json"
+id="page-data">`; `src/main.tsx` hydrates from that element — never from
+the network — and if it is missing or unreadable, leaves the prerendered page
+as it arrived. So a copy or data change rewrites HTML only: every file under
+`assets/` stays byte-identical, which is what lets a content release publish
+without a build (§ Publish flow). The slots (`src/slots/`, `snippets`,
+integration groups) are derived from the release's data at render time
+(`src/site-data.ts`). `src/content/index.ts` still imports the working tree's
+copy, for the dev server and Storybook only. `npm run build` checks the copy
+first (`check-data`: schema and secret scan; `check-i18n`: files, en/ko
+parity, links, a 32 KiB per-page budget, and no key left unread by any page,
+rendering every page through `src/render.tsx`).
 
 ```text
-i18n/<locale>/*.json ─ check-data (schema, secrets) ─ check-i18n (parity, links, size, unread keys)
-        └─ src/content/index.ts (static import) ─ src/main.tsx App({ content })
-              └─ src/pages/* templates ─ components (props only) ─ Rich (inline nodes, route IDs → paths)
+i18n/<locale>/*.json, data/*.json ─ check-data (schema, secrets) ─ check-i18n (parity, links, size, unread keys)
+        └─ renderer (src/render.tsx → build/renderer/renderer.mjs) ─ src/app.tsx App({ view })
+              ├─ src/pages/* templates ─ components (props only) ─ Rich (inline nodes, route IDs → paths)
+              └─ <script type="application/json" id="page-data"> ─ src/main.tsx hydrate (no fetch)
 ```
 
 Routing lives in one registry, `src/routes.ts`: every indexable page by its
@@ -164,7 +180,7 @@ English path, with the Korean path derived by `localePath()` in
 - **Links in copy**: the route IDs `i18n/**` names (`routeIds`, `routeHref`),
   so a copy file never holds a locale path.
 
-- **`<head>`** (`src/main.tsx`): `lang`, a canonical URL for the page's own
+- **`<head>`** (`src/render.tsx`): `lang`, a canonical URL for the page's own
   path, and `hreflang` `en` / `ko` alternates at the equivalent paths plus
   `x-default` → English.
 - **`sitemap.xml`**, listing both route sets with the same alternates, and
@@ -290,9 +306,9 @@ workflow (`.github/workflows/data-freshness.yml`) runs the refresh in
 dry-run mode and reports drift in its job summary and one `data-drift`
 issue; it never commits or publishes.
 
-`schemas/content-manifest-v1.schema.json` defines the per-locale content
-release manifest the content-only publish will write (#6); nothing writes one
-yet. [docs/content-inventory.md](./docs/content-inventory.md) lists every
+A content release is described by `schemas/content-manifest-v2.schema.json`
+(§ Publish flow); the per-locale `content-manifest-v1` it replaced was never
+written, and the publisher fails closed on it. [docs/content-inventory.md](./docs/content-inventory.md) lists every
 visitor-visible string and datum with its class and canonical owner.
 
 ## Evidence and repository boundaries
@@ -335,29 +351,163 @@ this is where each is met here:
 | Hashed assets under `assets/` | Vite's default; everything else may change at the same path |
 | Root-relative paths | Site is served from `/` of `www.redactsecret.com` |
 | Declared runtime | `package.json` `engines` states the supported Node range |
-| Deterministic build | Same commit, same output |
+| Deterministic build | Same commit, same output — `dist/` and the renderer artifact (`build/renderer/`) |
 | Canonical URLs | Every page declares `<link rel="canonical">` for its own locale path (English unprefixed, Korean under `/ko/`), with `hreflang` alternates and `x-default` → English; no client-side route changes to account for, since this is `directory` mode, not `spa` |
 
 ### Publish flow
+
+Two release planes share one bucket and one distribution
+([ADR 0003](./docs/decisions/0003-single-static-site-separate-releases.md)
+§ Two release planes): an **application release** builds the code and its
+hashed assets; a **content release** renders `i18n/` and `data/` with the
+deployed application release's renderer, without a build.
 
 ```text
 pull request / push to main
   └─▶ .github/workflows/ci.yml
         data-contract and i18n tests → build (check-data, check-i18n, type
-        drift, check-slots, tsc, prerender) → build contract → deterministic
-        rebuild → Storybook; playground qualification in Chromium, Firefox,
-        WebKit (+ negative control, + proposed CSP); architecture pages in
-        the same three engines under the proposed CSP (+ negative control)
-push to main, CI green
-  └─▶ .github/workflows/publish-site.yml (environment: production)
-        npm ci → npm run build → build contract → assume
-        redactsecret-publisher-production → sync dist/ to the www stack's
-        bucket → invalidate /*
+        drift, check-slots, tsc, client → renderer artifact → every page) →
+        build contract → release-plane proofs (test:publish) → deterministic
+        rebuild (site and renderer) → Storybook; playground qualification in
+        Chromium, Firefox, WebKit (+ negative control, + proposed CSP);
+        architecture pages and first paint without JavaScript or JSON in the
+        same three engines under the proposed CSP (+ negative controls)
+push to main, CI green ── plan (scripts/publish/plan.mjs, same rule in both workflows)
+  ├─ application files differ from the deployed release (or none is deployed)
+  │   └─▶ .github/workflows/publish-site.yml (environment: production)
+  │         npm ci → npm run build → build contract → assume the publisher
+  │         role → scripts/publish/cli.mjs app
+  └─ only i18n/ or data/ differ
+      └─▶ .github/workflows/publish-content.yml (environment: production)
+            npm ci → check-data, check-i18n → assume the publisher role →
+            scripts/publish/cli.mjs content
+dispatch: publish-site (a commit: application rollback) ·
+          publish-content (publish a commit's content, or roll back to a release ID) ·
+          repository_dispatch upstream-feed-published (validated; republishes main's committed data)
 ```
 
-Publishing is triggered by a successful CI run for a push to main, and builds
-that run's commit; pull requests and forks never publish. A manual dispatch
-takes a commit on main, which is how a rollback is done.
+Publishing is triggered by a successful CI run for a push to main, for that
+run's commit; pull requests and forks never publish. Both workflows' `plan`
+jobs read the live `/current.json` from the public site (no credentials)
+and apply the same rule, so exactly one publishes; an unreadable pointer
+means "build", which is always correct. The two publish jobs share one
+concurrency group, so releases never interleave. All logic is in
+`scripts/publish/` (Node, no new dependencies): `release.mjs` for the three
+operations, `store.mjs` for the bucket and CDN — the `aws` CLI in the
+workflows, a directory in the tests.
+
+**Bucket layout.** Everything in the bucket is served publicly through the
+distribution, so nothing sensitive is ever written there.
+
+| Key | What | Cache-Control |
+| --- | --- | --- |
+| `assets/**` | hashed JS, CSS, WASM, worker — never contain copy or data | `public, max-age=31536000, immutable` |
+| `releases/app/<commit>/release.json` | application release record (`app-release-v1`): renderer files and every asset, with digests | immutable |
+| `releases/app/<commit>/renderer/{renderer.mjs,template.html}` | the renderer artifact | immutable |
+| `content/<release hex>/manifest.json` | content release manifest (`content-manifest-v2`) | immutable |
+| `content/<release hex>/html/**`, `…/src/{i18n,data}/**` | every rendered page, and the files it was rendered from | immutable |
+| `<path>/index.html` (both route sets, `404/`) | stable HTML: byte copies of the live release's `html/**` | `no-cache` (revalidate) |
+| `current.json` | pointer (`content-current-v1`): live release ID + manifest digest, renderer release + record digest | `no-cache`, written last |
+| `favicon.svg`, logos, `sitemap.xml`, `robots.txt`, `en/**` redirect documents | other application files | `no-cache` |
+
+**The renderer artifact** is stored in the bucket rather than as an Actions
+artifact (which expires) or a GitHub release asset (a second store and a
+token to manage): it lives next to the assets it references, the bucket is
+versioned, and the publisher reads it back with `s3:GetObject`. It is the
+module the build itself rendered `dist/` with, so the HTML CI checked in
+three browsers is the HTML it produces; an application release refuses to
+publish if it does not reproduce `dist/` byte for byte.
+
+**The manifest** (`content-manifest-v2`) carries the schema version, a
+content-addressed release ID (sha256 over `renderer <commit>` and the sorted
+`<path> <digest>` lines), the locales (exactly the renderer's), the renderer
+release, the generation time, full source revisions (`www` — this
+repository's commit — each upstream feed in `data/release.json`, and each
+source `data/evidence.json` cites), and every file's path, kind, locale,
+schema version, digest and size. The publisher fails closed on an unknown
+schema version, a locale set or file locale that does not match the path, a
+missing or extra file, a digest or size mismatch, a release ID that does not
+match the files, and a renderer release other than the deployed one.
+
+**Application release** (`cli.mjs app`, the three passes of
+`redact-secret-sites`' `scripts/publish-site.sh`, with the content release
+in the middle):
+
+1. validate, render and secret-scan the content with the new renderer, and
+   check it reproduces `dist/` — before anything is written;
+2. pass 1: every hashed asset not already in the bucket byte for byte
+   (immutable), then the renderer artifact and its record under
+   `releases/app/<commit>/` (a record is never rewritten), read back;
+3. pass 2: the other application files that changed (`no-cache`), stale
+   objects deleted — never under `assets/`, `content/` or `releases/`, never
+   `current.json` — then the content release, published as below;
+4. pass 3: assets the new release does not list, pruned once the new HTML
+   is live;
+5. one invalidation of the mutable paths that changed, then retention.
+
+**Content release** (`cli.mjs content`): resolve the deployed application
+release from `current.json` and verify its record, every renderer file and
+every asset by digest; refuse a commit whose application files differ from
+it (checked again against the bucket, not only in `plan`), and, on a CI
+trigger, a commit that does not contain the live content's commit; validate
+every file against its contract and its locale; render every page of both
+locales; run the secret scan (`check-data`'s, with the published core) over
+every source file and every page's embedded bundle — a finding fails before
+any upload and names the file, pointer and detector, never the value; then
+
+1. upload `content/<release>/` — files, then the manifest (skipped when that
+   release is already stored: it is content-addressed);
+2. read back the manifest and every file, verifying each digest;
+3. write the stable pages whose bytes changed, then `current.json`, last;
+4. invalidate only those paths (`/ko/` and `/ko/index.html` for a page,
+   `/current.json`), never `/*`; nothing changed means no invalidation;
+5. record the release ID, the previous one, the renderer release, the source
+   revisions, the changed paths and the invalidation ID in the job summary;
+6. apply retention.
+
+It never writes under `assets/` or `releases/`: no JS, CSS or WASM is
+rebuilt or re-uploaded.
+
+**Retention.** After every release: the live content release and the ten
+most recent others (by manifest `generatedAt`) are kept, with every object
+under their prefix; application release records and renderers that one of
+them — or `current.json` — names are kept; everything else under
+`content/` and `releases/app/` is deleted. Nothing else is ever deleted by
+retention. Rollback uses these retained manifests and objects, not S3
+version listing (the publisher has no `s3:ListBucketVersions`).
+
+**Rollback, two kinds.**
+
+- *Content:* dispatch **Publish content** with `operation: rollback` and a
+  retained release ID (every job summary names the previous one). It
+  verifies the manifest and every object against the deployed renderer, then
+  re-points the stable pages and `current.json` — byte-identical to when that
+  release was live, because `current.json` is a pure function of the release.
+  No build, no render, no upload. A release rendered by another application
+  release fails closed (its assets may be gone); republish its content
+  instead — dispatch `publish` with that commit, which renders it with the
+  deployed renderer.
+- *Application:* dispatch **Publish site** with an earlier commit on main: a
+  full application release of that commit, content included.
+
+**Browser.** Pages never fetch their content: the complete page is in the
+HTML, and hydration reads the embedded page data. The site may later read
+`/current.json` for freshness, but must never replace a page with it; today
+it does not fetch it at all. `scripts/check-first-paint.mjs` proves every
+page is complete with JavaScript off, and hydrated, unchanged and
+interactive with every JSON request failing.
+
+**IAM actions the publisher uses** (all through the `aws` CLI):
+`cloudformation:DescribeStacks` (resolve the bucket and distribution),
+`s3:ListBucket`, `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`, and
+`cloudfront:CreateInvalidation`. Not `s3:GetObjectVersion` or
+`s3:ListBucketVersions`.
+
+**Topology is unchanged:** one CloudFront distribution, one private
+versioned S3 bucket with OAC, one publisher role; no runtime compute,
+cache or database. Rendering happens in the workflow, never at request
+time.
+
 `scripts/check-build-contract.mjs` checks `dist/` against the build contract
 table above (every page in both route sets present and nothing else,
 canonical URLs, `hreflang`/`x-default`, the 404 page `noindex`, each legacy
@@ -366,12 +516,12 @@ listing exactly the indexable pages with matching alternates, `robots.txt`
 referencing it, root-relative references, hashed `assets/`, no leftover
 `.dev` hub URL) in both workflows.
 
-The workflow reads `PUBLISHER_ROLE_ARN` and `SITE_STACK` from the GitHub
+Both workflows read `PUBLISHER_ROLE_ARN` and `SITE_STACK` from the GitHub
 `production` environment — no account ID, bucket name, or role ARN is
-written into the workflow file. Publishing follows the same three-pass
-sequence every site in the project uses: fingerprinted `assets/` first
-(cached forever, nothing deleted yet), then everything else with
-`--delete`, then `assets/` pruned once the new HTML is live. See
+written into a workflow file. An application release follows the same
+three-pass sequence every site in the project uses: fingerprinted `assets/`
+first (cached forever, nothing deleted yet), then everything else with stale
+objects removed, then `assets/` pruned once the new HTML is live. See
 `redact-secret-sites`'
 [publisher policy](https://github.com/redact-secret/redact-secret-sites/blob/main/ARCHITECTURE.md#publisher-policy)
 and
@@ -379,7 +529,9 @@ and
 for the exact sequence.
 
 Until the `production` environment has `PUBLISHER_ROLE_ARN` and `SITE_STACK`,
-the publish job stops with a warning rather than failing. Before it can
+the publish jobs stop with a warning rather than failing. The first
+publication must be an application release: a content release needs a
+`current.json` and a deployed renderer, and fails closed without them. Before it can
 publish, `redact-secret-sites` must add
 this repository's OIDC subject to `ProductionSubjects` and deploy a
 `redactsecret-site-www-prod` stack — both are `redact-secret-sites` changes,

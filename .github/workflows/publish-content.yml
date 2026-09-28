@@ -1,0 +1,234 @@
+# Content release for www.redactsecret.com (ARCHITECTURE.md § Publish flow,
+# ADR 0003 § Two release planes): publishes i18n/ and data/ from a commit on
+# main WITHOUT building — the pages are rendered by the renderer artifact of
+# the deployed application release, verified by digest — or rolls the site
+# back to a retained content release.
+#
+# Triggers:
+#   - CI passing on a push to main (like publish-site.yml). The `plan` job
+#     publishes here only when the commit's application files match the
+#     deployed release (scripts/publish/plan.mjs); otherwise publish-site.yml
+#     builds it, and publishes its content with it.
+#   - workflow_dispatch: `publish` a commit's content (empty sha = main's
+#     head; an earlier commit republishes older content with the deployed
+#     renderer), or `rollback` to a retained release by its ID (the job
+#     summary of every release names the previous one).
+#   - repository_dispatch `upstream-feed-published`, from an upstream feed
+#     owner, with client_payload {"feed": "product"|"adapters", "revision":
+#     <40-hex>}: republishes main's committed data and reports whether the
+#     committed feed record matches. It never pulls unreviewed data; drift is
+#     reported, and fixed by a reviewed `npm run slots:refresh` PR.
+#
+# Every input is untrusted: validated here, then again by the publisher.
+# Configuration: the `production` environment, as publish-site.yml.
+name: Publish content
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: publish a commit's content, or rollback to a retained content release
+        type: choice
+        options: [publish, rollback]
+        default: publish
+      sha:
+        description: publish — commit on main whose i18n/ and data/ to publish (empty = main's head)
+        type: string
+        required: false
+      release_id:
+        description: rollback — content release ID (sha256:<64 hex>) from an earlier job summary
+        type: string
+        required: false
+  repository_dispatch:
+    types: [upstream-feed-published]
+
+permissions: {}
+
+jobs:
+  plan:
+    name: Content release or not
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'repository_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      decision: ${{ steps.plan.outputs.decision }}
+      target: ${{ steps.inputs.outputs.target }}
+      feed: ${{ steps.feed.outputs.feed }}
+      feed_revision: ${{ steps.feed.outputs.feed_revision }}
+    steps:
+      - name: Validate the trigger's inputs
+        id: inputs
+        env:
+          EVENT: ${{ github.event_name }}
+          OPERATION: ${{ inputs.operation }}
+          INPUT_SHA: ${{ inputs.sha }}
+          RELEASE_ID: ${{ inputs.release_id }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+          DEFAULT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          sha_re='^[0-9a-f]{40}$'
+          case "$EVENT" in
+            workflow_run) target="$RUN_SHA" ;;
+            workflow_dispatch)
+              [[ "$OPERATION" =~ ^(publish|rollback)$ ]] || { echo "::error::operation must be publish or rollback"; exit 1; }
+              if [ "$OPERATION" = rollback ]; then
+                [[ "$RELEASE_ID" =~ ^sha256:[0-9a-f]{64}$ ]] || { echo "::error::release_id must be sha256:<64 lowercase hex>"; exit 1; }
+                [ -z "$INPUT_SHA" ] || { echo "::error::a rollback takes release_id, not sha"; exit 1; }
+              else
+                [ -z "$RELEASE_ID" ] || { echo "::error::publish takes sha, not release_id"; exit 1; }
+              fi
+              target="${INPUT_SHA:-$DEFAULT_SHA}" ;;
+            # The payload itself is checked after checkout (dispatch-payload.mjs).
+            repository_dispatch) target="$DEFAULT_SHA" ;;
+            *) echo "::error::unexpected event"; exit 1 ;;
+          esac
+          [[ "$target" =~ $sha_re ]] || { echo "::error::sha must be a full 40-character commit SHA"; exit 1; }
+          echo "target=$target" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.inputs.outputs.target }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Refuse a commit that is not on main
+        env:
+          TARGET_SHA: ${{ steps.inputs.outputs.target }}
+        run: git merge-base --is-ancestor "$TARGET_SHA" origin/main
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      # Exactly {feed, revision}, both of the expected shape; never echoed.
+      - name: Validate the upstream dispatch payload
+        id: feed
+        if: github.event_name == 'repository_dispatch'
+        env:
+          PAYLOAD: ${{ toJSON(github.event.client_payload) }}
+        run: node scripts/publish/dispatch-payload.mjs
+
+      - name: Decide
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          OPERATION: ${{ inputs.operation }}
+          TARGET_SHA: ${{ steps.inputs.outputs.target }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://www.redactsecret.com' }}
+        run: |
+          case "$EVENT" in
+            workflow_dispatch) echo "decision=$OPERATION" >> "$GITHUB_OUTPUT" ;;
+            repository_dispatch) echo "decision=publish" >> "$GITHUB_OUTPUT" ;;
+            workflow_run)
+              curl -fsS --max-time 20 --proto '=https' "$SITE_URL/current.json" -o "$RUNNER_TEMP/current.json" || rm -f "$RUNNER_TEMP/current.json"
+              node scripts/publish/plan.mjs --current "$RUNNER_TEMP/current.json" --target "$TARGET_SHA" --output "$RUNNER_TEMP/plan"
+              if grep -qx 'decision=content' "$RUNNER_TEMP/plan"; then
+                echo "decision=publish" >> "$GITHUB_OUTPUT"
+              else
+                echo "decision=skip" >> "$GITHUB_OUTPUT"
+                echo "Application files changed: publish-site.yml publishes this commit." >> "$GITHUB_STEP_SUMMARY"
+              fi ;;
+          esac
+
+  publish:
+    name: Publish content to production
+    needs: plan
+    if: needs.plan.outputs.decision == 'publish' || needs.plan.outputs.decision == 'rollback'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    # One publish at a time across both release planes, never cancelled mid-sync.
+    concurrency:
+      group: publish-www-production
+      cancel-in-progress: false
+    env:
+      AWS_REGION: us-east-1
+      TARGET_SHA: ${{ needs.plan.outputs.target }}
+      OPERATION: ${{ needs.plan.outputs.decision }}
+    steps:
+      - name: Check the production environment is configured
+        id: config
+        env:
+          PUBLISHER_ROLE_ARN: ${{ vars.PUBLISHER_ROLE_ARN }}
+          SITE_STACK: ${{ vars.SITE_STACK }}
+        run: |
+          if [ -z "$PUBLISHER_ROLE_ARN" ] || [ -z "$SITE_STACK" ]; then
+            echo "::warning::production environment has no PUBLISHER_ROLE_ARN/SITE_STACK yet; nothing published. See ARCHITECTURE.md § Publish flow."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.config.outputs.ready == 'true'
+        with:
+          ref: ${{ env.TARGET_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Refuse a commit that is not on main
+        if: steps.config.outputs.ready == 'true'
+        run: |
+          [[ "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::no valid target commit"; exit 1; }
+          git merge-base --is-ancestor "$TARGET_SHA" origin/main
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: steps.config.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      # The only install; it runs before any AWS session exists. No build.
+      - if: steps.config.outputs.ready == 'true'
+        run: npm ci
+
+      # Schemas, provenance, the secret scan (check-data); files, en/ko
+      # parity, links, size and unread keys (check-i18n).
+      - name: Validate the content
+        if: steps.config.outputs.ready == 'true' && env.OPERATION == 'publish'
+        run: |
+          node scripts/check-data.mjs
+          node scripts/check-i18n.mjs
+
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        if: steps.config.outputs.ready == 'true'
+        with:
+          role-to-assume: ${{ vars.PUBLISHER_ROLE_ARN }}
+          aws-region: us-east-1
+          role-session-name: publish-www-content-${{ github.run_id }}
+
+      # Resolves the deployed renderer from current.json and verifies it by
+      # digest, renders, secret-scans, uploads content/<release>/ (manifest
+      # last), reads every object back, then writes changed stable pages and
+      # current.json last; invalidates only what changed; keeps the last
+      # releases for rollback. Never writes under assets/ or releases/.
+      - name: Publish
+        if: steps.config.outputs.ready == 'true'
+        env:
+          SITE_STACK: ${{ vars.SITE_STACK }}
+          EVENT: ${{ github.event_name }}
+          RELEASE_ID: ${{ inputs.release_id }}
+          FEED: ${{ needs.plan.outputs.feed }}
+          FEED_REVISION: ${{ needs.plan.outputs.feed_revision }}
+        run: |
+          set -euo pipefail
+          if [ "$OPERATION" = rollback ]; then
+            node scripts/publish/cli.mjs rollback --stack "$SITE_STACK" --release-id "$RELEASE_ID" --summary "$GITHUB_STEP_SUMMARY"
+          else
+            feed=()
+            if [ "$EVENT" = repository_dispatch ]; then feed=(--feed "$FEED" --feed-revision "$FEED_REVISION"); fi
+            node scripts/publish/cli.mjs content --stack "$SITE_STACK" --commit "$TARGET_SHA" --trigger "$EVENT" "${feed[@]}" --summary "$GITHUB_STEP_SUMMARY"
+          fi

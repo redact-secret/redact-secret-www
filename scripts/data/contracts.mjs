@@ -34,6 +34,17 @@ export const targets = [
   { dir: 'i18n', family: (path) => `locale-${path.split('/').slice(2).join('-').replace(/\.json$/, '')}` },
 ];
 
+/** The contract family a repository-relative path must declare, or undefined if no target registers it. */
+export function familyForPath(path) {
+  for (const target of targets) {
+    if (target.path === path) return target.family;
+    if (target.dir && path.startsWith(`${target.dir}/`) && path.endsWith('.json')) {
+      return typeof target.family === 'function' ? target.family(path) : target.family;
+    }
+  }
+  return undefined;
+}
+
 /** Every directory whose *.json files must all be registered in `targets`. */
 export const governedDirs = ['data', 'i18n'];
 

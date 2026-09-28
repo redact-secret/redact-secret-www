@@ -21,8 +21,6 @@ import type { ArchitecturePagesCopy } from '../../content';
 import type { Locale } from '../../i18n';
 import { evidence } from '../../slots';
 
-const { matrix, taxonomy, staleProse, sources, measurement } = evidence;
-
 /** `2026-09-21` → `September 21` / `9월 21일`. */
 const monthDay: Record<Locale, (date: string) => string> = {
   en: (date) => new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' }),
@@ -42,6 +40,7 @@ const cleverTones = ['danger', 'success'] as const;
 
 /** 03 How a support claim is built. Words: i18n/<locale>/architecture/support-claims.json. */
 export function SupportClaims({ locale, copy }: { locale: Locale; copy: ArchitecturePagesCopy['support-claims'] }) {
+  const { matrix, taxonomy, staleProse, sources, measurement } = evidence;
   const { head, theProblem: problem, theThreeInputs: inputs, theJoin: join, theCleverPart: clever } = copy;
   const { notEveryLookalikeCounts: lookalike, whatARowSays: row, statusDistribution: dist, countingCarefully: counting } = copy;
   const { measuredOn, measuredUnknown, gated, notGated } = counting;

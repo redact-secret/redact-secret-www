@@ -1,6 +1,13 @@
 import type { Preview } from '@storybook/preact-vite';
+import { installSiteData, type SiteData } from '../src/site-data';
+import release from '../data/release.json';
+import evidence from '../data/evidence.json';
+import integrations from '../data/integrations.json';
 import '../src/tokens.css';
 import '../src/style.css';
+
+// Stories render components that read the slots; give them the committed data.
+installSiteData({ release, evidence, integrations } as unknown as SiteData);
 
 const preview: Preview = {
   globalTypes: {

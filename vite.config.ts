@@ -11,7 +11,8 @@ import { legacyRedirectDocument, legacyRedirects, robotsTxt, sitemapXml } from '
 function siteFiles(): Plugin {
   return {
     name: 'site-files',
-    apply: 'build',
+    // The client build only: the renderer build (scripts/build-site.mjs) writes no site files.
+    apply: (_config, { command, isSsrBuild }) => command === 'build' && !isSsrBuild,
     generateBundle() {
       this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemapXml(siteOrigin) });
       this.emitFile({ type: 'asset', fileName: 'robots.txt', source: robotsTxt(siteOrigin) });
@@ -22,23 +23,15 @@ function siteFiles(): Plugin {
   };
 }
 
-// Static output: every route below is prerendered to its own directory
-// (dist/index.html, dist/ko/index.html, dist/architecture/…), matching the
-// `directory` routing mode in redact-secret-sites. Links found while
-// rendering are crawled too: that is how the architecture sub-pages are
-// found (every hub links all of them), and CI's build-contract check
+// The client build: dist/assets/ (hashed, copy-independent) and dist/index.html
+// as the page template. It holds no copy and no data. scripts/build-site.mjs
+// runs it, then builds the renderer (src/render.tsx) and renders every page of
+// both route sets into its own directory (dist/index.html, dist/ko/index.html,
+// dist/architecture/…), matching the `directory` routing mode in
+// redact-secret-sites; CI's build-contract check
 // (scripts/check-build-contract.mjs) fails if one is missing.
 export default defineConfig({
   // The playground engine runs in a module worker that dynamically loads wasm.
   worker: { format: 'es' },
-  plugins: [
-    preact({
-      prerender: {
-        enabled: true,
-        renderTarget: '#app',
-        additionalPrerenderRoutes: ['/ko', '/404', '/architecture', '/ko/architecture'],
-      },
-    }),
-    siteFiles(),
-  ],
+  plugins: [preact(), siteFiles()],
 });

@@ -1,13 +1,15 @@
 /**
- * The page-level loader for locale copy: every i18n/<locale>/**.json file,
- * imported statically so the build prerenders complete HTML and hydrates
- * from the same objects. scripts/check-data.mjs validates each file against
- * its schema (schemas/locale-*-v1.schema.json) and scripts/check-i18n.mjs
- * checks keys, en/ko parity, links and size before the build reads them.
+ * The copy types, and the working tree's copy as one ContentBundle for the
+ * places that render from source: the dev server (src/dev.ts) and Storybook.
+ * scripts/check-data.mjs validates each file against its schema
+ * (schemas/locale-*-v1.schema.json) and scripts/check-i18n.mjs checks keys,
+ * en/ko parity, links and size.
  *
- * Nothing below src/pages imports these files: pages and components receive
- * the copy objects as props, so a renderer can pass any validated set of
- * them (ContentBundle) without rebuilding application code.
+ * The site itself never bundles these imports: the renderer (src/render.tsx)
+ * reads a content release's files as arguments and embeds each page's slice
+ * in its HTML, which the browser hydrates from (src/main.tsx). Nothing below
+ * src/pages imports these files either: pages and components receive the
+ * copy objects as props.
  */
 import type { Locale } from '../i18n';
 import type {

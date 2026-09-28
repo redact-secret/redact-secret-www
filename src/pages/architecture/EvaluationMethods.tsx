@@ -18,8 +18,6 @@ import type { ArchitecturePagesCopy } from '../../content';
 import type { Locale } from '../../i18n';
 import { evidence } from '../../slots';
 
-const { sources } = evidence;
-
 // The grading lattice is the benchmark's mechanism: each verdict's byte
 // pattern over an eight-byte example, and whether it passes.
 const lattice = [
@@ -38,6 +36,7 @@ const buysTones = ['success', 'none'] as const;
 
 /** 04 Evaluation methods. Words: i18n/<locale>/architecture/evaluation-methods.json. */
 export function EvaluationMethods({ copy }: { locale: Locale; copy: ArchitecturePagesCopy['evaluation-methods'] }) {
+  const { sources } = evidence;
   const { head, theRule: rule, howAResultIsGraded: graded, theTenMethods: ten, theEscapeHatch: hatch, whatItAllBuys: buys } = copy;
   return (
     <>

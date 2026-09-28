@@ -2,12 +2,10 @@
  * The integrations block's structure — which cards exist, in which group and
  * runtime, backed by which package — read from data/integrations.json
  * (integrations-v1). Shared by both locales; each locale authors the words
- * for a card id (content/*.tsx), the slots supply every version.
+ * for a card id (i18n/<locale>/home.json), the slots supply every version.
+ * Installed with the rest of a content release's data (src/site-data.ts).
  */
-import integrationsJson from '../../data/integrations.json';
 import type { IntegrationsV1 } from '../contracts';
-
-const integrations = integrationsJson as unknown as IntegrationsV1.IntegrationsV1;
 
 export type FactKind = IntegrationsV1.FactKind;
 
@@ -27,15 +25,20 @@ function card({ install, ...entry }: IntegrationsV1.CardEntry): CardDef {
   return install ? { ...entry, install: (version) => install.replaceAll('{version}', version) } : entry;
 }
 
-export const integrationGroups: GroupDef[] = integrations.groups.map((group) =>
-  'cards' in group
-    ? { id: group.id, cards: group.cards.map(card) }
-    : {
-        id: group.id,
-        runtimes: {
-          browser: group.runtimes.browser.map(card),
-          node: group.runtimes.node.map(card),
-          python: group.runtimes.python.map(card),
+/** Set by installIntegrations before any render. */
+export let integrationGroups!: GroupDef[];
+
+export function installIntegrations(integrations: IntegrationsV1.IntegrationsV1) {
+  integrationGroups = integrations.groups.map((group) =>
+    'cards' in group
+      ? { id: group.id, cards: group.cards.map(card) }
+      : {
+          id: group.id,
+          runtimes: {
+            browser: group.runtimes.browser.map(card),
+            node: group.runtimes.node.map(card),
+            python: group.runtimes.python.map(card),
+          },
         },
-      },
-);
+  );
+}
