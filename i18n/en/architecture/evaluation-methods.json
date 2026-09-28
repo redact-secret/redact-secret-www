@@ -1,0 +1,408 @@
+{
+  "schemaVersion": "locale-architecture-evaluation-methods-v1",
+  "locale": "en",
+  "head": {
+    "eyebrow": "04 · Evaluation methods",
+    "title": "The scanner never gets a vote on whether it was right",
+    "lede": "Ten test methods. One rule underneath all of them."
+  },
+  "theRule": {
+    "eyebrow": "The rule",
+    "title": "Write down the answer first. Then run it.",
+    "lede": [
+      "Every method insists the expected result is authored, reviewed and hashed ",
+      {
+        "em": "before"
+      },
+      " any scanner touches the bytes. Not as a nicety, but as ",
+      {
+        "b": "the thing that makes a number mean anything"
+      },
+      "."
+    ],
+    "rows": [
+      {
+        "term": "Spec 01",
+        "body": "“A scanner result must never create or revise ground truth.”"
+      },
+      {
+        "term": "Spec 04",
+        "body": "“…rather than inferring validity from scanner agreement.”"
+      },
+      {
+        "term": "Spec 05",
+        "body": "“Recalculate spans from construction, never by searching scanner output.”"
+      },
+      {
+        "term": "Spec 06",
+        "body": "“Never relabel a control because a competitor flags it.”"
+      },
+      {
+        "term": "Spec 08",
+        "body": "“Majority agreement cannot promote, demote, or rewrite an expectation.”"
+      }
+    ],
+    "p": [
+      "Scanners are even kept in the dark: adapters get only the fixture's identity and its bytes, ",
+      {
+        "b": "never the expectation, never the evidence tier."
+      }
+    ]
+  },
+  "howAResultIsGraded": {
+    "eyebrow": "How a result is graded",
+    "title": "Five answers, not two",
+    "lede": [
+      "“Did it find the secret?” is too blunt. The true span is known to the byte, so the grade is about ",
+      {
+        "em": "which bytes"
+      },
+      "."
+    ],
+    "passLabel": "Pass",
+    "failLabel": "Fail",
+    "hit": "secret bytes, redacted",
+    "leak": "secret bytes that leaked",
+    "over": "innocent bytes taken too",
+    "rows": [
+      {
+        "description": "Redacts exactly the secret bytes"
+      },
+      {
+        "description": "Redacts the whole secret plus one byte either side, within the allowance"
+      },
+      {
+        "description": "Redacts the secret but takes surrounding text beyond the allowance"
+      },
+      {
+        "description": "Redacts part of the secret; the last byte leaks"
+      },
+      {
+        "description": "Every secret byte leaks"
+      }
+    ],
+    "claimSub": [
+      "That is ",
+      {
+        "b": "Partial"
+      },
+      ", and it fails. So does ",
+      {
+        "b": "Overbroad"
+      },
+      ": swallowing the paragraph around the key hides the key but destroys the log line. Only a span inside its authored allowance passes."
+    ],
+    "claim": "Catching 31 of 32 bytes is not a near miss. It is a leak."
+  },
+  "theTenMethods": {
+    "eyebrow": "The ten methods",
+    "title": "Each one asks a different way to be wrong",
+    "lede": [
+      "They are numbered because they are a sequence: everything after the first is ",
+      {
+        "em": "derived"
+      },
+      " from it. You cannot write a twin without a canonical positive to twin."
+    ],
+    "phases": [
+      {
+        "title": "First, make a truth",
+        "body": "one credential, one simplest case"
+      },
+      {
+        "title": "Then prove it is fussy, not greedy",
+        "body": "a detector that matches more text looks better on positives alone"
+      },
+      {
+        "title": "Then attack it",
+        "body": "edges, characters, containers, and machine-made variants"
+      },
+      {
+        "title": "Then look outward, and forward",
+        "body": "other tools, unseen cases, and the passage of time"
+      }
+    ],
+    "methods": [
+      {
+        "title": "Canonical positive",
+        "ask": "Does it find the easy one?",
+        "gist": [
+          "The seed every other method grows from. Byte ranges, evidence and source hash are recorded ",
+          {
+            "b": "before"
+          },
+          " a scanner runs. ",
+          {
+            "b": "Passing this alone earns no support claim at all."
+          }
+        ]
+      },
+      {
+        "title": "Negative twin",
+        "ask": "Change exactly one thing. Does it go quiet?",
+        "gist": [
+          "One mutation only: prefix, length, alphabet, boundary or public-prefix. Two changes is not a twin. The pair is scored as ",
+          {
+            "b": "one unit"
+          },
+          ", so you cannot win by flagging everything."
+        ],
+        "sampleLabel": "Negative twin example",
+        "sample": [
+          "ACME_KEY=… ",
+          {
+            "dim": "must fire"
+          },
+          "\nACMX_KEY=… ",
+          {
+            "dim": "must not"
+          }
+        ]
+      },
+      {
+        "title": "Boundary cases",
+        "ask": "What happens one character either side of the rule?",
+        "gist": [
+          "Every documented length and delimiter needs a case ",
+          {
+            "b": "inside and outside"
+          },
+          " it, or a written reason why that pair is meaningless. Catches off-by-one ranges and accidental substring matches — down to end of file, no final newline, CRLF, and touching the next token."
+        ]
+      },
+      {
+        "title": "Alphabet mutations",
+        "ask": "Is it really checking the body, or just the prefix and the length?",
+        "gist": [
+          "One character swapped, everything else held still. A cheap detector that only checks “right prefix, roughly right length” fails ",
+          {
+            "b": "here and nowhere else"
+          },
+          "."
+        ],
+        "sampleLabel": "Alphabet mutation example",
+        "sample": [
+          "ACME_a9f3k2… ",
+          {
+            "dim": "legal characters, fire"
+          },
+          "\nACME_a9f!k2… ",
+          {
+            "dim": "illegal character, silent"
+          }
+        ]
+      },
+      {
+        "title": "Context permutations",
+        "ask": "Same key, different wrapper. Same answer?",
+        "gist": [
+          "bare · .env · JSON · YAML · TOML · source code · Markdown · URI · quoted · CRLF. The credential bytes do not change; everything around them does. The expected answer must ",
+          {
+            "b": "survive every supported wrapper"
+          },
+          ", and each context is reported separately so one big family cannot hide one weak one."
+        ]
+      },
+      {
+        "title": "Benign lookalikes",
+        "ask": "Does it stay silent on things that merely look like keys?",
+        "gist": [
+          "Deliberately close to the real thing, each one probing a specific way to overmatch. Policy-based controls are counted in a ",
+          {
+            "b": "separate denominator"
+          },
+          " from source-backed ones, so a judgement call cannot dilute a fact."
+        ],
+        "sampleLabel": "Benign lookalike examples",
+        "sample": [
+          "AKIAIOSFODNN7EXAMPLE ",
+          {
+            "dim": "from the vendor's own docs"
+          },
+          "\n<your-api-key-here>  ",
+          {
+            "dim": "placeholder"
+          },
+          "\npk_live_…            ",
+          {
+            "dim": "publishable, meant to be public"
+          }
+        ]
+      },
+      {
+        "title": "Generated mutations",
+        "ask": "What about the thousand variants nobody would hand-write?",
+        "gist": [
+          "Explicitly ",
+          {
+            "b": "not fuzzing"
+          },
+          ": variants are generated before any scan, each tagged in advance as preserve, invalidate or review-required, and bounded in count and cost. With operator v3, seed 41 and the source hash, ",
+          {
+            "b": "a clean checkout reproduces them byte for byte"
+          },
+          "."
+        ]
+      },
+      {
+        "title": "Competitor disagreement",
+        "ask": "Where do we and Gitleaks and TruffleHog differ on identical bytes?",
+        "gist": [
+          "Competitors are ",
+          {
+            "b": "observations, never an oracle"
+          },
+          ". Every adapter is graded against the authored expectation on its own. A disagreement ",
+          {
+            "b": "opens a review item"
+          },
+          " for a human; it never edits the expectation."
+        ]
+      },
+      {
+        "title": "Holdout evaluation",
+        "ask": "How does it do on cases it was never tuned against?",
+        "gist": [
+          "The exam nobody studied for. The ordinary development command ",
+          {
+            "b": "cannot even read"
+          },
+          " the holdout corpus, the candidate is frozen before the cases are revealed, and touching the candidate afterwards voids the run. A newer rule closes the last loophole: ",
+          {
+            "b": "holdout results may never be used to pick scorer thresholds or weights"
+          },
+          ", and retuning because of what holdout showed contaminates the epoch."
+        ]
+      },
+      {
+        "title": "Regression freeze",
+        "ask": "Could we quietly break this next month?",
+        "gist": [
+          "A finished run becomes an immutable comparison point (",
+          {
+            "code": [
+              "baselines/",
+              {
+                "var": "baseline"
+              },
+              ".json"
+            ]
+          },
+          " — fixture hashes, versions, every outcome). A new ",
+          {
+            "b": "Partial"
+          },
+          ", ",
+          {
+            "b": "Miss"
+          },
+          " or false alarm fails the build. An intentional change needs ",
+          {
+            "b": "a written, approved reason"
+          },
+          " before the baseline moves, and improvements never erase the old record."
+        ]
+      }
+    ]
+  },
+  "theEscapeHatch": {
+    "eyebrow": "The escape hatch",
+    "title": "There is a third answer",
+    "lede": [
+      "Real formats are ambiguous at the edges. A suite that forces every case into pass or fail ",
+      {
+        "b": "starts inventing facts."
+      },
+      " So these methods keep a third bucket."
+    ],
+    "cards": [
+      {
+        "chip": "Preserve",
+        "body": "Still a secret after the change. Must be caught."
+      },
+      {
+        "chip": "Invalidate",
+        "body": "No longer a secret. Must be ignored."
+      },
+      {
+        "chip": "Review required",
+        "body": [
+          "Nobody knows yet. ",
+          {
+            "b": "Scored as nothing"
+          },
+          "; a human decides."
+        ]
+      }
+    ],
+    "p": [
+      "A review-required case makes no pass or fail claim and never enters an average. The same goes for ",
+      {
+        "b": "T0"
+      },
+      " evidence: observable, inspectable, and deliberately unscored."
+    ],
+    "note": [
+      {
+        "b": "Why this matters:"
+      },
+      " the alternative is settling ambiguity by seeing what the scanners did, which is exactly the loop the whole suite exists to break."
+    ]
+  },
+  "whatItAllBuys": {
+    "eyebrow": "What it all buys",
+    "title": "Even with all ten green",
+    "cards": [
+      {
+        "chip": "Proven",
+        "body": "That on these exact bytes, at this exact version, with these pinned tool versions, the scanner behaved as reviewers said it should — and that anyone can reproduce it from a clean checkout."
+      },
+      {
+        "chip": "Not proven",
+        "body": [
+          "Production accuracy. Method 01 says so outright: this is ",
+          {
+            "em": "fixture-relative"
+          },
+          " coverage. Method 09 adds that holdout does not establish production accuracy either. ",
+          {
+            "b": "Ten green methods describe the corpus, not the world."
+          }
+        ]
+      }
+    ],
+    "p": [
+      "Which is why no single method is enough on its own, and why the support matrix grades a family on ",
+      {
+        "b": "how many of these it has cleared"
+      },
+      " rather than on ",
+      {
+        "b": "whether it was ever detected once"
+      },
+      "."
+    ]
+  },
+  "sources": {
+    "label": "Sources.",
+    "body": [
+      "The ten specs in ",
+      {
+        "code": "docs/specs/evaluation-methods/"
+      },
+      " in the benchmarks repository at ",
+      {
+        "code": [
+          {
+            "var": "benchmarksCommit"
+          }
+        ]
+      },
+      ", read in full on ",
+      {
+        "var": "observedAt"
+      },
+      ". Quoted lines are verbatim; the examples are synthetic illustrations of each method's shape, not fixtures copied from the corpus."
+    ]
+  }
+}

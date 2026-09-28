@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "locale-architecture-overview-v1",
+  "locale": "en",
+  "eyebrow": "Architecture",
+  "title": "The rules are written once",
+  "lede": "Detection, overlap resolution, policy and redaction happen inside one Rust core, and JavaScript, Python, Rust and the CLI all call it. This section covers what that core decides, how well those decisions are measured, and what the text passes through on its way in.",
+  "claim": {
+    "line": "One core, four surfaces.",
+    "sub": "Each language gets a translator, never its own copy of the rules. JavaScript and Python cannot quietly disagree about what a secret is."
+  },
+  "groups": {
+    "engine": {
+      "eyebrow": "The engine",
+      "title": "What decides"
+    },
+    "evidence": {
+      "eyebrow": "The evidence",
+      "title": "Why those decisions can be trusted"
+    },
+    "boundaries": {
+      "eyebrow": "The boundaries",
+      "title": "Outside the core, in their own repositories"
+    }
+  },
+  "cards": {
+    "how-it-works": {
+      "question": "“What is this thing?”",
+      "body": "Four surfaces over one core, the four pipeline stages, two build profiles, and why it guards a different door from a repository scanner."
+    },
+    "detection": {
+      "question": "“How sure, and why?”",
+      "body": "Five tiers of evidence, fixed tie-breakers, why there is no regex engine, and bringing your own ruleset."
+    },
+    "support-claims": {
+      "question": "“What shipped, what does the world issue, how did each one measure?”",
+      "body": "Three files answer three different questions. A support claim exists only after they are joined, so there is no place to type one by hand."
+    },
+    "evaluation-methods": {
+      "question": "“Ten ways to be wrong”",
+      "body": "Write the answer first, then run it. A result is graded five ways over byte ranges, not two, and the scanner gets no vote."
+    },
+    "adapters": {
+      "question": "“Who fetches the text?”",
+      "body": "Packages that sit between your host and the engine. They decide nothing, and when they fail they print a marker instead of the value."
+    },
+    "vault": {
+      "question": "“What if you need the original back?”",
+      "body": "The core throws the original away. The vault is the one place allowed to keep it, and it is built to make that hard."
+    }
+  },
+  "repos": {
+    "eyebrow": "In one line",
+    "title": "Four repositories, one direction",
+    "lede": "Dependencies run one way. The vault may use the core's public API; the core and the adapters never depend on the vault. That is what keeps “I installed the scanner” from ever meaning “I created a recoverable copy of my secrets”.",
+    "tableLabel": "What each repository owns",
+    "head": [
+      "Repository",
+      "Owns",
+      "Must not own"
+    ],
+    "rows": [
+      {
+        "repo": "redact-secret",
+        "owns": "Detection, overlap resolution, policy, redaction, safe metadata, placeholders",
+        "mustNot": "Restoration storage, restore authorization, any dependency on the vault"
+      },
+      {
+        "repo": "redact-secret-vault",
+        "owns": "Mapping lifecycle, opaque tokens, restore checks, storage extension points",
+        "mustNot": "Detection rules, PII classification, changes to core policy"
+      },
+      {
+        "repo": "redact-secret-adapters",
+        "owns": "Host integrations for logs, traces, AI context and MCP",
+        "mustNot": "Restoration, or emitting mapped plaintext to observability"
+      },
+      {
+        "repo": "redact-secret-benchmarks",
+        "owns": "Detection and support evidence",
+        "mustNot": "Treating restoration success as detection accuracy"
+      }
+    ]
+  },
+  "sources": {
+    "label": "Sources for this section.",
+    "body": [
+      "The core from ",
+      {
+        "code": "README.md"
+      },
+      " and ",
+      {
+        "code": "ARCHITECTURE.md"
+      },
+      "; family counts and statuses from the generated ",
+      {
+        "code": "docs/support-matrix.md"
+      },
+      "; versions from the package registries; methods and taxonomy from ",
+      {
+        "code": "docs/specs/"
+      },
+      " in the benchmarks repository. Each page states its own sources."
+    ]
+  }
+}

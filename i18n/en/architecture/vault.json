@@ -1,0 +1,454 @@
+{
+  "schemaVersion": "locale-architecture-vault-v1",
+  "locale": "en",
+  "statusLabels": {
+    "released": "Released",
+    "alpha": "Alpha",
+    "unpublished": "Not published"
+  },
+  "head": {
+    "eyebrow": "06 · Vault",
+    "title": "The core throws the original away. Sometimes you need it back.",
+    "lede": [
+      "This is the ",
+      {
+        "b": "one place"
+      },
+      " allowed to keep it, and it is built to make that hard."
+    ]
+  },
+  "theTension": {
+    "eyebrow": "The tension",
+    "title": "Two good rules that contradict each other",
+    "cards": [
+      {
+        "title": "The core's promise",
+        "body": [
+          "It detects and redacts ",
+          {
+            "b": "without ever storing the matched plaintext"
+          },
+          ". A finding is a type and a range. ",
+          {
+            "b": "There is nothing to steal, because nothing was kept."
+          }
+        ]
+      },
+      {
+        "title": "The real requirement",
+        "body": [
+          "An agent redacts a customer's card number, gets an answer, and now has to place the real order. ",
+          {
+            "b": "Something, somewhere, has to put the value back."
+          }
+        ]
+      }
+    ],
+    "note": [
+      {
+        "b": "The resolution is a separate repository."
+      },
+      " Installing or using the core alone must never create a recoverable mapping. You have to ",
+      {
+        "b": "reach for this deliberately"
+      },
+      ", and reaching for it changes your security model."
+    ]
+  },
+  "theShapeOfIt": {
+    "eyebrow": "The shape of it",
+    "title": "Redact with a receipt",
+    "steps": [
+      {
+        "title": "Original text, in a trusted runtime",
+        "body": [
+          "The vault is opened explicitly, with a ",
+          {
+            "b": "bounded scope and lifetime"
+          },
+          "."
+        ],
+        "arrow": "the core scans, under your policy"
+      },
+      {
+        "title": "Sanitized text plus a token",
+        "body": [
+          {
+            "placeholder": "<rsv_…>"
+          },
+          " — 128 random bits, bound to one vault and one capture. ",
+          {
+            "b": "The original stays behind, in memory, on the trusted side."
+          }
+        ],
+        "arrow": "only the sanitized text crosses the boundary"
+      },
+      {
+        "title": "The model, the log, the third party",
+        "body": [
+          "They see the token. ",
+          {
+            "b": "The token is not the value and cannot become it."
+          }
+        ],
+        "arrow": "later, an authorized restore"
+      }
+    ],
+    "claimSub": "And nowhere else.",
+    "claim": "The approved value, to the approved destination"
+  },
+  "theCentralRule": {
+    "eyebrow": "The central rule",
+    "title": "A token alone grants nothing",
+    "lede": [
+      "This is the idea the whole design turns on. ",
+      {
+        "b": "Holding the receipt is not permission to collect."
+      },
+      " At restore time, a server integration resolves who is asking and why from ",
+      {
+        "b": "trusted runtime context, never from something the model said"
+      },
+      "."
+    ],
+    "gates": [
+      {
+        "title": "Principal.",
+        "body": "Which authenticated identity is asking."
+      },
+      {
+        "title": "Tenant.",
+        "body": "Cross-tenant lookups fail."
+      },
+      {
+        "title": "Source.",
+        "body": "Where the capture came from."
+      },
+      {
+        "title": "Sink and exact path.",
+        "body": "Which destination, and which structural field inside it."
+      },
+      {
+        "title": "Purpose.",
+        "body": "What it is for, declared by the application."
+      },
+      {
+        "title": "Liveness.",
+        "body": "Expiry, revocation, usage budget, and the exact issued tokens."
+      }
+    ],
+    "note": [
+      {
+        "b": "All of it, or none of it."
+      },
+      " The whole operation is preflighted against every check at once. ",
+      {
+        "b": "One violation rejects the complete operation"
+      },
+      ", with no partial plaintext returned and no budget consumed."
+    ]
+  },
+  "aTrapItClosesOnPurpose": {
+    "eyebrow": "A trap it closes on purpose",
+    "title": "A visible label is not a key",
+    "lede": [
+      "The core can format a typed placeholder from safe metadata, such as ",
+      {
+        "code": "<JWT_1>"
+      },
+      ", including PII types like ",
+      {
+        "code": "<PII_JURISDICTION_US_SSN_1>"
+      },
+      ". It is tempting to treat a label like that as ",
+      {
+        "b": "proof the value was kept"
+      },
+      "."
+    ],
+    "cards": [
+      {
+        "chip": "Grants nothing",
+        "body": [
+          "A typed display placeholder, whether the core's own or an application label like ",
+          {
+            "code": "<SSN_1>"
+          },
+          ". ",
+          {
+            "b": "It is a formatting concern."
+          },
+          " It does not imply the original was retained, or can be restored."
+        ]
+      },
+      {
+        "chip": "Grants a chance",
+        "body": [
+          "An issued vault token, ",
+          {
+            "em": "plus"
+          },
+          " an application grant naming the sink and the exact path. ",
+          {
+            "b": "Restoration never parses a display placeholder as proof of ownership."
+          }
+        ]
+      }
+    ],
+    "p": [
+      "Which matters because a model can write ",
+      {
+        "code": "<SSN_1>"
+      },
+      " into its output whenever it likes. ",
+      {
+        "b": "Model output, tool arguments and visible placeholder text cannot authorize their own restoration."
+      }
+    ]
+  },
+  "whatMayBeKept": {
+    "eyebrow": "What may be kept",
+    "title": "Never everything",
+    "rows": [
+      {
+        "term": "Blocked",
+        "body": [
+          "A core ",
+          {
+            "code": "block"
+          },
+          " finding, private-key material, can ",
+          {
+            "b": "never"
+          },
+          " become a restorable entry. Not opt-in, not configurable."
+        ]
+      },
+      {
+        "term": "Other findings",
+        "body": [
+          "Require an explicit eligibility decision. Retention is opt-in, ",
+          {
+            "b": "never a side effect"
+          },
+          "."
+        ]
+      },
+      {
+        "term": "Personal data",
+        "body": [
+          "Retained only when the application names its ",
+          {
+            "em": "exact"
+          },
+          " type in the capture's allowlist, ",
+          {
+            "code": "pii: { retain: […] }"
+          },
+          ". Every other PII finding becomes a ",
+          {
+            "b": "display placeholder that cannot be restored"
+          },
+          "."
+        ]
+      }
+    ],
+    "note": [
+      {
+        "b": "Note the direction of the default."
+      },
+      " Everything is unrecoverable unless you named it. ",
+      {
+        "b": "There is no “retain everything” switch to leave on by mistake."
+      }
+    ]
+  },
+  "thePieces": {
+    "eyebrow": "The pieces",
+    "title": "Two published, one research, one on paper",
+    "tiles": [
+      [
+        "The portable piece: opt-in, bounded, in-memory capture and the token lifecycle. Qualified for Node.js 20/22/24 and the browser main thread, with an optional dedicated-Worker mode qualified ",
+        {
+          "em": "separately"
+        },
+        " — ",
+        {
+          "b": "Worker mode is not an implicit upgrade"
+        },
+        ", and the two modes' guarantees are documented apart."
+      ],
+      "The authority layer: principal, tenant, source, sink, path and purpose checks on every restore, with an in-memory backend built on the package above. Tested on Node.js 20/22/24.",
+      [
+        "Research-grade. A native Python implementation of the same ",
+        {
+          "em": "server authority"
+        },
+        " contract, not of the portable vault API. It passes the shared conformance corpus against the real core through a documented Node.js service boundary."
+      ],
+      [
+        "Persistent backends. A written contract exists; no implementation does. ",
+        {
+          "b": "Persistence is a storage choice, not a third trust environment."
+        }
+      ]
+    ],
+    "contractLabel": "Contract only",
+    "p": "The npm names do not make this JavaScript-only. The server security contract is language-neutral, and Python, Rust and Go each need their own native distribution or a separately qualified service boundary."
+  },
+  "beingHonest": {
+    "eyebrow": "Being honest",
+    "title": "It says alpha, and means it",
+    "limitsTitle": "Known limits, stated by the repository itself",
+    "items": [
+      [
+        {
+          "b": "No persistence."
+        },
+        " In-memory only. The persistent-store contract is written; nothing implements it."
+      ],
+      [
+        {
+          "b": "No streaming."
+        },
+        " Whole-input capture and structured-field restoration only."
+      ],
+      [
+        {
+          "b": "Browser memory is the page's trust boundary."
+        },
+        " A browser vault is for final display. It cannot enforce multi-user server authorization, ",
+        {
+          "b": "and it must not pretend to."
+        }
+      ],
+      [
+        {
+          "b": "Memory cannot be wiped on demand."
+        },
+        " No library can guarantee a managed-runtime string has been erased from every copy. The repository ",
+        {
+          "b": "says so outright"
+        },
+        " rather than implying otherwise."
+      ],
+      [
+        {
+          "b": "Not qualified for"
+        },
+        " edge runtimes, SharedWorker, Service Worker or Node.js ",
+        {
+          "code": "worker_threads"
+        },
+        "."
+      ]
+    ],
+    "trapTitle": "A real install trap",
+    "trap": [
+      "npm's ",
+      {
+        "code": "latest"
+      },
+      " tag on ",
+      {
+        "code": [
+          {
+            "var": "name"
+          }
+        ]
+      },
+      " points at ",
+      {
+        "code": [
+          {
+            "var": "latest"
+          }
+        ]
+      },
+      ", which pins an older core beta and ",
+      {
+        "b": [
+          "conflicts with core ",
+          {
+            "var": "npm"
+          },
+          "."
+        ]
+      },
+      " The ",
+      {
+        "code": [
+          {
+            "var": "tag"
+          }
+        ]
+      },
+      " tag points at ",
+      {
+        "code": [
+          {
+            "var": "version"
+          }
+        ]
+      },
+      ", which pins core ",
+      {
+        "code": [
+          {
+            "var": "redactSecretCore"
+          }
+        ]
+      },
+      " and is the one that matches. ",
+      {
+        "b": "Install exact versions rather than a dist-tag."
+      }
+    ]
+  },
+  "sources": {
+    "label": "Sources.",
+    "body": [
+      {
+        "code": "README.md"
+      },
+      ", ",
+      {
+        "code": "ARCHITECTURE.md"
+      },
+      " and the decision records under ",
+      {
+        "code": "docs/decisions/"
+      },
+      " in ",
+      {
+        "code": [
+          {
+            "var": "vaultRepo"
+          }
+        ]
+      },
+      {
+        "var": "atCommit"
+      },
+      ". Published versions and dist-tags were read from the npm registry on ",
+      {
+        "var": "observedAt"
+      },
+      ". The repository was formerly named ",
+      {
+        "code": "redact-secret-reversible"
+      },
+      ". Exact API signatures, TTL defaults, token syntax, store implementations and release dates are all described as still open."
+    ],
+    "atCommit": [
+      " at ",
+      {
+        "code": [
+          {
+            "var": "commit"
+          }
+        ]
+      }
+    ]
+  }
+}
