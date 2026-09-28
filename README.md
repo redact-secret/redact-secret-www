@@ -14,9 +14,9 @@ follow the main repository's convention).
 A bilingual (English / Korean) static landing page that answers, in order:
 what the product is, why runtime redaction matters, which of your tools it
 integrates with, how fast you can try it, where the trust boundary sits, and
-where the evidence lives — plus an architecture section (`/architecture/`: a
-bilingual hub and six Korean pages) on how the core decides, how those
-decisions are measured, and what lives outside it. It links out — to the docs site, to
+where the evidence lives — plus a seven-page bilingual architecture section
+(`/architecture/`) on how the core decides, how those decisions are
+measured, and what lives outside it. It links out — to the docs site, to
 `benchmarks.redactsecret.dev`, and to the product repository — rather than
 duplicating their content.
 
@@ -86,7 +86,7 @@ src/
   main.tsx                 # routes + per-page <head> (lang, canonical, hreflang)
   content/en.tsx, ko.tsx   # authored prose per locale, typed by content/types.ts
   content/shared.ts        # never translated: URLs, the synthetic fixture, code snippets
-  content/architecture/    # section registry, shell copy, bilingual hub, ko/ (six Korean pages)
+  content/architecture/    # section registry, shell copy, hub, en/ and ko/ sub-page bodies
   slots/catalog.json       # which packages the page lists, and on which registry
   slots/release.json       # versions, tags, ranges, dates — written by `npm run slots:refresh`, committed
   slots/evidence.json      # counts and limits the architecture pages cite, with source commits
@@ -95,7 +95,7 @@ src/
   components/sections/     # the page blocks and their parts + stories
   components/architecture/ # the architecture section's shell and diagrams + stories
   pages/Home.tsx           # the landing page: shell + eight blocks
-  pages/Architecture.tsx   # one architecture page: section shell + hub or Korean body
+  pages/Architecture.tsx   # one architecture page: section shell + hub or sub-page body
   tokens.css               # design-system tokens (+ documented local exceptions)
   style.css                # global base and type classes, tokens only
 public/

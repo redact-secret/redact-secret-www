@@ -86,15 +86,14 @@ trust — what decides, why to believe it, what sits outside the core
   below 1040px), and a prev/next pager that loops back to the hub. The page
   registry is `src/content/architecture/pages.ts`; its order is the sidebar
   and pager order.
-- **Language.** The hub is authored in both locales
-  (`src/content/architecture/hub.tsx`). The six pages are Korean only
-  (`src/content/architecture/ko/`) and each links a maintained English
-  original, per the blueprint's minimum-Korean-coverage rule. At an `/en/`
-  URL such a page renders the Korean body under an explicit "This page is
-  written in Korean" label, is `noindex`, and has no hreflang alternates —
-  an English URL never serves Korean silently, and search never indexes it
-  as English. `scripts/check-build-contract.mjs` fails a build that drops
-  the `noindex`.
+- **Language.** All seven pages are authored in both locales, like the
+  landing page: the hub in `src/content/architecture/hub.tsx`, the six
+  sub-pages in `src/content/architecture/en/` and `ko/`, sharing one
+  component structure. The English pages are written from the English
+  originals the Korean pages were first drafted from, so the site no longer
+  links out to those drafts. Every page names both locales as hreflang
+  alternates; `scripts/check-build-contract.mjs` fails a build where one is
+  missing or a page is `noindex`.
 - **Green budget.** One `Claim` block per page carries the page's single
   checkable sentence (design spec § 03); the sidebar's current-page rule is
   the only other green. A second claim means the page is split wrong.
@@ -220,7 +219,8 @@ pull request / push to main
   └─▶ .github/workflows/ci.yml
         build (check-slots, tsc, prerender) → build contract → deterministic
         rebuild → Storybook; playground qualification in Chromium, Firefox,
-        WebKit (+ negative control, + proposed CSP)
+        WebKit (+ negative control, + proposed CSP); architecture pages in
+        the same three engines under the proposed CSP (+ negative control)
 push to main, CI green
   └─▶ .github/workflows/publish-site.yml (environment: production)
         npm ci → npm run build → build contract → assume
@@ -288,6 +288,5 @@ it ([redact-secret-sites decision](https://github.com/redact-secret/redact-secre
 | Routing/comparison table in the evidence block | Ship it, built to be deletable without a layout change | Explicitly optional per the content blueprint; can be cut right before launch with no cost either way. |
 | A fourth runtime tab for Rust | Link to a guide instead of adding a tab | No verified first-example Rust snippet existed when the spec was written; promote to a tab once one is confirmed working. |
 | Relationship to the docs site | Nav item links out; no assumption about its design | `/docs/` is out of scope for this repository and not yet a repository itself. |
-| English originals of the six architecture pages | Link the Claude artifacts they were written from (`architectureOriginals` in `src/content/shared.ts`) | Not all of them are public, and a public page cannot point at a private "original". Before launch: publish English pages here, or repoint to repository documents. |
 | Status counts on `.com` | Show the shipped matrix's status counts on the support-claims page, sourced and dated | They are counts from the product's own generated matrix, not benchmark scores — but the design spec asks whether even counts belong only on `.dev`. |
 | Refreshing `evidence.json` | By hand, from the named files at the named commits; `check-slots` verifies the counts add up | No script reads the support matrix or taxonomy yet; `slots:refresh` only covers registries. |

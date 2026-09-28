@@ -101,18 +101,27 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
 - One `Claim` (the brand-green block) per page, holding one sentence that
   can be checked against code or a spec. If a page seems to need two, split
   the page. When the code changes, the claim changes with it.
-- The six sub-pages are Korean; their English originals are linked from
-  `architectureOriginals` in `src/content/shared.ts`. Cross-links inside a
-  body use `architecturePath(locale, id)`, so a page at an `/en/` URL never
-  links silently into `/ko/`.
+- Each sub-page has a body per locale (`src/content/architecture/en/`,
+  `ko/`) with the same component structure, the same one claim, and the
+  same slots; the prose in each is authored for its locale. A change to one
+  locale's structure is made to the other in the same PR. Cross-links
+  inside a body use `architecturePath(locale, id)`, so a page never links
+  silently into the other locale.
 - Adding a page: add it to `src/content/architecture/pages.ts` (order is
-  sidebar and pager order), its shell copy in both locales in `shell.tsx`,
-  its body under `ko/` (or both locales, for a bilingual page), and its path
-  to `scripts/check-build-contract.mjs`.
+  sidebar and pager order), its shell copy in both locales in `shell.ts`,
+  its body under both `en/` and `ko/`, and its path to
+  `scripts/check-build-contract.mjs`.
 - Every page ends with a `SourceStrip`: which files, at which commit, read
   on which date.
 - No `style` attribute anywhere — the proposed CSP forbids inline styles.
   Diagrams are rules and grids in CSS Modules.
+- Run `npm run check:architecture` before merging a change to these pages
+  or their components. It loads every page in Chromium, Firefox, and WebKit
+  under the proposed CSP (`scripts/csp.mjs`, shared with the playground
+  qualification) and fails on a page error, a console error, a missing
+  claim or a second one, a wrong `lang`, a broken sidebar, language switch,
+  or link, or a sideways scroll at 360px or 1280px. CI runs it with a
+  negative control that must fail.
 
 ## Synthetic data
 
