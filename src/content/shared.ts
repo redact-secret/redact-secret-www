@@ -20,7 +20,9 @@ export const urls = {
   benchmarks: 'https://benchmarks.redactsecret.dev',
   adapters: 'https://github.com/redact-secret/redact-secret-adapters',
   vault: 'https://github.com/redact-secret/redact-secret-vault',
+  benchmarksRepo: 'https://github.com/redact-secret/redact-secret-benchmarks',
 };
+
 
 /** In-page anchors shared by nav, footer, and sections. */
 export const anchors = {

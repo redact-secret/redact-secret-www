@@ -5,6 +5,7 @@
  * See CONVENTIONS.md § Content slots.
  */
 import release from './release.json';
+import evidenceJson from './evidence.json';
 
 export type PackageStatus = 'released' | 'alpha' | 'unpublished';
 
@@ -47,3 +48,26 @@ export function statusOf(slot: PackageSlot): PackageStatus {
   if (slot.unpublished) return 'unpublished';
   return /alpha|a\d+$/.test(slot.version ?? '') ? 'alpha' : 'released';
 }
+
+type Source = { repo: string; commit: string | null; release?: string };
+
+/** Counts and limits the architecture pages cite (evidence.json), each tied to a source file. */
+export type EvidenceSlots = {
+  observedAt: string;
+  sources: Record<'core' | 'benchmarks' | 'adapters' | 'vault', Source>;
+  matrix: {
+    families: number;
+    providers: number;
+    status: Record<'stable' | 'unsupported' | 'provisional' | 'pending', number>;
+    stableBasis: Record<'documented' | 'empirical', number>;
+    tiers: Record<'T1' | 'T2' | 'T3' | 'T0', number>;
+  };
+  taxonomy: { families: number; providers: number; withoutDetector: number };
+  staleProse: { families: number; providers: number; dated: string };
+  baseline: string;
+  detectors: { structural: number; alphabets: number };
+  coreLimits: { inputMiB: number; findings: number };
+  adapterBudgets: Record<'depth' | 'arrayLength' | 'objectKeys' | 'leaves' | 'stringChars', number>;
+};
+
+export const evidence = evidenceJson as unknown as EvidenceSlots;

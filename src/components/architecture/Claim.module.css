@@ -1,0 +1,35 @@
+.claim {
+  background: var(--brand-green);
+  color: var(--on-brand);
+  padding: var(--space-8) var(--space-6);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.line {
+  font: 800 clamp(1.25rem, 3.4vw, 1.875rem) / 1.25 var(--font-mont);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.sub {
+  font: 400 var(--text-ml) / 1.6 var(--font-roboto);
+  opacity: 0.82;
+  max-width: 62ch;
+}
+
+/* Global emphasis uses --ink, which flips in dark mode; the green ground
+   does not, so everything on it stays on-brand. */
+.claim :global(b),
+.claim :global(code),
+.claim a {
+  color: var(--on-brand);
+}
+
+.claim a {
+  text-decoration: underline;
+}
+
+.claim :global(code) {
+  font-size: 0.9em;
+}

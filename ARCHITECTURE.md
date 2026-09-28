@@ -2,9 +2,11 @@
 
 ## Overview
 
-One static page, built once per locale, with no server and no runtime API.
-Preact components are prerendered to HTML at build time and hydrated in the
-browser for tab switching, theme, and language toggling only —
+A static landing page plus a seven-page architecture section, built once per
+locale, with no server and no runtime API. Preact components are prerendered
+to HTML at build time and hydrated in the browser for tab switching, theme,
+and the playground only — every link, including the language switch, loads a
+prerendered document; nothing is routed client-side —
 nothing on the page calls back to this repository, the product repository,
 or any API at request time.
 
@@ -61,6 +63,59 @@ everywhere else, brand green is reserved for the primary CTA. This mirrors
 the design system's "one green per screen" rule applied across a scrolling
 page: see the design spec's green-budget table for the block-by-block
 accounting.
+
+## Architecture section
+
+`/{en,ko}/architecture/` is a hub plus six pages, in the order a reader builds
+trust — what decides, why to believe it, what sits outside the core
+([design spec](https://claude.ai/artifact/8drsKw3xovoR13xjq4sPhR),
+[mockup](https://claude.ai/artifact/HhdGeEQQs9REsfWotjwZSw)):
+
+| # | Path | Group | Question it answers |
+| --- | --- | --- | --- |
+| 00 | `/architecture/` | — | The rules are written once: four repositories, one direction |
+| 01 | `/architecture/how-it-works/` | Engine | What is this thing? |
+| 02 | `/architecture/detection/` | Engine | How sure, and why? |
+| 03 | `/architecture/support-claims/` | Evidence | What shipped, what does the world issue, how did each measure? |
+| 04 | `/architecture/evaluation-methods/` | Evidence | How many ways can it be wrong, and what stops each? |
+| 05 | `/architecture/adapters/` | Boundaries | Who fetches the text? |
+| 06 | `/architecture/vault/` | Boundaries | What if you need the original back? |
+
+- **One shell.** Every page shares `ArchitectureLayout`: a section bar with
+  the page's path, a sticky sidebar listing all seven pages (a `<details>`
+  below 1040px), and a prev/next pager that loops back to the hub. The page
+  registry is `src/content/architecture/pages.ts`; its order is the sidebar
+  and pager order.
+- **Language.** All seven pages are authored in both locales, like the
+  landing page: the hub in `src/content/architecture/hub.tsx`, the six
+  sub-pages in `src/content/architecture/en/` and `ko/`, sharing one
+  component structure. The English pages are written from the English
+  originals the Korean pages were first drafted from, so the site no longer
+  links out to those drafts. Every page names both locales as hreflang
+  alternates; `scripts/check-build-contract.mjs` fails a build where one is
+  missing or a page is `noindex`.
+- **Green budget.** One `Claim` block per page carries the page's single
+  checkable sentence (design spec § 03); the sidebar's current-page rule is
+  the only other green. A second claim means the page is split wrong.
+- **Numbers.** Counts and limits the pages cite come from
+  `src/slots/evidence.json`, each tied to its source file and commit;
+  versions come from `release.json` as on the landing page. See
+  [CONVENTIONS.md § Content slots](./CONVENTIONS.md#content-slots).
+- **No inline styles.** Diagrams are rules and grids only (no SVG, no
+  images), and nothing sets a `style` attribute — the proposed CSP has
+  `style-src 'self'`, so the status bar draws one cell per family instead of
+  a computed width. The build contract check enforces this.
+
+Deliberate departures from the mockup:
+
+- **No competitor comparison table** on the how-it-works page. This site
+  carries no scorecard ([What this site is](#what-this-site-is-and-is-not));
+  the page keeps the neutral "a different door" flow instead.
+- **No speed or size figures** for the `common` profile — those are
+  measurements and live on `benchmarks.redactsecret.dev`, which the page
+  links.
+- The mockup's note about adapter versions disagreeing between sources is
+  replaced by the observed-date line every slot carries.
 
 ## Bilingual model
 
@@ -138,6 +193,7 @@ reproducing evidence:
 | "Measured against a corpus" | `benchmarks.redactsecret.dev` | Never a rate, bound, or score |
 | "This is what's released" | `redact-secret`'s `docs/releases/status.md` | Version and observed-date slots only |
 | "Here's the support matrix" | `redact-secret`'s support matrix doc | Link only |
+| Architecture pages' family counts and statuses | `redact-secret`'s generated `docs/support-matrix.md`, benchmarks' `taxonomy.json` | Counts only, via `src/slots/evidence.json` with source commit and observed date — never a rate, bound, or score |
 
 ## Deployment
 
@@ -163,7 +219,8 @@ pull request / push to main
   └─▶ .github/workflows/ci.yml
         build (check-slots, tsc, prerender) → build contract → deterministic
         rebuild → Storybook; playground qualification in Chromium, Firefox,
-        WebKit (+ negative control, + proposed CSP)
+        WebKit (+ negative control, + proposed CSP); architecture pages in
+        the same three engines under the proposed CSP (+ negative control)
 push to main, CI green
   └─▶ .github/workflows/publish-site.yml (environment: production)
         npm ci → npm run build → build contract → assume
@@ -231,3 +288,5 @@ it ([redact-secret-sites decision](https://github.com/redact-secret/redact-secre
 | Routing/comparison table in the evidence block | Ship it, built to be deletable without a layout change | Explicitly optional per the content blueprint; can be cut right before launch with no cost either way. |
 | A fourth runtime tab for Rust | Link to a guide instead of adding a tab | No verified first-example Rust snippet existed when the spec was written; promote to a tab once one is confirmed working. |
 | Relationship to the docs site | Nav item links out; no assumption about its design | `/docs/` is out of scope for this repository and not yet a repository itself. |
+| Status counts on `.com` | Show the shipped matrix's status counts on the support-claims page, sourced and dated | They are counts from the product's own generated matrix, not benchmark scores — but the design spec asks whether even counts belong only on `.dev`. |
+| Refreshing `evidence.json` | By hand, from the named files at the named commits; `check-slots` verifies the counts add up | No script reads the support matrix or taxonomy yet; `slots:refresh` only covers registries. |

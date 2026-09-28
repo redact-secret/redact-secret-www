@@ -5,8 +5,9 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Scope
 
-- This repository holds one bilingual marketing/navigation page, its build,
-  and its publish workflow. It never holds documentation content (that is a
+- This repository holds one bilingual marketing/navigation page, the
+  architecture section (`/architecture/`), its build, and its publish
+  workflow. It never holds documentation content (that is a
   separate, not-yet-created repository), scanning logic, benchmark results,
   or PII content. The one exception is the playground's opt-in PII switch and
   its synthetic PII fixtures
@@ -82,10 +83,45 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   crates.io for every package in `src/slots/catalog.json` and rewrites
   `src/slots/release.json`. Review the diff and commit it; a card shows only
   what is published, never a version a repository merely declares.
+- Counts and limits the architecture pages cite (family and provider
+  counts, status distribution, evidence tiers, budgets) live in
+  `src/slots/evidence.json`, each group tied to the file and commit it was
+  read from. Refresh it by hand from those files, update `observedAt` and
+  the commits, and let `npm run check:slots` confirm the counts still add
+  up. Mechanism constants that describe code behaviour (an entropy
+  threshold, a minimum length) may stay in prose; anything that changes
+  when the matrix or a release changes may not.
 - If `npm install <package>` alone would not select the version being
   shown (e.g., `latest` points elsewhere), say so next to the install
   command rather than leaving a visitor to find out the hard way — this
   belongs in the quickstart block, not the hero.
+
+## Architecture pages
+
+- One `Claim` (the brand-green block) per page, holding one sentence that
+  can be checked against code or a spec. If a page seems to need two, split
+  the page. When the code changes, the claim changes with it.
+- Each sub-page has a body per locale (`src/content/architecture/en/`,
+  `ko/`) with the same component structure, the same one claim, and the
+  same slots; the prose in each is authored for its locale. A change to one
+  locale's structure is made to the other in the same PR. Cross-links
+  inside a body use `architecturePath(locale, id)`, so a page never links
+  silently into the other locale.
+- Adding a page: add it to `src/content/architecture/pages.ts` (order is
+  sidebar and pager order), its shell copy in both locales in `shell.ts`,
+  its body under both `en/` and `ko/`, and its path to
+  `scripts/check-build-contract.mjs`.
+- Every page ends with a `SourceStrip`: which files, at which commit, read
+  on which date.
+- No `style` attribute anywhere — the proposed CSP forbids inline styles.
+  Diagrams are rules and grids in CSS Modules.
+- Run `npm run check:architecture` before merging a change to these pages
+  or their components. It loads every page in Chromium, Firefox, and WebKit
+  under the proposed CSP (`scripts/csp.mjs`, shared with the playground
+  qualification) and fails on a page error, a console error, a missing
+  claim or a second one, a wrong `lang`, a broken sidebar, language switch,
+  or link, or a sideways scroll at 360px or 1280px. CI runs it with a
+  negative control that must fail.
 
 ## Synthetic data
 

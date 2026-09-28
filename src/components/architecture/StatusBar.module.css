@@ -1,0 +1,50 @@
+.wrap {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.bar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  height: calc(var(--space-12) - var(--space-1));
+  border: var(--hairline) solid var(--line);
+}
+
+.bar i {
+  display: block;
+}
+
+/* No text sits in the bar, so cells take the strong status color; the
+   pale -fill tones are for grounds under words. */
+.success {
+  background: var(--status-success);
+}
+
+.danger {
+  background: var(--status-danger);
+}
+
+.warning {
+  background: var(--status-warning);
+}
+
+.info {
+  background: var(--status-info);
+}
+
+.legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  font: 400 var(--text-md) / var(--leading-md) var(--font-roboto);
+  color: var(--ink-muted);
+}
+
+.legend :global(b) {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}

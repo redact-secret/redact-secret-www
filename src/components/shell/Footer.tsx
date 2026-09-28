@@ -2,16 +2,18 @@ import { Logo } from '../ui';
 import type { SiteContent } from '../../content';
 import { anchors, siteOrigin } from '../../content/shared';
 import { localeNames, locales, type Locale } from '../../i18n';
+import type { Alternates } from './ShellControls';
 import styles from './Footer.module.css';
 
 export type FooterProps = {
   locale: Locale;
   copy: SiteContent['footer'];
+  alternates?: Alternates;
 };
 
 const host = new URL(siteOrigin).host;
 
-export function Footer({ locale, copy }: FooterProps) {
+export function Footer({ locale, copy, alternates }: FooterProps) {
   const [community] = copy.columns.slice(-1);
   return (
     <footer class={styles.foot} id={anchors.community}>
@@ -49,7 +51,7 @@ export function Footer({ locale, copy }: FooterProps) {
                 {l === locale ? (
                   <b>{localeNames[l]}</b>
                 ) : (
-                  <a href={`/${l}/`} hreflang={l} lang={l}>
+                  <a href={alternates?.[l] ?? `/${l}/`} hreflang={l} lang={l}>
                     {localeNames[l]}
                   </a>
                 )}

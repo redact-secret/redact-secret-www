@@ -1,0 +1,9 @@
+.hubGroups {
+  margin-top: var(--space-16);
+}
+
+@media (max-width: 860px) {
+  .hubGroups {
+    margin-top: var(--space-12);
+  }
+}

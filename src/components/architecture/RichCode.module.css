@@ -1,0 +1,24 @@
+.code {
+  margin: 0;
+  font: 400 var(--text-sm) / 1.75 var(--font-mono);
+  background: var(--sunken);
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4);
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--ink);
+}
+
+.code code {
+  font: inherit;
+}
+
+.dim {
+  color: var(--ink-muted);
+}
+
+.flag {
+  color: var(--status-danger);
+  font-weight: 600;
+}

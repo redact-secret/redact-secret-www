@@ -1,0 +1,21 @@
+.chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  font: 400 var(--text-xs) / var(--leading-xs) var(--font-mono);
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: calc(var(--space-1) - var(--hairline)) var(--space-2);
+  color: var(--ink);
+}
+
+.struck {
+  color: var(--ink-muted);
+  text-decoration: line-through;
+}
