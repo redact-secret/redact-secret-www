@@ -1,88 +1,56 @@
-// Refreshes src/slots/release.json from the package registries.
+// Refreshes data/release.json (release-v1) from the package registries, for
+// every package data/integrations.json lists.
 //
 // Run deliberately (`npm run slots:refresh`), review the diff, commit it.
 // Never part of the build: a build uses only committed data
 // (CONVENTIONS.md § Content slots). Reads package metadata only.
-import { readFileSync, writeFileSync } from 'node:fs';
+//
+// A registry that cannot be read keeps its previous record, marked `stale`
+// with its ORIGINAL observedAt; the script says so and `npm run check:data`
+// keeps reporting it until a refresh reads it again. A package with no
+// previous record to fall back on fails the refresh and nothing is written.
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { buildRelease, NotFound } from './data/refresh.mjs';
+import { createAjv, loadSchemas, validateDocument } from './data/contracts.mjs';
 
-const catalogUrl = new URL('../src/slots/catalog.json', import.meta.url);
-const releaseUrl = new URL('../src/slots/release.json', import.meta.url);
-const catalog = JSON.parse(readFileSync(catalogUrl));
-const today = new Date().toISOString().slice(0, 10);
+const integrationsUrl = new URL('../data/integrations.json', import.meta.url);
+const releaseUrl = new URL('../data/release.json', import.meta.url);
+const integrations = JSON.parse(readFileSync(integrationsUrl, 'utf8'));
+const previous = existsSync(releaseUrl) ? JSON.parse(readFileSync(releaseUrl, 'utf8')) : undefined;
 
-async function getJson(url, attempts = 3) {
+const schemas = loadSchemas();
+const ajv = createAjv(schemas);
+const inputErrors = validateDocument(ajv, schemas.documents, integrations, { family: 'integrations', label: 'data/integrations.json' });
+if (inputErrors.length) {
+  for (const e of inputErrors) console.error(`slots:refresh: ${e}`);
+  process.exit(1);
+}
+
+async function fetchText(url, attempts = 3) {
   const res = await fetch(url, { headers: { 'User-Agent': 'redact-secret-www slot refresh' } });
-  if (res.status === 404) return undefined;
+  if (res.status === 404) throw new NotFound(url);
   if (res.status >= 500 && attempts > 1) {
     await new Promise((r) => setTimeout(r, 1000));
-    return getJson(url, attempts - 1);
+    return fetchText(url, attempts - 1);
   }
   if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
-  return res.json();
+  return res.text();
 }
 
-async function npm(name, tag = 'latest') {
-  const doc = await getJson(`https://registry.npmjs.org/${name.replace('/', '%2f')}`);
-  if (!doc) return undefined;
-  const tags = doc['dist-tags'];
-  const version = tags[tag] ?? tags.latest;
-  const manifest = doc.versions[version];
-  return {
-    version,
-    published: doc.time[version].slice(0, 10),
-    latest: tags.latest,
-    tag: tags[tag] ? tag : 'latest',
-    peers: manifest.peerDependencies ?? {},
-    dependencies: manifest.dependencies ?? {},
-  };
+const { release, stale } = await buildRelease({ integrations, previous, fetchText });
+
+const outputErrors = validateDocument(ajv, schemas.documents, release, { family: 'release', label: 'data/release.json (new)' });
+if (outputErrors.length) {
+  for (const e of outputErrors) console.error(`slots:refresh: ${e}`);
+  console.error('slots:refresh: refusing to write an invalid release-v1 document');
+  process.exit(1);
 }
 
-async function pypi(name) {
-  const doc = await getJson(`https://pypi.org/pypi/${name}/json`);
-  if (!doc) return undefined;
-  const version = doc.info.version;
-  const files = doc.releases[version] ?? [];
-  const requires = doc.info.requires_dist ?? [];
-  return { version, published: files[0]?.upload_time?.slice(0, 10), requires };
+for (const [id, rec] of Object.entries(release.packages)) {
+  const v = rec.value;
+  console.log(id.padEnd(20), rec.freshness.padEnd(6), v.unpublished ? 'unpublished' : `${v.version} (${v.published})`);
 }
-
-async function crates(name) {
-  const doc = await getJson(`https://crates.io/api/v1/crates/${name}`);
-  if (!doc) return undefined;
-  const latest = doc.versions.find((v) => v.num === doc.crate.max_version);
-  return { version: latest.num, published: latest.created_at.slice(0, 10) };
-}
-
-const fetchers = { npm, pypi, crates };
-
-const packages = {};
-for (const [id, entry] of Object.entries(catalog.packages)) {
-  const primary = await fetchers[entry.registry](entry.name, entry.tag);
-  const record = { registry: entry.registry, name: entry.name };
-  if (primary) Object.assign(record, primary);
-  else record.unpublished = entry.unpublishedVersion ?? true;
-  for (const also of entry.also ?? []) {
-    const found = await fetchers[also.registry](also.name);
-    if (found) record[also.registry] = { name: also.name, version: found.version, published: found.published };
-  }
-  packages[id] = record;
-  console.log(id.padEnd(20), record.unpublished ? 'unpublished' : `${record.version} (${record.published})`);
-}
-
-const core = packages.core;
-const cli = packages.cli;
-const release = {
-  $comment: 'Generated by scripts/refresh-slots.mjs from the registries. Review the diff before committing.',
-  observedAt: today,
-  core: {
-    observedAt: today,
-    npm: core.version,
-    npmLatest: core.latest,
-    pypi: core.pypi?.version,
-    crate: cli?.version,
-  },
-  packages,
-};
+for (const [label, reason] of stale) console.warn(`slots:refresh: STALE ${label}: ${reason} — kept the previous value and its original observedAt`);
 
 writeFileSync(releaseUrl, `${JSON.stringify(release, null, 2)}\n`);
 console.log(`wrote ${releaseUrl.pathname}`);

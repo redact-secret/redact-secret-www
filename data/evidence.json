@@ -1,0 +1,92 @@
+{
+  "$schema": "../schemas/evidence-v1.schema.json",
+  "schemaVersion": "evidence-v1",
+  "observedAt": "2026-09-28",
+  "sources": {
+    "core": {
+      "source": {
+        "kind": "repository",
+        "repository": "redact-secret/redact-secret",
+        "revision": "9ab0fa02f2aeeda16a2c99e04862ebb0f0e9b5e7",
+        "release": "0.1.0-beta.10"
+      },
+      "observedAt": "2026-09-28",
+      "freshness": "fresh"
+    },
+    "benchmarks": {
+      "source": {
+        "kind": "repository",
+        "repository": "redact-secret/redact-secret-benchmarks",
+        "revision": "0a73b7db198c628dde74fb815d3029eb6c0acf42"
+      },
+      "observedAt": "2026-09-28",
+      "freshness": "fresh"
+    },
+    "adapters": {
+      "source": {
+        "kind": "registry",
+        "registry": "npm",
+        "package": "@redact-secret/adapter",
+        "url": "https://registry.npmjs.org/@redact-secret%2fadapter",
+        "version": "0.1.2",
+        "revision": "be3f2ad5088d108867b7bae13933d706d8f1f861",
+        "repository": "redact-secret/redact-secret-adapters",
+        "paths": ["README.md"]
+      },
+      "observedAt": "2026-09-28",
+      "freshness": "fresh"
+    },
+    "vault": {
+      "source": {
+        "kind": "repository",
+        "repository": "redact-secret/redact-secret-vault",
+        "revision": "2feebe8b429582e3d09029a7fdc57abbcaf054cd"
+      },
+      "observedAt": "2026-09-28",
+      "freshness": "fresh"
+    }
+  },
+  "facts": {
+    "matrix": {
+      "source": "core",
+      "paths": ["docs/support-matrix.md"],
+      "value": {
+        "families": 108,
+        "providers": 53,
+        "status": { "stable": 83, "unsupported": 17, "provisional": 7, "pending": 1 },
+        "stableBasis": { "documented": 57, "empirical": 26 },
+        "tiers": { "T1": 57, "T2": 29, "T3": 4, "T0": 1 }
+      }
+    },
+    "taxonomy": {
+      "source": "benchmarks",
+      "paths": ["benchmarks/support/taxonomy.json"],
+      "value": { "families": 128, "providers": 63, "withoutDetector": 25 }
+    },
+    "staleProse": {
+      "source": "benchmarks",
+      "paths": ["docs/specs/taxonomy.md"],
+      "value": { "families": 79, "providers": 34, "dated": "2026-09-21" }
+    },
+    "baseline": {
+      "source": "benchmarks",
+      "note": "The name of the release the regression freeze pins. At the recorded revision baselines/ holds 0.1.0-beta.4 through 0.1.0-beta.9 only; see docs/content-inventory.md § Open discrepancies.",
+      "value": "0.1.0-beta.10"
+    },
+    "detectors": {
+      "source": "core",
+      "paths": ["crates/secret-scan-core/src/detectors/pattern.rs", "crates/secret-scan-core/src/types.rs"],
+      "value": { "structural": 6, "alphabets": 11 }
+    },
+    "coreLimits": {
+      "source": "core",
+      "paths": ["README.md", "ARCHITECTURE.md"],
+      "value": { "inputMiB": 64, "findings": 50000 }
+    },
+    "adapterBudgets": {
+      "source": "adapters",
+      "paths": ["README.md"],
+      "value": { "depth": 8, "arrayLength": 1000, "objectKeys": 200, "leaves": 5000, "stringChars": 200000 }
+    }
+  }
+}
