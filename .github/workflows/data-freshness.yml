@@ -1,0 +1,102 @@
+# Weekly freshness check for the committed release data (#12). Runs the
+# refresh in dry-run mode against the live registries and upstream feeds
+# (redact-secret's site feed, redact-secret-adapters' release feed) and
+# reports drift in the job summary and in one open issue labelled
+# `data-drift`.
+#
+# It never commits, pushes or publishes. Drift is a prompt for a maintainer
+# to run `npm run slots:refresh`, review the diff and open a PR
+# (CONVENTIONS.md § Content slots); unreviewed claims never reach the site.
+#
+# Two jobs, so that the one holding `issues: write` runs no repository code:
+# `check` installs and runs the refresh with a read-only token; `report`
+# only calls the GitHub CLI with the report `check` produced.
+name: Data freshness
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: data-freshness
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Upstream drift (dry run)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      drift: ${{ steps.refresh.outputs.drift }}
+      report: ${{ steps.refresh.outputs.report }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Exit 0: no drift. Exit 3: drift. Anything else: the refresh itself
+      # failed (a source with no previous record to keep), which fails the job.
+      # The token is read-only here and is sent to api.github.com only, to
+      # resolve each `main` to a commit; the script never prints it.
+      - name: Refresh in dry-run mode
+        id: refresh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          node scripts/refresh-slots.mjs --dry-run --report "$RUNNER_TEMP/drift.md"
+          code=$?
+          set -e
+          case "$code" in
+            0) echo "drift=false" >> "$GITHUB_OUTPUT" ;;
+            3) echo "drift=true" >> "$GITHUB_OUTPUT" ;;
+            *) echo "::error title=data-freshness::the refresh failed (exit $code); see the log"; exit "$code" ;;
+          esac
+          cat "$RUNNER_TEMP/drift.md" >> "$GITHUB_STEP_SUMMARY"
+          echo "report=$(base64 -w0 < "$RUNNER_TEMP/drift.md")" >> "$GITHUB_OUTPUT"
+
+      # The committed data must still pass on its own, stale records named.
+      - name: Committed data
+        if: ${{ !cancelled() }}
+        run: node scripts/check-data.mjs
+
+  report:
+    name: Open or update the drift issue
+    needs: check
+    # Also when the committed-data check above failed: drift is still news.
+    if: ${{ !cancelled() && needs.check.outputs.drift == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: One open issue labelled data-drift, updated in place
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          REPORT: ${{ needs.check.outputs.report }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/body.md"
+          {
+            printf '%s' "$REPORT" | base64 -d
+            printf '\n---\nReported by the [data freshness run](%s). Nothing was committed or published: run npm run slots:refresh, review the diff, and open a PR.\n' "$RUN_URL"
+          } > "$body"
+          gh label create data-drift --color D93F0B --description "Upstream data differs from the committed data/" 2>/dev/null || true
+          number="$(gh issue list --label data-drift --state open --limit 1 --json number --jq '.[0].number // empty')"
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file "$body"
+          else
+            gh issue create --title "data: upstream drift in data/release.json" --label data-drift --body-file "$body"
+          fi
