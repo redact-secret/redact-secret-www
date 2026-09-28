@@ -1,0 +1,30 @@
+# macOS Finder metadata, at any directory depth
+.DS_Store
+
+# Build and qualification outputs
+node_modules/
+dist/
+*.tgz
+.qualification/
+
+# Python build/test artifacts
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Local agent tooling
+/_notes/
+/.agents/skills/context-governance/
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
+
+# OpenGrep verified-binary cache and CI scan output
+/.cache/opengrep/
+/sast/reports/ci-latest.*
+
+# Storybook
+storybook-static/
+*storybook.log
