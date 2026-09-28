@@ -215,7 +215,8 @@ The data source is three files, each under a versioned JSON Schema in
 
 ```text
 data/integrations.json  integrations-v1  packages the page lists + integrations cards   authored here
-data/release.json       release-v1       what each package has published                 npm / PyPI / crates.io
+data/release.json       release-v1       what each package has published, plus the       npm / PyPI / crates.io,
+                                         upstream feeds cross-checked against it          redact-secret + -adapters feeds
 data/evidence.json      evidence-v1      counts and limits the architecture pages cite   redact-secret, -benchmarks, -adapters, -vault
         │
         ├─ npm run check:data ── schema (unknown schemaVersion fails), cross-file
@@ -234,6 +235,33 @@ marked `stale`, with its original `observedAt` and a `staleSince`; the page
 dates a block by its oldest observation, so a stale value is never shown as
 current, and `check-data` names it on every build. A new record with no
 previous value fails the refresh rather than being invented.
+`data/release.json` also records the two upstream feeds (#12), each
+fetched at the full commit its repository's `main` points to (resolved
+through the GitHub API) and validated against the schema at that same
+commit:
+
+```text
+redact-secret           docs/contracts/site-feed/v1/feed.json   redact-secret.site-feed/v1
+  → feeds.product       release identity; support-matrix counts; the version the matrix
+                        measured next to the released one (the pages show both)
+redact-secret-adapters  site-feed/v1/adapters.json              redact-secret-adapters.release-feed/v1
+  → feeds.adapters      mode "feed" once it is on main; until then mode "registry-fallback",
+                        and the registry records stay the only source (recorded, not implied)
+```
+
+Each feed record keeps the commit, a sha256 of the bytes computed here, the
+feed's own `generatedAt` and the refresh's `observedAt`. Registry records
+remain the published fact; a feed never overrides them, it is
+cross-checked against them. The refresh fails closed: an unknown
+`schemaVersion`, a schema-invalid payload, a digest that differs on
+re-fetch (or from the committed digest for the same commit), an
+inconsistent payload (a version the registry does not have, counts that do
+not add up, a feed older than the committed one) or a network error keeps
+the previous record `stale` — or, with no previous record, fails. A weekly
+workflow (`.github/workflows/data-freshness.yml`) runs the refresh in
+dry-run mode and reports drift in its job summary and one `data-drift`
+issue; it never commits or publishes.
+
 `schemas/content-manifest-v1.schema.json` defines the per-locale content
 release manifest the content-only publish will write (#6); nothing writes one
 yet. [docs/content-inventory.md](./docs/content-inventory.md) lists every
@@ -248,17 +276,22 @@ reproducing evidence:
 | --- | --- | --- |
 | "Supports these hosts" | Package cards, registry metadata via `npm run slots:refresh` into `data/release.json` | Adapter and vault READMEs, package registry |
 | "Measured against a corpus" | `benchmarks.redactsecret.dev` | Never a rate, bound, or score |
-| "This is what's released" | `redact-secret`'s `docs/releases/status.md` | Version and observed-date slots only |
+| "This is what's released" | `redact-secret`'s site feed (`feeds.product` in `data/release.json`), cross-checked against the registries | Version and observed-date slots only |
 | "Here's the support matrix" | `redact-secret`'s support matrix doc | Link only |
-| Architecture pages' family counts and statuses | `redact-secret`'s generated `docs/support-matrix.md`, benchmarks' `taxonomy.json` | Counts only, via `data/evidence.json` with the source's full commit SHA and observed date — never a rate, bound, or score (`evidence-v1` allows integers only, and `check-data` rejects score-like keys) |
+| "Measured on one version, released as another" | `redact-secret`'s site feed: `supportMatrix.measuredProductVersion`, `benchmarksRevision`, `gatedLatestRelease` | Both versions shown side by side on `/architecture/support-claims/`, never merged |
+| Architecture pages' family counts and statuses | `redact-secret`'s site feed (the pinned support matrix), benchmarks' `taxonomy.json` | Counts only, via `data/evidence.json`, which `check-data` holds equal to the feed's counts — never a rate, bound, or score (`evidence-v1` allows integers only, and `check-data` rejects score-like keys) |
 | Architecture pages' limits and budgets | `redact-secret` `README.md`/`ARCHITECTURE.md`; the published `@redact-secret/adapter` README | Values via `data/evidence.json`, tied to the commit or package version and `gitHead` they were read at |
 
 Ownership of each class of data (editorial, structure, release metadata,
-product evidence, benchmark evidence, synthetic fixture) and where each will
-come from once upstream feeds exist is in
-[docs/content-inventory.md](./docs/content-inventory.md). Until
-`redact-secret` and `redact-secret-adapters` publish their generated feeds,
-registry metadata and hand-read evidence stay the checked fallback.
+product evidence, benchmark evidence, synthetic fixture) and where each
+comes from is in [docs/content-inventory.md](./docs/content-inventory.md).
+`redact-secret`'s site feed is consumed today. `redact-secret-adapters`'
+release feed is consumed once it reaches that repository's `main`; until
+then the registry records are the checked fallback, and
+`feeds.adapters.mode` says so. Benchmark provenance needs no feed of its
+own: the product feed already pins the benchmarks commit the matrix was
+measured at, and the pages link to the benchmarks site for everything
+measured (#16).
 
 ## Deployment
 
@@ -360,4 +393,4 @@ The default entry language is English at `/`, with Korean at `/ko/`
 | A fourth runtime tab for Rust | Link to a guide instead of adding a tab | No verified first-example Rust snippet existed when the spec was written; promote to a tab once one is confirmed working. |
 | Relationship to the docs site | Nav item links out; no assumption about its design | `/docs/` is out of scope for this repository and not yet a repository itself. |
 | Status counts on `.com` | Show the shipped matrix's status counts on the support-claims page, sourced and dated | They are counts from the product's own generated matrix, not benchmark scores — but the design spec asks whether even counts belong only on `.dev`. |
-| Refreshing `data/evidence.json` | By hand, from the named files at the named full commits; `check-data` validates provenance and `check-slots` verifies the counts add up | No script reads the support matrix or taxonomy yet; `slots:refresh` only covers registries. The upstream feeds (#14, #15, consumed in #12) replace it. |
+| Refreshing `data/evidence.json` | By hand, from the named files at the named full commits; `check-data` validates provenance, holds the matrix counts equal to the product feed in `data/release.json`, and `check-slots` verifies the counts add up | The matrix counts are now checked against `redact-secret`'s site feed, but the other facts (detector counts, limits, adapter budgets, taxonomy) have no feed; they stay hand-read until an owner publishes them. |
