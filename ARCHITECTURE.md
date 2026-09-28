@@ -102,8 +102,8 @@ trust — what decides, why to believe it, what sits outside the core
   checkable sentence (design spec § 03); the sidebar's current-page rule is
   the only other green. A second claim means the page is split wrong.
 - **Numbers.** Counts and limits the pages cite come from
-  `src/slots/evidence.json`, each tied to its source file and commit;
-  versions come from `release.json` as on the landing page. See
+  `data/evidence.json`, each tied to its source file and commit;
+  versions come from `data/release.json` as on the landing page. See
   [CONVENTIONS.md § Content slots](./CONVENTIONS.md#content-slots).
 - **No inline styles.** Diagrams are rules and grids only (no SVG, no
   images), and nothing sets a `style` attribute — the proposed CSP has
@@ -210,6 +210,35 @@ release-news content stays "committed content, so every build is
 self-contained," per
 [redact-secret-sites' description of the hub](https://github.com/redact-secret/redact-secret-sites/blob/main/ARCHITECTURE.md#hub-www).
 
+The data source is three files, each under a versioned JSON Schema in
+`schemas/` ([CONVENTIONS.md § Data contracts](./CONVENTIONS.md#data-contracts)):
+
+```text
+data/integrations.json  integrations-v1  packages the page lists + integrations cards   authored here
+data/release.json       release-v1       what each package has published                 npm / PyPI / crates.io
+data/evidence.json      evidence-v1      counts and limits the architecture pages cite   redact-secret, -benchmarks, -adapters, -vault
+        │
+        ├─ npm run check:data ── schema (unknown schemaVersion fails), cross-file
+        │                        consistency, provenance, no benchmark figures,
+        │                        no plaintext secret (scanned with @redact-secret/core)
+        ├─ src/contracts/*.ts ── generated from the schemas; drift fails the build
+        └─ src/slots, src/content/integrations.ts ── the only readers; components get props
+```
+
+Every record says where it came from and how current it is: a `source`
+(a repository at a full commit SHA, or a registry package at a version,
+with its `gitHead` when npm records one), an `observedAt` or `generatedAt`,
+a `digest` of every fetched registry payload, and a `freshness` of `fresh`
+or `stale`. A registry the refresh cannot read keeps its previous record
+marked `stale`, with its original `observedAt` and a `staleSince`; the page
+dates a block by its oldest observation, so a stale value is never shown as
+current, and `check-data` names it on every build. A new record with no
+previous value fails the refresh rather than being invented.
+`schemas/content-manifest-v1.schema.json` defines the per-locale content
+release manifest the content-only publish will write (#6); nothing writes one
+yet. [docs/content-inventory.md](./docs/content-inventory.md) lists every
+visitor-visible string and datum with its class and canonical owner.
+
 ## Evidence and repository boundaries
 
 This site states claims and links to where they are backed, rather than
@@ -217,11 +246,19 @@ reproducing evidence:
 
 | Claim | Backed by | Linked, not copied |
 | --- | --- | --- |
-| "Supports these hosts" | Package cards, registry metadata via `npm run slots:refresh` | Adapter and vault READMEs, package registry |
+| "Supports these hosts" | Package cards, registry metadata via `npm run slots:refresh` into `data/release.json` | Adapter and vault READMEs, package registry |
 | "Measured against a corpus" | `benchmarks.redactsecret.dev` | Never a rate, bound, or score |
 | "This is what's released" | `redact-secret`'s `docs/releases/status.md` | Version and observed-date slots only |
 | "Here's the support matrix" | `redact-secret`'s support matrix doc | Link only |
-| Architecture pages' family counts and statuses | `redact-secret`'s generated `docs/support-matrix.md`, benchmarks' `taxonomy.json` | Counts only, via `src/slots/evidence.json` with source commit and observed date — never a rate, bound, or score |
+| Architecture pages' family counts and statuses | `redact-secret`'s generated `docs/support-matrix.md`, benchmarks' `taxonomy.json` | Counts only, via `data/evidence.json` with the source's full commit SHA and observed date — never a rate, bound, or score (`evidence-v1` allows integers only, and `check-data` rejects score-like keys) |
+| Architecture pages' limits and budgets | `redact-secret` `README.md`/`ARCHITECTURE.md`; the published `@redact-secret/adapter` README | Values via `data/evidence.json`, tied to the commit or package version and `gitHead` they were read at |
+
+Ownership of each class of data (editorial, structure, release metadata,
+product evidence, benchmark evidence, synthetic fixture) and where each will
+come from once upstream feeds exist is in
+[docs/content-inventory.md](./docs/content-inventory.md). Until
+`redact-secret` and `redact-secret-adapters` publish their generated feeds,
+registry metadata and hand-read evidence stay the checked fallback.
 
 ## Deployment
 
@@ -245,7 +282,8 @@ this is where each is met here:
 ```text
 pull request / push to main
   └─▶ .github/workflows/ci.yml
-        build (check-slots, tsc, prerender) → build contract → deterministic
+        data-contract tests → build (check-data, type drift, check-slots,
+        tsc, prerender) → build contract → deterministic
         rebuild → Storybook; playground qualification in Chromium, Firefox,
         WebKit (+ negative control, + proposed CSP); architecture pages in
         the same three engines under the proposed CSP (+ negative control)
@@ -322,4 +360,4 @@ The default entry language is English at `/`, with Korean at `/ko/`
 | A fourth runtime tab for Rust | Link to a guide instead of adding a tab | No verified first-example Rust snippet existed when the spec was written; promote to a tab once one is confirmed working. |
 | Relationship to the docs site | Nav item links out; no assumption about its design | `/docs/` is out of scope for this repository and not yet a repository itself. |
 | Status counts on `.com` | Show the shipped matrix's status counts on the support-claims page, sourced and dated | They are counts from the product's own generated matrix, not benchmark scores — but the design spec asks whether even counts belong only on `.dev`. |
-| Refreshing `evidence.json` | By hand, from the named files at the named commits; `check-slots` verifies the counts add up | No script reads the support matrix or taxonomy yet; `slots:refresh` only covers registries. |
+| Refreshing `data/evidence.json` | By hand, from the named files at the named full commits; `check-data` validates provenance and `check-slots` verifies the counts add up | No script reads the support matrix or taxonomy yet; `slots:refresh` only covers registries. The upstream feeds (#14, #15, consumed in #12) replace it. |

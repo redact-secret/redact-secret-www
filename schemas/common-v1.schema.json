@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/common-v1.schema.json",
+  "title": "CommonV1",
+  "description": "Shared definitions for every versioned data contract: where a value came from (source), when it was read (timestamp), what was fetched (digest), and whether it is still current (freshness). Not a document schema on its own; other schemas $ref its $defs.",
+  "$defs": {
+    "timestamp": {
+      "title": "Timestamp",
+      "description": "ISO 8601. A full date-time when a script recorded it; a calendar date when a maintainer read the source by hand and no finer time was recorded.",
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2}))?$"
+    },
+    "freshness": {
+      "title": "Freshness",
+      "description": "fresh: read from its source at observedAt. stale: the last refresh could not read the source, so the previous value is kept with its ORIGINAL observedAt (and staleSince records when that refresh failed). A stale value is never presented as fresh.",
+      "type": "string",
+      "enum": [
+        "fresh",
+        "stale"
+      ]
+    },
+    "digest": {
+      "title": "Digest",
+      "description": "sha256 of the exact payload bytes fetched from the source.",
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "gitRevision": {
+      "title": "GitRevision",
+      "description": "A full 40-character git commit SHA. Short SHAs are a display concern, never stored.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "repositoryName": {
+      "title": "RepositoryName",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+    },
+    "repositorySource": {
+      "title": "RepositorySource",
+      "description": "Files read from a git repository at one full revision.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "repository",
+        "revision"
+      ],
+      "properties": {
+        "kind": {
+          "const": "repository"
+        },
+        "repository": {
+          "$ref": "#/$defs/repositoryName"
+        },
+        "revision": {
+          "$ref": "#/$defs/gitRevision"
+        },
+        "release": {
+          "description": "The product release that revision is, if it is one.",
+          "type": "string",
+          "minLength": 1
+        },
+        "paths": {
+          "description": "Files at that revision the value was read from.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "registrySource": {
+      "title": "RegistrySource",
+      "description": "A package registry document. `version` is the published version the value describes; `revision` is that version's git commit when the registry records one (npm gitHead).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "registry",
+        "package",
+        "url"
+      ],
+      "properties": {
+        "kind": {
+          "const": "registry"
+        },
+        "registry": {
+          "$ref": "#/$defs/registry"
+        },
+        "package": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "$ref": "#/$defs/gitRevision"
+        },
+        "repository": {
+          "$ref": "#/$defs/repositoryName"
+        },
+        "paths": {
+          "description": "Files inside the published package the value was read from.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "authoredSource": {
+      "title": "AuthoredSource",
+      "description": "Authored and code-reviewed in this repository. Its revision is the commit that contains `path`; git history is the provenance.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "repository",
+        "path"
+      ],
+      "properties": {
+        "kind": {
+          "const": "authored"
+        },
+        "repository": {
+          "const": "redact-secret/redact-secret-www"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "source": {
+      "title": "Source",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/repositorySource"
+        },
+        {
+          "$ref": "#/$defs/registrySource"
+        },
+        {
+          "$ref": "#/$defs/authoredSource"
+        }
+      ]
+    },
+    "registry": {
+      "title": "Registry",
+      "type": "string",
+      "enum": [
+        "npm",
+        "pypi",
+        "crates"
+      ]
+    }
+  }
+}

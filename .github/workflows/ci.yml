@@ -31,6 +31,12 @@ jobs:
 
       - run: npm ci
 
+      # Offline negative tests: unknown schemaVersion, missing provenance,
+      # stale records, benchmark figures and secret-shaped values must fail.
+      - name: Data contracts — negative tests
+        run: npm run test:data
+
+      # check-data (schemas, provenance, no secrets), generated-type drift,
       # check-slots (engine == quickstart version), tsc, vite build + prerender.
       - run: npm run build
 

@@ -1,0 +1,90 @@
+{
+  "$schema": "../schemas/integrations-v1.schema.json",
+  "schemaVersion": "integrations-v1",
+  "generatedAt": "2026-09-28",
+  "source": { "kind": "authored", "repository": "redact-secret/redact-secret-www", "path": "data/integrations.json" },
+  "freshness": "fresh",
+  "packages": {
+    "core": {
+      "registry": "npm",
+      "name": "@redact-secret/core",
+      "also": [
+        { "registry": "pypi", "name": "redact-secret" },
+        { "registry": "crates", "name": "redact-secret" }
+      ]
+    },
+    "wasm": { "registry": "npm", "name": "@redact-secret/wasm" },
+    "cli": { "registry": "crates", "name": "redact-secret-cli" },
+    "adapter": { "registry": "npm", "name": "@redact-secret/adapter" },
+    "adapter-pino": { "registry": "npm", "name": "@redact-secret/adapter-pino" },
+    "adapter-otel": { "registry": "npm", "name": "@redact-secret/adapter-otel" },
+    "adapter-ai-context": { "registry": "npm", "name": "@redact-secret/adapter-ai-context", "tag": "alpha" },
+    "adapter-mcp": { "registry": "npm", "name": "@redact-secret/adapter-mcp", "tag": "alpha" },
+    "adapters-py": { "registry": "pypi", "name": "redact-secret-adapters" },
+    "vault": { "registry": "npm", "name": "@redact-secret/vault", "tag": "alpha" },
+    "vault-server": { "registry": "npm", "name": "@redact-secret/vault-server", "tag": "alpha" },
+    "vault-py": {
+      "registry": "pypi",
+      "name": "redact-secret-vault",
+      "declared": {
+        "version": "0.1.0a2",
+        "source": {
+          "kind": "repository",
+          "repository": "redact-secret/redact-secret-vault",
+          "revision": "2feebe8b429582e3d09029a7fdc57abbcaf054cd",
+          "paths": ["packages/vault-py/pyproject.toml"]
+        }
+      }
+    }
+  },
+  "groups": [
+    {
+      "id": "core",
+      "cards": [
+        { "id": "core", "slot": "core", "facts": ["registries"] },
+        { "id": "wasm", "slot": "wasm", "facts": ["version"] },
+        {
+          "id": "cli",
+          "slot": "cli",
+          "facts": ["version", "install"],
+          "install": "cargo install redact-secret-cli --version {version} --locked"
+        }
+      ]
+    },
+    {
+      "id": "adapters",
+      "runtimes": {
+        "browser": [{ "id": "web-stream", "slot": "core", "display": "@redact-secret/core/web-stream", "facts": ["version"] }],
+        "node": [
+          { "id": "pino", "slot": "adapter-pino", "facts": ["version", "host", "core"] },
+          { "id": "otel", "slot": "adapter-otel", "facts": ["version", "host", "core"] },
+          { "id": "masking", "slot": "adapter", "facts": ["version", "core"] },
+          { "id": "ai-context", "slot": "adapter-ai-context", "facts": ["version", "tag", "core"] },
+          { "id": "mcp", "slot": "adapter-mcp", "facts": ["version", "tag", "host", "core"] }
+        ],
+        "python": [
+          { "id": "logging", "slot": "adapters-py", "facts": ["version", "core"] },
+          {
+            "id": "otel-py",
+            "slot": "adapters-py",
+            "display": "redact-secret-adapters[otel]",
+            "extra": "otel",
+            "facts": ["version", "host"]
+          },
+          { "id": "masking-py", "slot": "adapters-py", "facts": ["version"] }
+        ]
+      }
+    },
+    {
+      "id": "vault",
+      "runtimes": {
+        "browser": [{ "id": "vault-browser", "slot": "vault", "facts": ["version", "tag", "core"] }],
+        "node": [
+          { "id": "vault-node", "slot": "vault", "facts": ["version", "tag", "core"] },
+          { "id": "vault-server", "slot": "vault-server", "facts": ["version", "core"] }
+        ],
+        "python": [{ "id": "vault-py", "slot": "vault-py", "facts": ["version"] }]
+      }
+    }
+  ]
+}

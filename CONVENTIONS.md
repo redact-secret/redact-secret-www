@@ -92,22 +92,74 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   GitHub API during the build — a build must be self-contained per
   `redact-secret-sites`'
   [build contract](https://github.com/redact-secret/redact-secret-sites/blob/main/ARCHITECTURE.md#site-build-contract).
-- Refresh it with `npm run slots:refresh`, which reads npm, PyPI, and
-  crates.io for every package in `src/slots/catalog.json` and rewrites
-  `src/slots/release.json`. Review the diff and commit it; a card shows only
-  what is published, never a version a repository merely declares.
+- That source is the three files in `data/`, each under a versioned
+  contract (see [Data contracts](#data-contracts)). Components read them only
+  through `src/slots` and `src/content/integrations.ts`, never directly.
+- Refresh release data with `npm run slots:refresh`, which reads npm, PyPI,
+  and crates.io for every package in `data/integrations.json` and rewrites
+  `data/release.json`. Review the diff and commit it; a card shows only what
+  is published, never a version a repository merely declares (a declared
+  version is shown only as "not published", with its repository revision in
+  `declared.source`). A registry the refresh cannot read keeps its previous
+  record, marked `stale` with its **original** `observedAt`; the page dates
+  a block by its oldest observation, and `npm run check:data` names every
+  stale record until a refresh reads it again. A package with no previous
+  record fails the refresh instead.
 - Counts and limits the architecture pages cite (family and provider
   counts, status distribution, evidence tiers, budgets) live in
-  `src/slots/evidence.json`, each group tied to the file and commit it was
-  read from. Refresh it by hand from those files, update `observedAt` and
-  the commits, and let `npm run check:slots` confirm the counts still add
-  up. Mechanism constants that describe code behaviour (an entropy
-  threshold, a minimum length) may stay in prose; anything that changes
-  when the matrix or a release changes may not.
+  `data/evidence.json` as `facts`, each naming one of its `sources` (a
+  repository at a full commit SHA, or a published package version and its
+  `gitHead`) and the files it was read from. Refresh it by hand from those
+  files at a new revision, update the full SHAs and `observedAt`, and let
+  `npm run check:slots` confirm the counts still add up. Mechanism constants
+  that describe code behaviour (an entropy threshold, a minimum length) may
+  stay in prose; anything that changes when the matrix or a release changes
+  may not.
+- Benchmark scores, rates and bounds are never stored in `data/`: evidence
+  facts are integers and names, and `check-data` rejects a fractional number
+  or a key that names a measured result. Link to
+  `benchmarks.redactsecret.dev` instead.
+- [docs/content-inventory.md](./docs/content-inventory.md) lists every
+  visitor-visible string and every datum the site reads, with its class and
+  canonical owner. A PR that adds, moves or removes one updates it.
 - If `npm install <package>` alone would not select the version being
   shown (e.g., `latest` points elsewhere), say so next to the install
   command rather than leaving a visitor to find out the hard way — this
   belongs in the quickstart block, not the hero.
+
+## Data contracts
+
+- Every committed data file is governed by a JSON Schema (draft 2020-12) in
+  `schemas/<name>-v<N>.schema.json`, and names it in its `schemaVersion`
+  field. Validation fails closed: a missing or unknown `schemaVersion`, or
+  one from another contract family, fails before the schema runs.
+  Provenance shapes (`source`, `observedAt`/`generatedAt`, `digest`,
+  `freshness`, `staleSince`) are shared through `schemas/common-v1.schema.json`.
+- `npm run check:data` (first step of `npm run build`, so CI and publish
+  run it) validates every registered file with Ajv, checks the files agree
+  with each other (every card's package is listed and has a release
+  record), rejects benchmark figures, and scans every string with the
+  published `@redact-secret/core` — only a value carrying the
+  `SYNTHETIC_` marker may be found, and a finding never echoes the value.
+  `--no-stale` also fails on a stale record.
+- TypeScript types are generated from the schemas into `src/contracts/`
+  (`npm run data:types`); never edit them or hand-write a duplicate. The
+  build runs `npm run check:data-types`, which fails when they drift.
+- `npm run test:data` runs the offline negative tests (unknown
+  `schemaVersion`, missing provenance, stale handling in the refresh,
+  benchmark figures, secret-shaped values). CI runs it before the build.
+- **Adding a contract:** write `schemas/<name>-v1.schema.json` with an
+  `$id` of `https://www.redactsecret.com/schemas/<name>-v1.schema.json`,
+  `properties.schemaVersion.const` of `"<name>-v1"`, and `$ref`s into
+  `common-v1.schema.json` for provenance; register the files it governs in
+  `targets` in `scripts/data/contracts.mjs` (a `path`, or a `dir` for every
+  `*.json` under it; add the directory to `governedDirs` so unregistered
+  files fail); run `npm run data:types` and commit the generated file; add
+  negative cases to `scripts/test-data-contracts.mjs`.
+- **Changing a contract:** a change that an existing reader would
+  misread is a new version (`<name>-v2.schema.json`, new `schemaVersion`),
+  not an edit to v1. Readers keep failing closed on versions they do not
+  know.
 
 ## Architecture pages
 

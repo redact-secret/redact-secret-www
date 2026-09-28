@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/integrations-v1.schema.json",
+  "title": "IntegrationsV1",
+  "description": "data/integrations.json: which packages the site lists and where each is published (the refresh input), and the integrations block's structure — which cards exist, in which group and runtime, backed by which package. No versions, dates, tags or ranges: those are release data (release-v1). No prose: each locale authors the words for a card id.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "source", "freshness", "packages", "groups"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "integrations-v1" },
+    "generatedAt": {
+      "description": "When this inventory was last reviewed against its source.",
+      "$ref": "common-v1.schema.json#/$defs/timestamp"
+    },
+    "source": {
+      "description": "Authored in this repository today. Replaced by the adapters' generated release feed (redact-secret-adapters) when it exists; the registry lookup stays as a checked fallback until then.",
+      "$ref": "common-v1.schema.json#/$defs/source"
+    },
+    "freshness": { "$ref": "common-v1.schema.json#/$defs/freshness" },
+    "staleSince": { "$ref": "common-v1.schema.json#/$defs/timestamp" },
+    "packages": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/packageEntry" }
+    },
+    "groups": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/group" }
+    }
+  },
+  "if": { "properties": { "freshness": { "const": "stale" } }, "required": ["freshness"] },
+  "then": { "required": ["staleSince"] },
+  "else": { "not": { "required": ["staleSince"] } },
+  "$defs": {
+    "packageEntry": {
+      "title": "PackageEntry",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registry", "name"],
+      "properties": {
+        "registry": { "$ref": "common-v1.schema.json#/$defs/registry" },
+        "name": { "type": "string", "minLength": 1 },
+        "tag": { "description": "npm dist-tag the page installs from, when it is not `latest`.", "type": "string", "minLength": 1 },
+        "also": {
+          "description": "The same package on other registries.",
+          "type": "array",
+          "items": {
+            "title": "PackageMirror",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["registry", "name"],
+            "properties": {
+              "registry": { "$ref": "common-v1.schema.json#/$defs/registry" },
+              "name": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "declared": {
+          "title": "DeclaredPackageVersion",
+          "description": "The version the package's repository declares, shown when its registry does not have it yet.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["version", "source"],
+          "properties": {
+            "version": { "type": "string", "minLength": 1 },
+            "source": { "$ref": "common-v1.schema.json#/$defs/repositorySource" }
+          }
+        }
+      }
+    },
+    "factKind": {
+      "title": "FactKind",
+      "type": "string",
+      "enum": ["version", "registries", "core", "host", "tag", "install"]
+    },
+    "runtime": {
+      "title": "Runtime",
+      "type": "string",
+      "enum": ["browser", "node", "python"]
+    },
+    "card": {
+      "title": "CardEntry",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "slot", "facts"],
+      "properties": {
+        "id": { "description": "Copy key in each locale's integrations.cards.", "type": "string", "minLength": 1 },
+        "slot": { "description": "A key of `packages` (and of release.json packages).", "type": "string", "minLength": 1 },
+        "display": { "description": "Shown instead of the package name (a subpath or an extra).", "type": "string", "minLength": 1 },
+        "facts": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/factKind" } },
+        "extra": { "description": "For `host` on a Python extra: the extra's name.", "type": "string", "minLength": 1 },
+        "install": {
+          "description": "For `install`: the command, with {version} replaced by the slot's published version.",
+          "type": "string",
+          "pattern": "\\{version\\}"
+        }
+      }
+    },
+    "runtimeCards": {
+      "title": "RuntimeCards",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["browser", "node", "python"],
+      "properties": {
+        "browser": { "type": "array", "items": { "$ref": "#/$defs/card" } },
+        "node": { "type": "array", "items": { "$ref": "#/$defs/card" } },
+        "python": { "type": "array", "items": { "$ref": "#/$defs/card" } }
+      }
+    },
+    "group": {
+      "title": "GroupEntry",
+      "oneOf": [
+        {
+          "title": "CoreGroupEntry",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "cards"],
+          "properties": {
+            "id": { "const": "core" },
+            "cards": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/card" } }
+          }
+        },
+        {
+          "title": "RuntimeGroupEntry",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "runtimes"],
+          "properties": {
+            "id": { "enum": ["adapters", "vault"] },
+            "runtimes": { "$ref": "#/$defs/runtimeCards" }
+          }
+        }
+      ]
+    }
+  }
+}

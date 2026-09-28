@@ -145,6 +145,6 @@ jobs:
             echo
             echo "- commit: \`$TARGET_SHA\`"
             echo "- engine: \`@redact-secret/core@$(node -p "require('./package.json').dependencies['@redact-secret/core']")\`"
-            echo "- slots observed: $(node -p "require('./src/slots/release.json').observedAt")"
+            echo "- release data generated: $(node -p "require('./data/release.json').generatedAt")"
             echo "- invalidation: \`$invalidation\`"
           } >> "$GITHUB_STEP_SUMMARY"
