@@ -41,6 +41,8 @@ export async function prerender(data: { url: string }) {
     { type: 'link', props: { rel: 'canonical', href: `${siteOrigin}${path}` } },
     { type: 'meta', props: { name: 'description', content: meta.description } },
   ]);
+  // The 404 page is served for every missing path; keep it out of search.
+  if (path === '/404/') elements.add({ type: 'meta', props: { name: 'robots', content: 'noindex' } });
   if (pageLocale) {
     for (const l of locales) {
       elements.add({ type: 'link', props: { rel: 'alternate', hreflang: l, href: `${siteOrigin}/${l}/` } });

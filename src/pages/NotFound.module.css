@@ -1,5 +1,15 @@
 .body {
   padding-block: var(--space-16);
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-8);
+}
+
+.locale {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.locale + .locale {
+  border-top: var(--hairline) solid var(--line);
+  padding-top: var(--space-8);
 }
