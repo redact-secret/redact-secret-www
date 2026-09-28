@@ -24,7 +24,7 @@ export type Freshness = 'fresh' | 'stale';
 export type Digest = string;
 
 /**
- * data/release.json: what each package in data/integrations.json has actually published, read from its registry by scripts/refresh-slots.mjs. Every record carries its own source, observation time, payload digest and freshness.
+ * data/release.json: what each package in data/integrations.json has actually published, read from its registry by scripts/refresh-slots.mjs, and the upstream feeds (redact-secret, redact-secret-adapters) cross-checked against it. Every record carries its own source, observation time, payload digest and freshness.
  */
 export interface ReleaseV1 {
   $schema?: string;
@@ -36,6 +36,13 @@ export interface ReleaseV1 {
    */
   packages: {
     [k: string]: PackageRecord | undefined;
+  };
+  /**
+   * The upstream feeds the refresh read, each pinned to the full commit it was fetched at. Package versions still come from the registries (`packages`); a feed is cross-checked against them and adds what only its owner knows. Optional so that a refresh without feeds stays valid; the committed file always has both.
+   */
+  feeds?: {
+    product: ProductFeedRecord;
+    adapters: AdaptersFeedRecord;
   };
 }
 export interface PackageRecord {
@@ -134,4 +141,123 @@ export interface MirrorValue {
   name: string;
   version: string;
   published?: string;
+}
+/**
+ * redact-secret's site feed (docs/contracts/site-feed/v1/feed.json): the release identity and the support matrix the release ships, reduced to what the pages state.
+ */
+export interface ProductFeedRecord {
+  source: RepositorySource;
+  /**
+   * The branch the commit was resolved from.
+   */
+  ref: string;
+  observedAt: Timestamp;
+  freshness: Freshness;
+  staleSince?: Timestamp;
+  /**
+   * The feed's own schemaVersion; the refresh knows exactly one per feed and refuses any other.
+   */
+  schemaVersion: string;
+  generatedAt: Timestamp;
+  digest: Digest;
+  schemaDigest: Digest;
+  /**
+   * Package ids (data/integrations.json) whose registry record agreed with the feed when it was read.
+   */
+  crossChecked: string[];
+  value: ProductFeedValue;
+}
+export interface ProductFeedValue {
+  release: ProductRelease;
+  supportMatrix: SupportMatrixSummary;
+}
+export interface ProductRelease {
+  version: string;
+  tag: string;
+  sourceRevision: GitRevision;
+  verifiedOn: string;
+}
+/**
+ * The pinned support matrix, as counts. `measuredProductVersion` is the product version the benchmark run measured and can be older than release.version; the pages show both. Counts only, never a score, rate or bound.
+ */
+export interface SupportMatrixSummary {
+  benchmarksRevision: GitRevision;
+  generatedAt: Timestamp;
+  measuredProductVersion: string | null;
+  measuredProductRevision: GitRevision | null;
+  /**
+   * True when the release's support-matrix drift gate ran against exactly this matrix.
+   */
+  gatedLatestRelease: boolean;
+  families: number;
+  providers: number;
+  status: SupportStatusCounts;
+  stableBasis: SupportStableBasisCounts;
+  tiers: SupportTierCounts;
+}
+export interface SupportStatusCounts {
+  stable: number;
+  provisional: number;
+  pending: number;
+  unsupported: number;
+}
+export interface SupportStableBasisCounts {
+  documented: number;
+  empirical: number;
+}
+export interface SupportTierCounts {
+  T0: number;
+  T1: number;
+  T2: number;
+  T3: number;
+}
+/**
+ * redact-secret-adapters' release feed (site-feed/v1/adapters.json) at the commit `ref` pointed to. mode `feed`: the feed was read, validated and cross-checked against the registry records. mode `registry-fallback`: the feed is not at that commit, so the registry records in `packages` are the only source, and `fallbackReason` says why.
+ */
+export interface AdaptersFeedRecord {
+  source: RepositorySource;
+  /**
+   * The branch the commit was resolved from.
+   */
+  ref: string;
+  observedAt: Timestamp;
+  freshness: Freshness;
+  staleSince?: Timestamp;
+  /**
+   * The feed's own schemaVersion; the refresh knows exactly one per feed and refuses any other.
+   */
+  schemaVersion?: string;
+  generatedAt?: Timestamp;
+  digest?: Digest;
+  schemaDigest?: Digest;
+  /**
+   * Package ids (data/integrations.json) whose registry record agreed with the feed when it was read.
+   */
+  crossChecked?: string[];
+  mode: 'feed' | 'registry-fallback';
+  fallbackReason?: string;
+  value?: AdaptersFeedValue;
+}
+export interface AdaptersFeedValue {
+  packages: AdapterFeedPackage[];
+}
+export interface AdapterFeedPackage {
+  id: string;
+  ecosystem: 'npm' | 'pypi';
+  name: string;
+  version: string;
+  channel: string;
+  core: AdapterCoreRange;
+}
+/**
+ * The core range the package declares and the two ends CI tests.
+ */
+export interface AdapterCoreRange {
+  name: string;
+  range: string;
+  tested: TestedEnds;
+}
+export interface TestedEnds {
+  lowest: string;
+  highest: string;
 }

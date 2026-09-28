@@ -1,7 +1,7 @@
 {
   "$schema": "../schemas/release-v1.schema.json",
   "schemaVersion": "release-v1",
-  "generatedAt": "2026-09-28T17:40:07.246Z",
+  "generatedAt": "2026-09-28T18:02:17.454Z",
   "generator": "scripts/refresh-slots.mjs",
   "packages": {
     "core": {
@@ -12,7 +12,7 @@
         "url": "https://registry.npmjs.org/@redact-secret%2fcore",
         "version": "0.1.0-beta.10"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "digest": "sha256:f14353f49e80ea8f2f08226c5358cd934cce2d7807bb0e32502b8f7d7ea0c949",
       "value": {
@@ -36,7 +36,7 @@
             "url": "https://pypi.org/pypi/redact-secret/json",
             "version": "0.1.0b10"
           },
-          "observedAt": "2026-09-28T17:40:07.246Z",
+          "observedAt": "2026-09-28T18:02:17.454Z",
           "freshness": "fresh",
           "digest": "sha256:2a4a3a9f90bf26dc0e4faa83e9742df65b6b37bf4a6350c5a92689a36d69a543",
           "value": {
@@ -53,7 +53,7 @@
             "url": "https://crates.io/api/v1/crates/redact-secret",
             "version": "0.1.0-beta.10"
           },
-          "observedAt": "2026-09-28T17:40:07.246Z",
+          "observedAt": "2026-09-28T18:02:17.454Z",
           "freshness": "fresh",
           "digest": "sha256:04b04eeeaaa8c98ecb952f3ddd7333cfc0d95d3ec94ec03fcee70bdc777ef48f",
           "value": {
@@ -72,7 +72,7 @@
         "url": "https://registry.npmjs.org/@redact-secret%2fwasm",
         "version": "0.1.0-beta.10"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "digest": "sha256:c16e2bee226f3781925468d6f8eca95f4458b694eb623cf96fdbf0829b27e07e",
       "value": {
@@ -94,7 +94,7 @@
         "url": "https://crates.io/api/v1/crates/redact-secret-cli",
         "version": "0.1.0-beta.10"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "digest": "sha256:99f79102cd4fb7bf2f64c49932920d6c7c9512336007ff8bb777e2246e21e9f3",
       "value": {
@@ -113,7 +113,7 @@
         "version": "0.1.2",
         "revision": "be3f2ad5088d108867b7bae13933d706d8f1f861"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "digest": "sha256:fedda49caebb704e88e49e92bf21b35fc2a887dbe738a5950d5888f2f486502c",
       "value": {
@@ -138,7 +138,7 @@
         "version": "0.1.1",
         "revision": "ea92c2abd451b66899722170344e73d8f34ef47e"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "digest": "sha256:86966836a90f7908887a3e1f322ec4ee3044bc115b7efd7525bba043510c5f5a",
       "value": {
@@ -166,7 +166,7 @@
         "version": "0.1.1",
         "revision": "ea92c2abd451b66899722170344e73d8f34ef47e"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "digest": "sha256:fd0648633c1d1f9ba58e46413bb73e1abe70063f2bd63a3db9f3b7d9dce6705b",
       "value": {
@@ -194,7 +194,7 @@
         "version": "0.1.0-alpha.1",
         "revision": "be3f2ad5088d108867b7bae13933d706d8f1f861"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "digest": "sha256:997e25ef29d8a55e704dfe451088534640649dcffd147a5b10062d30d3f6c13b",
       "value": {
@@ -221,7 +221,7 @@
         "version": "0.1.0-alpha.1",
         "revision": "be3f2ad5088d108867b7bae13933d706d8f1f861"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "digest": "sha256:a8ba1e2eed660dabf63ef937b940d69b4bad673d4e4defe0dc5968cce3225186",
       "value": {
@@ -250,7 +250,7 @@
         "url": "https://pypi.org/pypi/redact-secret-adapters/json",
         "version": "0.1.0"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "digest": "sha256:db5688c9a7f3bd842a6ef03d18ff2094f6476cdd23d394317c936e58e2733085",
       "value": {
@@ -274,7 +274,7 @@
         "version": "0.1.0-alpha.3",
         "revision": "bd01c061505c1df03427d10b4d0e6183c3e67e5c"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "digest": "sha256:012718cf6fad61ac64b4db806f734ebf109dd4175c42524a7ae4abe92bd127f6",
       "value": {
@@ -299,7 +299,7 @@
         "version": "0.1.0-alpha.3",
         "revision": "bd01c061505c1df03427d10b4d0e6183c3e67e5c"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "digest": "sha256:036aa85b02357e279976473bb3b02e9fe6a5730e1454d80ace4d7ca772de974c",
       "value": {
@@ -324,7 +324,7 @@
         "package": "redact-secret-vault",
         "url": "https://pypi.org/pypi/redact-secret-vault/json"
       },
-      "observedAt": "2026-09-28T17:40:07.246Z",
+      "observedAt": "2026-09-28T18:02:17.454Z",
       "freshness": "fresh",
       "value": {
         "registry": "pypi",
@@ -342,6 +342,81 @@
           ]
         }
       }
+    }
+  },
+  "feeds": {
+    "product": {
+      "source": {
+        "kind": "repository",
+        "repository": "redact-secret/redact-secret",
+        "revision": "786083b152d2030b21155e43f490f75e40b6ce6b",
+        "paths": [
+          "docs/contracts/site-feed/v1/feed.json",
+          "docs/contracts/site-feed/v1/feed.schema.json"
+        ]
+      },
+      "ref": "main",
+      "observedAt": "2026-09-28T18:02:17.454Z",
+      "freshness": "fresh",
+      "schemaVersion": "redact-secret.site-feed/v1",
+      "generatedAt": "2026-09-28T00:00:00Z",
+      "digest": "sha256:a43ea800de4bd9b4e37ed359c32e9190d4ca2b8534df3cda9ac924c59e15eca2",
+      "schemaDigest": "sha256:11b65a0e8fb6db1d126adcd0ccd96abc260e6f7476355b15e6f253deb1e45a11",
+      "crossChecked": [
+        "cli",
+        "core",
+        "core/crates",
+        "core/pypi",
+        "wasm"
+      ],
+      "value": {
+        "release": {
+          "version": "0.1.0-beta.10",
+          "tag": "v0.1.0-beta.10",
+          "sourceRevision": "af7f863f29f9fe482dd233c8b7bc5b77dc427314",
+          "verifiedOn": "2026-09-28"
+        },
+        "supportMatrix": {
+          "benchmarksRevision": "cfaeac4d83a4c98cffd77328d3416eb920a7d25b",
+          "generatedAt": "2026-09-25T03:13:04Z",
+          "measuredProductVersion": "0.1.0-beta.7",
+          "measuredProductRevision": "10263e5e295e7c086700fe3823c6554f709ca3b5",
+          "gatedLatestRelease": true,
+          "families": 108,
+          "providers": 53,
+          "status": {
+            "stable": 83,
+            "provisional": 7,
+            "pending": 1,
+            "unsupported": 17
+          },
+          "stableBasis": {
+            "documented": 57,
+            "empirical": 26
+          },
+          "tiers": {
+            "T0": 1,
+            "T1": 57,
+            "T2": 29,
+            "T3": 4
+          }
+        }
+      }
+    },
+    "adapters": {
+      "source": {
+        "kind": "repository",
+        "repository": "redact-secret/redact-secret-adapters",
+        "revision": "ed44d3f0b786736a6483311e3b9b6a71f225b5bb",
+        "paths": [
+          "site-feed/v1/adapters.json"
+        ]
+      },
+      "ref": "main",
+      "mode": "registry-fallback",
+      "fallbackReason": "site-feed/v1/adapters.json is not on main at ed44d3f; the registry records are the source",
+      "observedAt": "2026-09-28T18:02:17.454Z",
+      "freshness": "fresh"
     }
   }
 }

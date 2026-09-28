@@ -1,10 +1,12 @@
-// Builds a release-v1 document from the registries. Pure apart from the
-// injected `fetchText`, so the stale-on-failure behaviour is tested without
-// a network (scripts/test-data-contracts.mjs). scripts/refresh-slots.mjs is
-// the CLI around it.
+// Builds a release-v1 document from the registries and, when `feeds` is
+// given, the upstream feeds (feeds.mjs). Pure apart from the injected
+// `fetchText`, so the stale-on-failure behaviour is tested without a network
+// (scripts/test-data-contracts.mjs, scripts/test-upstream-feeds.mjs).
+// scripts/refresh-slots.mjs is the CLI around it.
 import { createHash } from 'node:crypto';
+import { NotFound, observeFeed } from './feeds.mjs';
 
-export class NotFound extends Error {}
+export { NotFound };
 
 const sha256 = (text) => `sha256:${createHash('sha256').update(text, 'utf8').digest('hex')}`;
 
@@ -93,9 +95,11 @@ async function observe({ registry, name, tag }, previous, { fetchText, now }) {
 /**
  * integrations: a valid integrations-v1 document (the package list).
  * previous: the committed release-v1 document, or undefined.
+ * feeds: { name: spec } of upstream feeds to read (feeds.mjs upstreamFeeds),
+ *   or undefined for registries only.
  * Returns { release, stale: [label, reason][] }.
  */
-export async function buildRelease({ integrations, previous, fetchText, now = new Date().toISOString() }) {
+export async function buildRelease({ integrations, previous, fetchText, now = new Date().toISOString(), feeds }) {
   const old = previous?.schemaVersion === 'release-v1' ? previous.packages : {};
   const packages = {};
   const staleList = [];
@@ -117,6 +121,17 @@ export async function buildRelease({ integrations, previous, fetchText, now = ne
     }
     packages[id] = rec;
   }
+  // Feeds after the registries: each is cross-checked against them.
+  let feedRecords;
+  if (feeds) {
+    const oldFeeds = previous?.schemaVersion === 'release-v1' ? previous.feeds ?? {} : {};
+    feedRecords = {};
+    for (const [name, spec] of Object.entries(feeds)) {
+      const { record, reason } = await observeFeed(name, spec, oldFeeds[name], { fetchText, now, integrations, packages });
+      if (reason) staleList.push([`feeds/${name}`, reason]);
+      feedRecords[name] = record;
+    }
+  }
   return {
     release: {
       $schema: '../schemas/release-v1.schema.json',
@@ -124,6 +139,7 @@ export async function buildRelease({ integrations, previous, fetchText, now = ne
       generatedAt: now,
       generator: 'scripts/refresh-slots.mjs',
       packages,
+      ...(feedRecords && { feeds: feedRecords }),
     },
     stale: staleList,
   };

@@ -7,7 +7,8 @@
 //
 // Checks, all fail-closed: every data/ file is registered; each file's
 // schemaVersion is known and of the right family; the schema passes; the
-// files agree with each other; every record has provenance; no benchmark
+// files agree with each other and with the upstream feeds recorded in
+// release.json; every record has provenance; no benchmark
 // score, rate or bound; no plaintext secret. A stale record is reported by
 // name with its original observation date — never silently.
 import { readFileSync, existsSync } from 'node:fs';
@@ -113,6 +114,44 @@ if (release) {
     }
   }
   if (integrations) for (const id of Object.keys(integrations.packages)) if (!release.packages[id]) errors.push(`data/release.json: no record for package "${id}" (run npm run slots:refresh)`);
+
+  // The upstream feeds (#12): present, dated, and in agreement with the
+  // registry records wherever both are fresh.
+  const feeds = release.feeds;
+  if (!feeds) errors.push('data/release.json: no upstream feed records (run npm run slots:refresh)');
+  else {
+    checkObservation('data/release.json/feeds/product', feeds.product, gen);
+    checkObservation('data/release.json/feeds/adapters', feeds.adapters, gen);
+    const product = feeds.product;
+    const core = release.packages.core;
+    if (product.freshness === 'fresh' && core?.freshness === 'fresh' && core.value.version !== product.value.release.version) {
+      errors.push(`data/release.json/feeds/product: release ${product.value.release.version}, but packages.core is ${core.value.version}`);
+    }
+    const adapters = feeds.adapters;
+    if (adapters.mode === 'feed' && adapters.freshness === 'fresh' && integrations) {
+      for (const p of adapters.value.packages) {
+        const id = Object.keys(integrations.packages).find((k) => integrations.packages[k].registry === p.ecosystem && integrations.packages[k].name === p.name);
+        const rec = id && release.packages[id];
+        if (rec?.freshness === 'fresh' && rec.value.version !== p.version) errors.push(`data/release.json/feeds/adapters: ${p.name} ${p.version}, but packages.${id} is ${rec.value.version ?? 'unpublished'}`);
+      }
+    }
+  }
+}
+
+// The hand-kept matrix counts must say what the product feed says.
+const feedMatrix = release?.feeds?.product?.value.supportMatrix;
+if (evidence && feedMatrix) {
+  const m = evidence.facts.matrix.value;
+  const pairs = [
+    ['families', m.families, feedMatrix.families],
+    ['providers', m.providers, feedMatrix.providers],
+    ...Object.entries(feedMatrix.status).map(([k, v]) => [`status.${k}`, m.status[k] ?? 0, v]),
+    ...Object.entries(feedMatrix.stableBasis).map(([k, v]) => [`stableBasis.${k}`, m.stableBasis[k] ?? 0, v]),
+    ...Object.entries(feedMatrix.tiers).map(([k, v]) => [`tiers.${k}`, m.tiers[k] ?? 0, v]),
+  ];
+  for (const [what, hand, feed] of pairs) {
+    if (hand !== feed) errors.push(`data/evidence.json/facts/matrix: ${what} is ${hand}, the product feed (data/release.json feeds.product) says ${feed}`);
+  }
 }
 
 if (evidence) {

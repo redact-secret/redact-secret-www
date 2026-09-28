@@ -84,7 +84,7 @@ path), not `spa`: see
 index.html                 # Vite entry; prerendered to / and /ko/, /architecture/… and /ko/architecture/…, /404/
 data/
   integrations.json        # which packages the page lists, where, and the integrations cards (integrations-v1)
-  release.json             # versions, tags, ranges, dates per package — `npm run slots:refresh`, committed (release-v1)
+  release.json             # versions, tags, ranges, dates per package + the upstream feeds — `npm run slots:refresh`, committed (release-v1)
   evidence.json            # counts and limits the architecture pages cite, each at a source revision (evidence-v1)
 schemas/                   # versioned JSON Schemas (draft 2020-12) for data/; see CONVENTIONS.md § Data contracts
 src/
@@ -111,7 +111,10 @@ public/
 
 `.github/workflows/ci.yml` validates every pull request;
 `.github/workflows/publish-site.yml` publishes main after CI passes (see
-[ARCHITECTURE.md § Publish flow](./ARCHITECTURE.md#publish-flow)). Still to
+[ARCHITECTURE.md § Publish flow](./ARCHITECTURE.md#publish-flow));
+`.github/workflows/data-freshness.yml` checks weekly whether the registries
+and upstream feeds have moved past `data/release.json` and reports drift,
+never committing or publishing it. Still to
 come: `tokens.json` with a drift test.
 
 

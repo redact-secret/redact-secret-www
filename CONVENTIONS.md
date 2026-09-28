@@ -105,13 +105,49 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   a block by its oldest observation, and `npm run check:data` names every
   stale record until a refresh reads it again. A package with no previous
   record fails the refresh instead.
+- The same refresh reads the upstream feeds into `feeds` in
+  `data/release.json`: `redact-secret`'s site feed
+  (`redact-secret.site-feed/v1`) and `redact-secret-adapters`' release
+  feed (`redact-secret-adapters.release-feed/v1`). Each is read at the full
+  commit its `main` resolves to through the GitHub API — never a branch
+  URL — and validated against the schema at that same commit. Pin `main`,
+  never `develop`: a develop feed may declare versions the registries do
+  not have. Registry records stay the published fact; a feed is
+  cross-checked against them and never overrides them. While the adapters
+  feed is not on `main`, `feeds.adapters` records
+  `mode: "registry-fallback"` with the commit that lacked it; never leave
+  the fallback implicit.
+- A feed never becomes current silently. An unknown `schemaVersion`, a
+  schema-invalid payload, a digest mismatch on re-fetch (the same commit
+  must always hash the same), an inconsistent payload (a version the
+  registry does not have, counts that do not add up, a feed older than the
+  committed one) or a network error keeps the previous feed record
+  `stale`, with its original `observedAt` and first `staleSince`; with no
+  previous record the refresh fails. Diagnostics name what failed, never a
+  value copied out of the payload or a token. `GITHUB_TOKEN` is optional
+  and sent to `api.github.com` only.
+- A feed is supported only at the `schemaVersion` the refresh knows
+  (`upstreamFeeds` in `scripts/data/feeds.mjs`). When an upstream ships
+  `v2`, add it there with tests; until then the old record goes stale
+  rather than being read under the wrong contract.
+- Show what the feed says, including the uncomfortable part: the support
+  matrix's measured product version is printed next to the released one
+  (`evidence.measurement` in `src/slots`), never replaced by it.
+- `node scripts/refresh-slots.mjs --dry-run [--report <file>]` refreshes
+  in memory and prints the drift (exit 3) without writing. The weekly
+  `data-freshness` workflow runs it and reports drift in its job summary
+  and one `data-drift` issue; it has no write access to contents and never
+  commits, pushes or publishes.
 - Counts and limits the architecture pages cite (family and provider
   counts, status distribution, evidence tiers, budgets) live in
   `data/evidence.json` as `facts`, each naming one of its `sources` (a
   repository at a full commit SHA, or a published package version and its
   `gitHead`) and the files it was read from. Refresh it by hand from those
   files at a new revision, update the full SHAs and `observedAt`, and let
-  `npm run check:slots` confirm the counts still add up. Mechanism constants
+  `npm run check:slots` confirm the counts still add up. The matrix counts
+  must equal the product feed's (`check-data` fails otherwise), so a
+  refresh that brings a new matrix is committed together with the matching
+  `facts.matrix`. Mechanism constants
   that describe code behaviour (an entropy threshold, a minimum length) may
   stay in prose; anything that changes when the matrix or a release changes
   may not.
@@ -147,7 +183,14 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   build runs `npm run check:data-types`, which fails when they drift.
 - `npm run test:data` runs the offline negative tests (unknown
   `schemaVersion`, missing provenance, stale handling in the refresh,
-  benchmark figures, secret-shaped values). CI runs it before the build.
+  benchmark figures, secret-shaped values) and the upstream-feed tests
+  (`scripts/test-upstream-feeds.mjs`: one case per fail-closed path, both
+  adapter paths, the drift report), all against stubs and the fixtures in
+  `scripts/fixtures/upstream-feeds/`. CI runs it before the build.
+- An upstream feed's own contract is its owner's: this repository stores
+  a reduced record of it under `release-v1` `feeds`, validates the payload
+  against the schema fetched at the same commit, and keeps copies of the
+  feed and schema only as test fixtures.
 - **Adding a contract:** write `schemas/<name>-v1.schema.json` with an
   `$id` of `https://www.redactsecret.com/schemas/<name>-v1.schema.json`,
   `properties.schemaVersion.const` of `"<name>-v1"`, and `$ref`s into

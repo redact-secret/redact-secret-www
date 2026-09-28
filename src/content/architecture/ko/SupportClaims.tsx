@@ -21,7 +21,7 @@ import { StatusChip } from '../../../components/ui';
 import type { Locale } from '../../../i18n';
 import { evidence } from '../../../slots';
 
-const { matrix, taxonomy, staleProse, sources } = evidence;
+const { matrix, taxonomy, staleProse, sources, measurement } = evidence;
 
 /** `2026-09-21` → `9월 21일`. */
 function monthDay(date: string) {
@@ -326,6 +326,20 @@ export function SupportClaims(_props: { locale: Locale }) {
           한 릴리스 전에는 정확히 일치했습니다.{' '}
           <b>둘 사이의 간격은 오류가 아니라, 증거가 얼마나 오래되었는지를 핀이 알려 주는 것입니다.</b> 화면은 이 둘을
           하나로 합치지 않고 나란히 둡니다.
+        </p>
+        <p>
+          버전도 마찬가지입니다.{' '}
+          {measurement.measured ? (
+            <>
+              출시된 매트릭스는 <code>{measurement.measured}</code>에서 측정되었고
+            </>
+          ) : (
+            <>출시된 매트릭스에는 어느 버전을 측정했는지 기록되어 있지 않고</>
+          )}
+          (benchmarks <code>{measurement.benchmarks}</code>), 현재 릴리스는 <code>{measurement.released}</code>
+          입니다. 이 릴리스의 드리프트 게이트는{' '}
+          {measurement.gated ? '바로 이 매트릭스를 대상으로 실행되었습니다' : '아직 이 매트릭스를 대상으로 실행되지 않았습니다'}. 두
+          값 모두 제품 저장소 <code>{measurement.commit}</code>의 사이트 피드에서 {measurement.observedAt}에 읽었습니다.
         </p>
         <Note tone="warning" title="믿지 말아야 할 세 번째 숫자">
           <p>
