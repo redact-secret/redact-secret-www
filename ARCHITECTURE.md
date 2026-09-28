@@ -15,7 +15,7 @@ build (Vite + TS)  ──▶  dist/en/*, dist/ko/*, dist/assets/*
 redact-secret-sites: redactsecret-site-www-prod (S3 + CloudFront)
                           │
                           ▼
-                 www.redactsecret.dev  (+ apex 301, per redact-secret-sites)
+                 www.redactsecret.com  (+ apex 301, per redact-secret-sites)
 ```
 
 This repository owns page content, the bilingual build, and the publish
@@ -151,7 +151,7 @@ this is where each is met here:
 | Static output to one directory | `npm run build` writes `dist/` |
 | Self-contained build | No AWS credentials, API tokens, or live GitHub calls during build; content slots read committed data |
 | Hashed assets under `assets/` | Vite's default; everything else may change at the same path |
-| Root-relative paths | Site is served from `/` of `www.redactsecret.dev` |
+| Root-relative paths | Site is served from `/` of `www.redactsecret.com` |
 | Declared runtime | `package.json` `engines` states the supported Node range |
 | Deterministic build | Same commit, same output |
 | Canonical URLs | Every page declares `<link rel="canonical">` for its own locale path; no client-side route changes to account for, since this is `directory` mode, not `spa` |
@@ -176,7 +176,7 @@ that run's commit; pull requests and forks never publish. A manual dispatch
 takes a commit on main, which is how a rollback is done.
 `scripts/check-build-contract.mjs` checks `dist/` against the build contract
 table above (pages present, canonical URLs, root-relative references, hashed
-`assets/`, no `.com`) in both workflows.
+`assets/`, no leftover `.dev` hub URL) in both workflows.
 
 The workflow reads `PUBLISHER_ROLE_ARN` and `SITE_STACK` from the GitHub
 `production` environment — no account ID, bucket name, or role ARN is
@@ -220,9 +220,11 @@ adopted).
 
 ## Open questions
 
+Resolved: the domain is `www.redactsecret.com`, with the apex redirecting to
+it ([redact-secret-sites decision](https://github.com/redact-secret/redact-secret-sites/blob/main/docs/decisions/2026-09-28-serve-the-hub-on-redactsecret-com.md)).
+
 | Question | This repository's default until decided | Why it's open |
 | --- | --- | --- |
-| Domain: `.dev` or `.com`? | `.dev` — the only domain `redact-secret-sites` actually provisions | Both design sources assume `.com`, which `redact-secret-sites` has reserved for another purpose and explicitly excluded from its scope. This needs an ADR (likely in `redact-secret-sites`) before launch copy can be finalized, not a silent choice in this repository. |
 | `--sunken` / `--sunken-2` tokens | Local override in this repository's `tokens.css`, not upstream | Needs design-system acceptance; `redact-secret-benchmarks` carries the same local exception today. |
 | Mobile logo minimum width | Ship the mockup's ~60px exception, flagged in the PR | Conflicts with the system's stated 64px minimum; needs explicit sign-off, not a quiet fix. |
 | Default entry language at `/` | Undecided — redirect, content negotiation, and a chooser screen are all on the table | Affects routing and possibly needs a CloudFront Function change in `redact-secret-sites`. |

@@ -4,7 +4,7 @@
  */
 import { slots } from '../slots';
 
-export const siteOrigin = 'https://www.redactsecret.dev';
+export const siteOrigin = 'https://www.redactsecret.com';
 
 const repo = 'https://github.com/redact-secret/redact-secret';
 

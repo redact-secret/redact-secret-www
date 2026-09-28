@@ -2,11 +2,10 @@
 
 The public marketing and navigation hub for
 [Redact Secret](https://github.com/redact-secret/redact-secret), served at
-`www.redactsecret.dev` (see [Domain](#domain) below — the design sources
-assume `.com`, which is not what is provisioned today).
+`www.redactsecret.com` (see [Domain](#domain) below).
 
-Status: `planned`. This repository holds no site code yet; this document set
-is the planning source
+Status: `current` — published from `main` by
+[`publish-site.yml`](./.github/workflows/publish-site.yml)
 ([status labels](https://github.com/redact-secret/redact-secret/blob/main/CONVENTIONS.md)
 follow the main repository's convention).
 
@@ -102,14 +101,17 @@ come: `tokens.json` with a drift test.
 
 ## Domain
 
-`redact-secret-sites`' provisioned infrastructure serves `www.redactsecret.dev`
-(apex `redactsecret.dev` 301s to it). The design mockup and spec both assume
-`redactsecret.com`, which
-[is reserved for another purpose and explicitly out of scope](https://github.com/redact-secret/redact-secret-sites/blob/main/ARCHITECTURE.md#redactsecretcomreserved)
-in that repository. This is an open mismatch, not a typo — see
-[ARCHITECTURE.md § Open questions](./ARCHITECTURE.md#open-questions). Until
-it is resolved, build and write copy against `.dev`; do not hard-code
-`.com` anywhere.
+The hub is served at `www.redactsecret.com`; the apex `redactsecret.com`
+301s to it. This settles the open question the design sources left: both
+assumed `.com`, and `redact-secret-sites` had reserved it. That repository
+now serves the hub on `.com`
+([its decision record](https://github.com/redact-secret/redact-secret-sites/blob/main/docs/decisions/2026-09-28-serve-the-hub-on-redactsecret-com.md)) and keeps
+`.dev` for `benchmarks.redactsecret.dev`, which the page links to.
+
+`src/content/shared.ts` (`siteOrigin`) is the one place the origin is
+written; canonical URLs and hreflang alternates derive from it, and
+`scripts/check-build-contract.mjs` fails the build if a page's canonical
+URL is not under `https://www.redactsecret.com/`.
 
 ## Deployment
 
