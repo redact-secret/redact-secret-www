@@ -21,8 +21,10 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Code style
 
-- Vite + Preact + TypeScript, prerendered to static HTML per locale route
-  (`vite.config.ts`). Component styles are CSS Modules
+- Vite + Preact + TypeScript, rendered to static HTML per locale route by
+  the renderer (`src/render.tsx`, built by `scripts/build-site.mjs`); the
+  client bundle never imports `i18n/` or `data/` — it hydrates from each
+  page's embedded page data. Component styles are CSS Modules
   (`Component.module.css`) next to the component.
 - Every component in `src/components/` has a `*.stories.tsx` next to it.
 - `src/tokens.css`, `src/tokens.json`: Redact Secret design tokens, copied
@@ -246,6 +248,13 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   misread is a new version (`<name>-v2.schema.json`, new `schemaVersion`),
   not an edit to v1. Readers keep failing closed on versions they do not
   know.
+- **Release contracts** govern objects the publisher writes to the bucket,
+  not committed files: `content-manifest-v2` (one content release — both
+  locales, HTML and sources; it superseded the never-written, per-locale
+  `content-manifest-v1`), `content-current-v1` (`/current.json`) and
+  `app-release-v1` (an application release and its renderer artifact).
+  `scripts/publish/release.mjs` validates each one it reads or writes with
+  the same Ajv setup and fails closed the same way.
 
 ## Architecture pages
 
@@ -320,21 +329,53 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Deploy
 
-- The publish workflow lives in this repository
-  (`.github/workflows/publish-site.yml`) and follows
-  `redact-secret-sites`'
+- The publish workflows live in this repository
+  (`.github/workflows/publish-site.yml`, `.github/workflows/publish-content.yml`)
+  and follow `redact-secret-sites`'
   [publishing conventions](https://github.com/redact-secret/redact-secret-sites/blob/main/CONVENTIONS.md#publishing):
-  immutable assets first, then everything else with `--delete`, then assets
-  pruned, then an invalidation. If one pass changes, all of publish-site.sh's
-  equivalents across the project should be revisited together.
-- The workflow reads `PUBLISHER_ROLE_ARN` and `SITE_STACK` from the GitHub
-  `production` environment. Only the publish job requests `id-token: write`,
-  and it assumes the role in its last steps, after the build — no dependency
-  install runs while an AWS session is open.
+  immutable assets first, then everything else with stale objects removed
+  (the pages and `current.json` last), then assets pruned, then an
+  invalidation of the changed paths only. If one pass changes, all of
+  publish-site.sh's equivalents across the project should be revisited
+  together; `redact-secret-sites` mirrors `publish-site.yml` in
+  `docs/upstream/`.
+- The workflows read `PUBLISHER_ROLE_ARN` and `SITE_STACK` from the GitHub
+  `production` environment. Each keeps `permissions: {}` at the top; only
+  its publish job requests `id-token: write`, and it assumes the role in its
+  last steps, after `npm ci` (and the build) — no dependency install runs
+  while an AWS session is open.
 - Actions are pinned to full commit SHAs, with the version in a trailing
   comment, matching the rest of the project.
-- Rolling back means republishing from an earlier commit on `main`; there is
-  no separate rollback mechanism to maintain.
+- Two release planes
+  ([ARCHITECTURE.md § Publish flow](./ARCHITECTURE.md#publish-flow)):
+  `publish-site.yml` publishes an application release (build, hashed
+  assets, the renderer artifact, and the content with it);
+  `publish-content.yml` publishes `i18n/` and `data/` with the deployed
+  renderer and never builds. After a green CI run on main, both run the same
+  plan (`scripts/publish/plan.mjs`) and exactly one publishes. Their publish
+  jobs share one concurrency group. Keep the logic in `scripts/publish/`
+  (tested offline by `npm run test:publish`), not in YAML.
+- Rollback is two kinds:
+  - **content** — dispatch *Publish content* with `operation: rollback` and
+    a retained release ID from an earlier job summary. It verifies that
+    release's manifest and objects and re-points the stable pages and
+    `current.json`; no build, no render. It fails closed on a release
+    rendered by another application release: republish that commit's
+    content instead (`operation: publish`, `sha: <commit>`).
+  - **application** — dispatch *Publish site* with an earlier commit on
+    `main`, which rebuilds and republishes it, content included.
+- Never invalidate `/*` by default: a release invalidates only the mutable
+  paths whose bytes it changed. Hashed assets, `content/` and `releases/`
+  are immutable (a year, `immutable`); HTML, `current.json` and the other
+  application files revalidate (`no-cache`).
+- Nothing written to the bucket may be sensitive: everything in it is
+  served publicly. Job summaries, logs and errors name commits, release IDs,
+  digests, paths and invalidation IDs — never an object body or a value the
+  secret scan found. A dispatch input or `repository_dispatch` payload is
+  untrusted: validate it against a strict pattern before use.
+- Retention: the live content release, the ten before it, and the
+  application release records they name. Change `KEEP_RELEASES` in
+  `scripts/publish/release.mjs`, not by hand in the bucket.
 
 ## Documentation and decisions
 

@@ -73,15 +73,18 @@ observations, not build output.
 ## Stack
 
 Vite + Preact + TypeScript + plain CSS (CSS Modules per component), with
-every route prerendered to static HTML at build time by
-`@preact/preset-vite`. This departs from `redact-secret-benchmarks`'
+every route rendered to complete static HTML by this repository's renderer
+(`src/render.tsx`) — at build time, and again by a content-only publish
+with the deployed copy of the same renderer. The client bundle holds no
+copy or data; each page hydrates from its own embedded page data. This
+departs from `redact-secret-benchmarks`'
 no-framework, string-template stack. Components are developed in Storybook
 (`npm run storybook`). `directory` routing (prebuilt HTML per locale
 path), not `spa`: see
 [redact-secret-sites' routing modes](https://github.com/redact-secret/redact-secret-sites/blob/main/ARCHITECTURE.md#routing-modes).
 
 ```text
-index.html                 # Vite entry; prerendered to / and /ko/, /architecture/… and /ko/architecture/…, /404/
+index.html                 # Vite entry; the page template every route is rendered into (/, /ko/, /architecture/…, /ko/architecture/…, /404/)
 data/
   integrations.json        # which packages the page lists, where, and the integrations cards (integrations-v1)
   release.json             # versions, tags, ranges, dates per package + the upstream feeds — `npm run slots:refresh`, committed (release-v1)
@@ -91,10 +94,13 @@ i18n/
                            # architecture/{section,overview,how-it-works,…}.json (locale-*-v1)
 schemas/                   # versioned JSON Schemas (draft 2020-12) for data/ and i18n/; see CONVENTIONS.md § Data contracts
 src/
-  main.tsx                 # routes + per-page <head> (lang, canonical, hreflang)
+  main.tsx                 # browser entry: hydrates from the page's embedded #page-data, never fetches
+  render.tsx               # the renderer: i18n/ + data/ → every page's HTML and <head> (lang, canonical, hreflang)
+  app.tsx                  # the page tree shared by renderer and browser
+  site-data.ts             # installs a release's data/ into the slots before rendering
   routes.ts                # route registry: pages, alternates, sitemap, legacy /en/ redirects
   i18n.ts                  # locales; English unprefixed, Korean under /ko/
-  content/index.ts         # the one loader: imports i18n/** statically (ContentBundle)
+  content/index.ts         # copy types; the working tree's i18n/** for the dev server and Storybook
   content/shared.ts        # never translated: URLs, the synthetic fixture, code snippets
   content/architecture/    # the architecture section's page registry
   slots/index.ts           # the page's read-only view of data/ (versions, dates, counts)
@@ -114,7 +120,11 @@ public/
 ```
 
 `.github/workflows/ci.yml` validates every pull request;
-`.github/workflows/publish-site.yml` publishes main after CI passes (see
+after CI passes on main, `.github/workflows/publish-site.yml` publishes an
+application release (build, assets, renderer, and the content with it) or
+`.github/workflows/publish-content.yml` publishes a copy- or data-only
+change with the deployed renderer, without a build, and rolls content back
+by release ID (see
 [ARCHITECTURE.md § Publish flow](./ARCHITECTURE.md#publish-flow));
 `.github/workflows/data-freshness.yml` checks weekly whether the registries
 and upstream feeds have moved past `data/release.json` and reports drift,
@@ -138,8 +148,11 @@ URL is not under `https://www.redactsecret.com/`.
 
 ## Deployment
 
-Published by this repository's own workflow, through the publisher role and
-`www` site stack that `redact-secret-sites` creates and owns. Production
+Published by this repository's own workflows, through the publisher role and
+`www` site stack that `redact-secret-sites` creates and owns — one bucket,
+one distribution, no runtime. Application releases and content releases are
+separate planes with their own rollback; see
+[ARCHITECTURE.md § Publish flow](./ARCHITECTURE.md#publish-flow). Production
 only at first — no staging environment is planned until something needs one.
 See
 [redact-secret-sites' site build contract](https://github.com/redact-secret/redact-secret-sites/blob/main/ARCHITECTURE.md#site-build-contract)

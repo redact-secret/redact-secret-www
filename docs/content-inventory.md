@@ -59,15 +59,15 @@ Every file under `data/` must be registered in
 | `src/content/integrations.ts` | Reads `data/integrations.json`; `runtimes` order | Structure/behaviour | `redact-secret-www` | |
 | `src/slots/index.ts` | The page's view of `data/release.json` and `data/evidence.json` | — (view layer) | `redact-secret-www` | Dates shown are the **oldest** observation, so a stale record is never dated as fresh |
 | `src/i18n.ts` | Locales and their switcher labels (`EN`, `한국어`) | Structure/behaviour | `redact-secret-www` | |
-| `src/main.tsx` | Routes, `<title>` composition, canonical, hreflang, `noindex` on 404 | Structure/behaviour | `redact-secret-www` | Routing changes belong to #8 |
+| `src/render.tsx`, `src/app.tsx` | Which page a path is, `<title>` composition, canonical, hreflang, `noindex` on 404 | Structure/behaviour | `redact-secret-www` | The renderer artifact a content release renders with (#11) |
 | `src/content/architecture/pages.ts` | Page registry: ids, slugs, groups, numbers `00`–`06` | Structure/behaviour | `redact-secret-www` | |
 | `src/routes.ts` `routeIds`, `anchorIds`, `routeHref` | The route IDs and anchors copy links name (`architecture/vault`, `home#playground`), resolved per locale | Structure/behaviour | `redact-secret-www` | `check-i18n` fails a link to an unknown one |
-| `src/content/index.ts` | The one loader of `i18n/**` (static import) into a `ContentBundle` | Structure/behaviour | `redact-secret-www` | Pages and components take copy as props; `App`/`prerender` accept any validated bundle |
+| `src/content/index.ts` | Copy types; the working tree's `i18n/**` as a `ContentBundle` for the dev server and Storybook | Structure/behaviour | `redact-secret-www` | The site's pages get their copy from the renderer's arguments, embedded per page |
 | `src/pages/architecture/*.tsx`, `src/pages/Architecture.tsx` | One template per architecture page for both locales: structure, slots as vars, mechanism constants | Structure/behaviour | `redact-secret-www` | |
 | `src/playground/protocol.ts` `limits` | Playground input/findings caps (32 KiB, 1000) | Structure/behaviour (mechanism constant) | Application code | Shown in the size counter |
 | `src/playground/engine.worker.ts` | Engine version and artifact shown in the playground footer | Release metadata | `@redact-secret/core` as installed (`package-lock.json`) | `check-slots` fails the build if it differs from the quickstart pin |
 | `package.json` `dependencies["@redact-secret/core"]` | The engine the playground runs | Release metadata | `redact-secret-www` (pinned exact) | Must equal `data/release.json` `packages.core` |
-| `vite.config.ts` `additionalPrerenderRoutes` | Which routes are prerendered | Structure/behaviour | `redact-secret-www` | |
+| `src/render.tsx` `pagePaths` | Which routes are rendered (both locales + 404) | Structure/behaviour | `redact-secret-www` | Derived from `src/routes.ts` |
 | `index.html` | Font stylesheet, theme bootstrap, favicon | Structure/behaviour | `redact-secret-www` | |
 | `public/logo-*.svg`, `public/favicon.svg`, `src/tokens.css` | Logo, tokens | Structure/behaviour | Redact Secret design system (copied) | |
 
