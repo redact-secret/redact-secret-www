@@ -22,6 +22,7 @@ const typed = '\nDATABASE_PASSWORD=SYNTHETIC_REVOKED_CONTEXT_VALUE\nEmail: synth
 const engineAsset = /\/assets\/(engine\.worker|redact_secret_wasm)[-\w]*\.(js|wasm)$/;
 
 const negativeControl = process.argv.includes('--negative-control');
+const cspPages = ['/ko/', '/architecture/', '/ko/architecture/', '/404/', '/en/architecture/vault/'];
 // --csp: serve every response with the proposed enforcing CSP (the value
 // filed for redact-secret-sites' ContentSecurityPolicy parameter) and fail
 // on any violation.
@@ -86,7 +87,7 @@ async function qualify(type) {
   // not a crash, so the remaining browsers and the CSP check still run.
   try {
     // 1. Load and engine.
-    await page.goto(`${origin}/en/`);
+    await page.goto(`${origin}/`);
     await page.locator('#playground').scrollIntoViewIfNeeded();
     await waitFindings('3 findings').catch(() => {});
     const urlBefore = page.url();
@@ -168,9 +169,10 @@ async function qualify(type) {
     check('Run completed without error', false, String(error.message).split('\n')[0]);
   }
 
-  // Every page, not only the home page, under the same policy.
-  for (const path of ['/', '/ko/', '/404/']) await page.goto(`${origin}${path}`).catch(() => {});
-  if (cspMode) check('No CSP violation on /, /en/, /ko/, /404/ or in the playground', violations.length === 0, violations.join(' | '));
+  // Every page type in both route sets (ADR 0003), not only the home page,
+  // under the same policy — including a legacy /en/ fallback redirect.
+  for (const path of cspPages) await page.goto(`${origin}${path}`, { waitUntil: 'networkidle' }).catch(() => {});
+  if (cspMode) check(`No CSP violation on ${cspPages.join(', ')} or in the playground`, violations.length === 0, violations.join(' | '));
 
   const version = `${type.name()} ${browser.version()}`;
   await browser.close();
@@ -218,7 +220,7 @@ const lines = [
     (c, i) => `| ${c.name} | ` + results.map((r) => (r.checks[i].pass ? 'pass' : `**fail** ${r.checks[i].detail}`)).join(' | ') + ' |',
   ),
   '',
-  'Run with `--csp`, the same checks pass in all three engines under this enforcing policy, with no violation on `/`, `/en/`, `/ko/`, or `/404/` (the inline theme script is allowed by hash, so its hash changes whenever that script does):',
+  `Run with \`--csp\`, the same checks pass in all three engines under this enforcing policy, with no violation on \`/\` or on ${cspPages.map((p) => `\`${p}\``).join(', ')} (the inline theme script is allowed by hash, so its hash changes whenever that script does):`,
   '',
   '```text',
   csp,
