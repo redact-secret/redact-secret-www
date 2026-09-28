@@ -16,6 +16,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { chromium, firefox, webkit } from 'playwright';
 import { preview } from 'vite';
+import { proposedCsp } from './csp.mjs';
 
 const typed = '\nDATABASE_PASSWORD=SYNTHETIC_REVOKED_CONTEXT_VALUE\nEmail: synthetic.person@fixture.local';
 const engineAsset = /\/assets\/(engine\.worker|redact_secret_wasm)[-\w]*\.(js|wasm)$/;
@@ -25,25 +26,7 @@ const negativeControl = process.argv.includes('--negative-control');
 // filed for redact-secret-sites' ContentSecurityPolicy parameter) and fail
 // on any violation.
 const cspMode = process.argv.includes('--csp');
-const themeScriptHash = await import('node:crypto').then(({ createHash }) => {
-  const html = readFileSync(new URL('../dist/en/index.html', import.meta.url), 'utf8');
-  const inline = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
-  return inline.map((body) => `'sha256-${createHash('sha256').update(body).digest('base64')}'`).join(' ');
-});
-export const csp = [
-  "default-src 'self'",
-  // --csp-control drops wasm so the engine must fail: proves violations are caught.
-  `script-src 'self'${process.argv.includes('--csp-control') ? '' : " 'wasm-unsafe-eval'"} ${themeScriptHash}`,
-  "style-src 'self' https://fonts.googleapis.com",
-  'font-src https://fonts.gstatic.com',
-  "img-src 'self' data:",
-  "connect-src 'self'",
-  "worker-src 'self'",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'none'",
-  "frame-ancestors 'none'",
-].join('; ');
+export const csp = proposedCsp({ wasm: !process.argv.includes('--csp-control') });
 const serverLog = [];
 const server = await preview({
   preview: { port: 4174, strictPort: true, open: false },

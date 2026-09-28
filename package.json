@@ -16,7 +16,8 @@
     "check:slots": "node scripts/check-slots.mjs",
     "slots:refresh": "node scripts/refresh-slots.mjs",
     "qualify:playground": "npm run build && node scripts/qualify-playground.mjs",
-    "check:contract": "node scripts/check-build-contract.mjs"
+    "check:contract": "node scripts/check-build-contract.mjs",
+    "check:architecture": "npm run build && node scripts/check-architecture.mjs"
   },
   "dependencies": {
     "@redact-secret/core": "0.1.0-beta.10",
