@@ -50,9 +50,45 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   translated in place from the English layout — a Korean sentence that is
   much longer or shorter than its English counterpart is expected, not a
   bug.
+- Every visitor-visible word lives in `i18n/<locale>/`, one JSON file per
+  page and locale: `shell.json` (header, footer, 404 body), `home.json`, and
+  `architecture/<page>.json` for the hub (`overview`), each sub-page, and the
+  section's own shell (`section`). A copy correction touches only `i18n/**`;
+  if one cannot, the word is in code by mistake. Each file names its schema
+  in `schemaVersion` (`locale-<name>-v1`, e.g. `locale-architecture-vault-v1`)
+  and its `locale`; see [Data contracts](#data-contracts).
+- Markup inside copy is the structured rich-text form of
+  `schemas/locale-common-v1.schema.json`, never an HTML string: a value is a
+  string or a list of inline nodes (`{ "b": … }`, `{ "em": … }`,
+  `{ "code": … }`, `{ "span": …, "class": "mono" }`, `{ "br": true }`,
+  `{ "a": …, "to": "architecture/vault" }` or `{ "a": …, "href": "https://…" }`,
+  `{ "var": "name" }`, `{ "status": …, "tone": … }`, and `dim`, `flag`,
+  `placeholder` for code samples). One component renders it
+  (`src/components/ui/Rich.tsx`); nothing uses `dangerouslySetInnerHTML`.
+- An internal link in copy names a route ID (`home`, `architecture`,
+  `architecture/<page>`, optionally `#<anchor>`, or `#<anchor>` alone),
+  resolved in the page's locale by `src/routes.ts` — copy never holds a
+  locale path. External links are `https` URLs.
+- A value that could change without the prose changing — a version, a date,
+  a count, a commit — is a `{ "var": … }` the page fills from the slots, and
+  so is a clause that depends on data (e.g. "at `<commit>`" only for a
+  repository source): the page picks between authored keys, the copy never
+  holds the condition.
 - Shared, not translated: code snippets and install commands (both locales
   run the same example), package names, version numbers, dates — these come
   from [content slots](#content-slots), never from either locale's prose.
+  Mechanism constants (tier names, marker strings, byte classes, the
+  grading lattice) and the synthetic fixtures stay in typed code, not in
+  `i18n/`.
+- Both locales have the same keys, the same list lengths, and in rich text
+  the same vars, link targets and marks (`code`, chips, placeholders, line
+  breaks); emphasis (`b`, `em`) may sit where each language needs it. A
+  locale that deliberately omits an element says so with `null`, where the
+  schema allows it. `npm run check:i18n` (part of `npm run build`) fails on a
+  missing file, a parity break, a link to an unknown route or anchor or a
+  non-https URL, a page whose copy (shell + page + section) is over 32 KiB of
+  minified JSON, and a key no page reads — it renders every page in both
+  locales from tracked copy to find those.
 - Translated, reviewed: descriptive prose, card one-line descriptions,
   status labels (status chips carry Korean words too, e.g. "출시됨" for
   "Released" — color is never the only signal). No unreviewed machine
@@ -60,13 +96,13 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
 - Korean body copy: `word-break: keep-all`, a 62ch measure (narrower than
   English's 66ch), and the Montserrat/Merriweather → Noto Sans KR/Noto Serif
   KR font fallback stack already used by `redact-secret-benchmarks`.
-- Hero and other large headline breaks are explicit `<br>` tags per locale,
-  authored at the intended break point — never left to wrap based on
-  viewport width.
-- Never hand-write a locale path. Use `homePath(locale)` or
-  `localePath(locale, path)` from `src/i18n.ts`, and `architecturePath()`
-  for architecture pages, so English stays unprefixed and Korean stays under
-  `/ko/`. No internal link points into `/en/` — those paths are legacy
+- Hero and other large headline breaks are explicit `{ "br": true }` nodes
+  (a `<br>`) per locale, authored at the intended break point — never left
+  to wrap based on viewport width.
+- Never hand-write a locale path. In copy use a route ID (above); in code
+  use `homePath(locale)` or `localePath(locale, path)` from `src/i18n.ts`,
+  and `architecturePath()` for architecture pages, so English stays
+  unprefixed and Korean stays under `/ko/`. No internal link points into `/en/` — those paths are legacy
   redirects only, until 2027-03-31; the build contract fails a page that
   links to one.
 - A new top-level page goes into `pageRoutes` in `src/routes.ts` (the
@@ -191,6 +227,13 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   a reduced record of it under `release-v1` `feeds`, validates the payload
   against the schema fetched at the same commit, and keeps copies of the
   feed and schema only as test fixtures.
+- Locale copy (`i18n/<locale>/<name>.json`) is registered as one `dir`
+  target whose family is derived from the path (`locale-<name>`, with `/`
+  as `-`), so a new copy file needs only its schema. The secret scan covers
+  it like any data file; a detected shape that the page shows on purpose as
+  a format (the detection page's `postgres://user:pw@host`) is exempted by
+  its exact text and detector in `scripts/data/illustrative.mjs`, reviewed
+  like a fixture.
 - **Adding a contract:** write `schemas/<name>-v1.schema.json` with an
   `$id` of `https://www.redactsecret.com/schemas/<name>-v1.schema.json`,
   `properties.schemaVersion.const` of `"<name>-v1"`, and `$ref`s into
@@ -209,16 +252,21 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
 - One `Claim` (the brand-green block) per page, holding one sentence that
   can be checked against code or a spec. If a page seems to need two, split
   the page. When the code changes, the claim changes with it.
-- Each sub-page has a body per locale (`src/content/architecture/en/`,
-  `ko/`) with the same component structure, the same one claim, and the
-  same slots; the prose in each is authored for its locale. A change to one
-  locale's structure is made to the other in the same PR. Cross-links
-  inside a body use `architecturePath(locale, id)`, so a page never links
-  silently into the other locale.
+- Each page has one template, `src/pages/architecture/<Page>.tsx` (the hub
+  is in `src/pages/Architecture.tsx`), shared by both locales: the component
+  structure, the one claim, the slots and the mechanism constants. Its words
+  are `i18n/<locale>/architecture/<page>.json`, authored per locale and kept
+  at parity by `npm run check:i18n`. A structural change is a template
+  change, made once for both locales. Cross-links inside copy use route IDs
+  (`{ "a": …, "to": "architecture/vault" }`), so a page never links silently
+  into the other locale.
 - Adding a page: add it to `src/content/architecture/pages.ts` (order is
-  sidebar and pager order), its shell copy in both locales in `shell.ts`,
-  its body under both `en/` and `ko/`, and its path to
-  `scripts/check-build-contract.mjs`.
+  sidebar and pager order), its sidebar label, `<title>` and description in
+  both locales' `architecture/section.json`, its template under
+  `src/pages/architecture/`, its copy as `i18n/{en,ko}/architecture/<id>.json`
+  with a `schemas/locale-architecture-<id>-v1.schema.json` (then
+  `npm run data:types`), the file to the loader in `src/content/index.ts`,
+  and its path to `scripts/check-build-contract.mjs`.
 - Every page ends with a `SourceStrip`: which files, at which commit, read
   on which date.
 - No `style` attribute anywhere — the proposed CSP forbids inline styles.

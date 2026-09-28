@@ -4,10 +4,11 @@ Every string a visitor can see and every datum the site reads, grouped by
 where it lives today, with its class, its canonical owner, and how it is
 kept honest. It covers the migration's first phase
 ([#6](https://github.com/redact-secret/redact-secret-www/issues/6),
-[#9](https://github.com/redact-secret/redact-secret-www/issues/9)). Prose is
+[#9](https://github.com/redact-secret/redact-secret-www/issues/9),
+[#10](https://github.com/redact-secret/redact-secret-www/issues/10)). Prose is
 listed by page and section rather than sentence by sentence, but no file
-that renders text or data is missing. When a row's file moves (e.g. prose
-into `i18n/**` in #10), update the row in the same PR.
+that renders text or data is missing. When a row's file moves, update the
+row in the same PR.
 
 ## Classes and owners
 
@@ -16,12 +17,12 @@ being shown as current when it is not.
 
 | Class | What it is | Canonical owner | Schema | Freshness behaviour |
 | --- | --- | --- | --- | --- |
-| **Editorial** | Authored, reviewed copy in either locale | `redact-secret-www` (moving to `i18n/**`, #10) | TypeScript `SiteContent` / page bodies today; locale schemas in #10 | Reviewed in the PR that changes it; no time dimension |
+| **Editorial** | Authored, reviewed copy in either locale | `redact-secret-www/i18n/**` | `locale-*-v1` (one schema per file; rich text and links from `locale-common-v1`) | Reviewed in the PR that changes it; no time dimension. `check-i18n` holds en/ko parity, links, the page budget and read keys |
 | **Structure/behaviour** | Routes, anchors, navigation IDs, page registry, card layout, URLs, mechanism constants in code | `redact-secret-www` application contract | TypeScript; `integrations-v1` for the card inventory | Changes only with an application release |
 | **Release metadata** | Published versions, dates, dist-tags, peer ranges; release identity | Package registries (npm, PyPI, crates.io) for what is published; `redact-secret`'s site feed for the release identity; `redact-secret-adapters`' release feed for what it declares (registry fallback until the feed is on its `main`) — all read into `data/release.json` | `release-v1` (`packages`, `feeds`) | Per record `observedAt` + `digest` (feeds also the full commit and the feed's `generatedAt`); a failed read or a rejected feed keeps the old record `stale` with its original `observedAt` |
 | **Product evidence** | Counts, limits and statuses read from the product and its packages | `redact-secret`'s site feed (support matrix); `redact-secret` sources for the rest; `redact-secret-adapters` / `redact-secret-vault` | `evidence-v1` (facts from `core`, `adapters`, `vault`), matrix counts checked against `release-v1` `feeds.product` | Per source full revision + `observedAt` + `freshness` |
 | **Benchmark evidence** | Anything measured | `redact-secret-benchmarks` `/results/*.json` | `evidence-v1` carries **counts and names only** | Scores, rates and bounds are never stored here: links only. `check-data` rejects score-like keys and fractional numbers |
-| **Synthetic fixture** | The one credential example and the PII examples | Application code (`src/content/shared.ts`), ADR 0001/0002 | TypeScript | Must keep the `SYNTHETIC_` marker; `check-data` scans all data with the published core |
+| **Synthetic fixture** | The one credential example and the PII examples | Application code (`src/content/shared.ts`), ADR 0001/0002 | TypeScript | Must keep the `SYNTHETIC_` marker; `check-data` scans all data and locale copy with the published core. Illustrative formats the detection page shows on purpose are listed by exact text in `scripts/data/illustrative.mjs` |
 
 ## Data files (`data/`)
 
@@ -60,6 +61,9 @@ Every file under `data/` must be registered in
 | `src/i18n.ts` | Locales and their switcher labels (`EN`, `한국어`) | Structure/behaviour | `redact-secret-www` | |
 | `src/main.tsx` | Routes, `<title>` composition, canonical, hreflang, `noindex` on 404 | Structure/behaviour | `redact-secret-www` | Routing changes belong to #8 |
 | `src/content/architecture/pages.ts` | Page registry: ids, slugs, groups, numbers `00`–`06` | Structure/behaviour | `redact-secret-www` | |
+| `src/routes.ts` `routeIds`, `anchorIds`, `routeHref` | The route IDs and anchors copy links name (`architecture/vault`, `home#playground`), resolved per locale | Structure/behaviour | `redact-secret-www` | `check-i18n` fails a link to an unknown one |
+| `src/content/index.ts` | The one loader of `i18n/**` (static import) into a `ContentBundle` | Structure/behaviour | `redact-secret-www` | Pages and components take copy as props; `App`/`prerender` accept any validated bundle |
+| `src/pages/architecture/*.tsx`, `src/pages/Architecture.tsx` | One template per architecture page for both locales: structure, slots as vars, mechanism constants | Structure/behaviour | `redact-secret-www` | |
 | `src/playground/protocol.ts` `limits` | Playground input/findings caps (32 KiB, 1000) | Structure/behaviour (mechanism constant) | Application code | Shown in the size counter |
 | `src/playground/engine.worker.ts` | Engine version and artifact shown in the playground footer | Release metadata | `@redact-secret/core` as installed (`package-lock.json`) | `check-slots` fails the build if it differs from the quickstart pin |
 | `package.json` `dependencies["@redact-secret/core"]` | The engine the playground runs | Release metadata | `redact-secret-www` (pinned exact) | Must equal `data/release.json` `packages.core` |
@@ -74,28 +78,29 @@ a slot (above), never typed into the sentence.
 
 | Where | Page / section | Locale | Class | Owner |
 | --- | --- | --- | --- | --- |
-| `src/content/en.tsx`, `src/content/ko.tsx` `meta` | `<title>`, meta description (home, 404 fallback) | en, ko | Editorial | `redact-secret-www/i18n` (#10) |
-| same, `shell`, `footer` | Skip link, nav, header controls (language, theme, menu), footer columns and notes | en, ko | Editorial | same |
-| same, `hero` | Block 1: eyebrow, title (explicit `<br>`), lede, CTAs, proof line, I/O caption and footnote | en, ko | Editorial | same |
+| `i18n/{en,ko}/home.json` `meta` | `<title>`, meta description (home, 404 fallback) | en, ko | Editorial | `redact-secret-www/i18n` |
+| `i18n/{en,ko}/shell.json` `header`, `footer` | Skip link, nav, header controls (language, theme, menu), footer columns and notes | en, ko | Editorial | same |
+| `i18n/{en,ko}/shell.json` `notFound` | 404 body (both locales on one page) | en, ko | Editorial | same |
+| `i18n/{en,ko}/home.json` `hero` | Block 1: eyebrow, title (explicit `br` node), lede, CTAs, proof line, I/O caption and footnote | en, ko | Editorial | same |
 | same, `problem` | Block 2: spread diagram labels, destinations, counts labels, remedy | en, ko | Editorial (counts are illustrative diagram labels, not measurements) | same |
-| same, `playground` | Block 3: all labels, preset names, PII modes, errors, engine/size/finding-count formatters | en, ko | Editorial | same |
-| same, `quickstart` | Block 4: tabs label, Rust note, pin sentence (`pin(core)` interpolates slots), why/expect | en, ko | Editorial + release metadata (slots) | same |
-| same, `boundary` | Block 5: flow, pillars, links | en, ko | Editorial | same |
-| same, `integrations` | Block 6: group titles/ledes, runtime names, fact terms, status labels, per-card title/description/coverage, observed-date sentence | en, ko | Editorial (+ release metadata via cards) | same |
+| same, `playground` | Block 3: all labels, preset names, PII modes, errors, engine line (`version`, `artifact` vars), size (`used`, `max`), finding count (`one`/`other`, `n`) | en, ko | Editorial | same |
+| same, `quickstart` | Block 4: tabs label, Rust note, pin sentence (`npm`, `observedAt`, `pypi` vars; `pinLatest.same`/`moved` chosen by the slot), why/expect | en, ko | Editorial + release metadata (slots) | same |
+| same, `boundary` | Block 5: flow, pillars, links (route IDs / https) | en, ko | Editorial | same |
+| same, `integrations` | Block 6: group titles/ledes/links, runtime names, fact terms, status labels, per-card title/description/coverage (keyed by card id in `data/integrations.json`), observed-date sentence (`date` var) | en, ko | Editorial (+ release metadata via cards) | same |
 | same, `evidence` | Block 7: evidence links, routing table, limits | en, ko | Editorial (links to benchmarks, no figures) | same |
-| same, `final`, `notFound` | Block 8 CTA; 404 body (both locales on one page) | en, ko | Editorial | same |
-| `src/content/architecture/shell.ts` | Section name, sidebar groups, per-page `<title>`/description, pager labels | en, ko | Editorial | same |
-| `src/content/architecture/hub.tsx` | `/architecture/` hub body | en, ko | Editorial | same |
-| `src/content/architecture/{en,ko}/HowItWorks.tsx` | 01 How it works (+ source strip) | en, ko | Editorial + product evidence (matrix, detectors, coreLimits, sources.core) | same |
-| `…/Detection.tsx` | 02 Detection (+ source strip) | en, ko | Editorial + product evidence (matrix, detectors) | same |
-| `…/SupportClaims.tsx` | 03 Support claims (+ source strip) | en, ko | Editorial + product evidence (matrix) + benchmark evidence counts (taxonomy, staleProse) + release metadata (measured vs released version, from `feeds.product` via `evidence.measurement`) | same |
-| `…/EvaluationMethods.tsx` | 04 Evaluation methods (+ source strip) | en, ko | Editorial + benchmark evidence (baseline name, sources.benchmarks) | same |
-| `…/Adapters.tsx` | 05 Adapters: tiles, budgets, local `statusLabels`/`registryNames` | en, ko | Editorial + release metadata + product evidence (adapterBudgets) | same |
-| `…/Vault.tsx` | 06 Vault: tiles, dist-tag note (shown only when npm `latest` ≠ the alpha tag), local `statusLabels`/`registryNames` | en, ko | Editorial + release metadata | same |
+| same, `final` | Block 8 CTA | en, ko | Editorial | same |
+| `i18n/{en,ko}/architecture/section.json` | Section name, sidebar groups, per-page nav label, `<title>`/description, pager labels | en, ko | Editorial | same |
+| `i18n/{en,ko}/architecture/overview.json` | `/architecture/` hub body (template: `src/pages/Architecture.tsx` `Hub`) | en, ko | Editorial | same |
+| `i18n/{en,ko}/architecture/how-it-works.json` | 01 How it works (+ source strip); template `src/pages/architecture/HowItWorks.tsx` | en, ko | Editorial + product evidence (matrix, detectors, coreLimits, sources.core as vars) | same |
+| `…/detection.json` | 02 Detection (+ source strip); tier names, anatomy, exclusion list and byte classes stay in the template as mechanism constants | en, ko | Editorial + product evidence (matrix, detectors) | same |
+| `…/support-claims.json` | 03 Support claims (+ source strip); token prefixes and file names stay in the template | en, ko | Editorial + product evidence (matrix) + benchmark evidence counts (taxonomy, staleProse) + release metadata (measured vs released version, from `feeds.product` via `evidence.measurement`; `measuredOn`/`measuredUnknown`, `gated`/`notGated` chosen by the data) | same |
+| `…/evaluation-methods.json` | 04 Evaluation methods (+ source strip); the grading lattice and the phase → method order stay in the template | en, ko | Editorial + benchmark evidence (baseline name, sources.benchmarks) | same |
+| `…/adapters.json` | 05 Adapters: tiles, budgets, `statusLabels`; markers and core surface names stay in the template | en, ko | Editorial + release metadata + product evidence (adapterBudgets) | same |
+| `…/vault.json` | 06 Vault: tiles, dist-tag note (shown only when npm `latest` ≠ the alpha tag), `statusLabels` | en, ko | Editorial + release metadata | same |
 | `src/components/sections/IOBlock.tsx` | `Input` / `Output` term labels, same in both locales | — | Editorial (shared, untranslated) | same |
 | `src/components/sections/PackageCard.tsx` `registryNames` | `npm`, `PyPI`, `crates.io` | — | Structure/behaviour (proper names) | `redact-secret-www` |
-| `src/pages/LocaleChooser.tsx` | `English` / `한국어` at `/` | — | Structure/behaviour | Removed by #8 (English at `/`) |
-| `src/components/**` | No other literal copy: components receive text as props | — | — | — |
+| `src/components/sections/IntegrationsSection.tsx` | `GitHub ↗` group link label | — | Structure/behaviour (proper name) | `redact-secret-www` |
+| `src/components/**`, `src/pages/**` | No other literal copy: components and page templates receive text as props (`i18n/**`) and render rich text through `src/components/ui/Rich.tsx` | — | — | — |
 
 ## Open discrepancies
 
@@ -112,11 +117,19 @@ changes what a page says.
   measurement (newest baseline there: `0.1.0-beta.7`), not the specs the
   page cites.
 - **Hand-written counts in prose.** A few architecture sentences carry counts
-  that could drift from their source: "Six packages" (05 Adapters lede),
-  "The ten specs" / "ten methods" (04), "Ten ways" / "Four repositories"
-  (hub). Tier counts ("five tiers") are mechanism constants and may stay.
-  Move the drift-prone ones to `data/evidence.json` when #10 extracts the
-  prose.
+  as words: "Six packages" / "Six of them" (05 Adapters), "Ten test
+  methods" / "The ten methods" / "The ten specs" (04), "Ten ways" (hub card
+  and 04's description), "Four repositories" (hub), "six kinds of token"
+  (03). #10 kept them as copy: each counts a list the site itself holds
+  (the adapter packages in `data/integrations.json` and the page's tiles,
+  the ten method entries, the hub's repository rows, the GitHub token
+  prefixes), and turning the word into a numeral slot would change every
+  sentence in both locales. Instead `npm run check:i18n` ties each word to
+  its list (`spelledCounts` in `scripts/check-i18n.mjs`): a list that changes
+  length, or a sentence that loses the word, fails the build until both
+  locales are re-read. None of these lists has an upstream feed yet; when
+  the adapters' release feed (#15) lists packages, count from it. Tier
+  counts ("five tiers") are mechanism constants and stay.
 - **Adapters source strip has no commit.** `sources.adapters` is a registry
   source (the published `@redact-secret/adapter@0.1.2` and its `gitHead`),
   because that is where the budgets were verified. The page therefore cites
