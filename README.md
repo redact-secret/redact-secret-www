@@ -94,8 +94,10 @@ public/
 .storybook/                # Storybook with locale (en/ko) and theme toolbars
 ```
 
-Still to come: `tokens.json` with a drift test, and
-`.github/workflows/publish-site.yml`.
+`.github/workflows/ci.yml` validates every pull request;
+`.github/workflows/publish-site.yml` publishes main after CI passes (see
+[ARCHITECTURE.md § Publish flow](./ARCHITECTURE.md#publish-flow)). Still to
+come: `tokens.json` with a drift test.
 
 
 ## Domain
