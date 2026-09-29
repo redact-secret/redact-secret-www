@@ -116,6 +116,7 @@ export interface LocaleCommunityV1 {
     category: Text;
     source: Text;
     clear: Text;
+    useTemplate: Text;
   };
   /**
    * The in-browser check and the hand-off to GitHub. Only idle and the blocked list are prerendered; the other states appear once a visitor types.
@@ -240,6 +241,7 @@ export interface FieldCopy {
   label: Text;
   help?: Rich;
   placeholder?: Rich;
+  template?: Text;
 }
 export interface Verdict {
   verdict: Text;

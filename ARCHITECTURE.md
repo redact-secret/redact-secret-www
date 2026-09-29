@@ -140,6 +140,11 @@ kind scrolls the form into view.
   Continue opens `…/issues/new?template=…` or
   `…/discussions/new?category=…` with the title and one parameter per
   filled field; the safety checkbox is never prefilled.
+- **A low bar to start.** Every free-text field has a plain-words
+  placeholder, and while it is empty a "Fill in with a template" button
+  inserts a short outline (headings only, from the copy) and puts the
+  cursor on its first line. An outline left as inserted does not count as
+  filling a required field.
 - **The check.** Once a field has text, the playground's worker
   (`src/playground/engine.ts`, PII off) scans every field; a finding shows
   field, line, column, type and length, never the value. Continue is off

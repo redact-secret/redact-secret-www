@@ -39,6 +39,17 @@ const privateField = {
 
 const fieldId = (id: string) => `cf-${id}`;
 
+/** After inserting an outline, put the cursor at the end of its first heading, ready to type. */
+function focusFirstLine(id: string, template: string) {
+  requestAnimationFrame(() => {
+    const el = document.getElementById(fieldId(id)) as HTMLTextAreaElement | null;
+    if (!el) return;
+    const at = template.indexOf('\n');
+    el.focus();
+    el.setSelectionRange(at < 0 ? template.length : at, at < 0 ? template.length : at);
+  });
+}
+
 /** One form, mirroring its GitHub YAML: the title, its fields, and the safety acknowledgement. */
 export function FormPanel({ form, copy, formCopy, values, ack, flagged, version, onChange, onAck, onClear }: FormPanelProps) {
   const dest =
@@ -95,7 +106,8 @@ export function FormPanel({ form, copy, formCopy, values, ack, flagged, version,
           class={[styles.control, styles.area, field.code && styles.code].filter(Boolean).join(' ')}
           value={value}
           placeholder={placeholder}
-          rows={5}
+          // Grows with its text (an inserted outline shows whole), within bounds.
+          rows={Math.min(14, Math.max(5, value.split('\n').length + 1))}
           onInput={(e) => onChange?.(field.id, e.currentTarget.value)}
         />
       );
@@ -155,11 +167,26 @@ export function FormPanel({ form, copy, formCopy, values, ack, flagged, version,
 
         {form.fields.map((field) => {
           const fc = formCopy.fields[field.id];
+          const template = field.type === 'textarea' && fc?.template && !(values[field.id] ?? '').trim() ? fc.template : undefined;
           return (
             <div class={flagged?.has(field.id) ? `${styles.field} ${styles.flag}` : styles.field} key={field.id}>
               <div class={styles.top}>
                 <label for={fieldId(field.id)}>{fc?.label}</label>
                 {badge(field.required)}
+                {template && (
+                  <button
+                    type="button"
+                    class={styles.template}
+                    aria-controls={fieldId(field.id)}
+                    data-field-template={field.id}
+                    onClick={() => {
+                      onChange?.(field.id, template);
+                      focusFirstLine(field.id, template);
+                    }}
+                  >
+                    {copy.useTemplate}
+                  </button>
+                )}
               </div>
               {fc?.help && (
                 <p class={styles.help} id={`${fieldId(field.id)}-help`}>

@@ -87,7 +87,7 @@
       "description": "Words every form shares.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["required", "optional", "choose", "titleLabel", "titleHelp", "ackLegend", "issueForm", "discussion", "labels", "category", "source", "clear"],
+      "required": ["required", "optional", "choose", "titleLabel", "titleHelp", "ackLegend", "issueForm", "discussion", "labels", "category", "source", "clear", "useTemplate"],
       "properties": {
         "required": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
         "optional": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
@@ -100,7 +100,8 @@
         "labels": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
         "category": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
         "source": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
-        "clear": { "$ref": "locale-common-v1.schema.json#/$defs/text" }
+        "clear": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "useTemplate": { "$ref": "locale-common-v1.schema.json#/$defs/text" }
       }
     },
     "handoff": {
@@ -198,7 +199,11 @@
       "properties": {
         "label": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
         "help": { "$ref": "locale-common-v1.schema.json#/$defs/rich" },
-        "placeholder": { "$ref": "locale-common-v1.schema.json#/$defs/rich", "description": "Plain text; { var: version } is the published core version." }
+        "placeholder": { "$ref": "locale-common-v1.schema.json#/$defs/rich", "description": "Plain text; { var: version } is the published core version." },
+        "template": {
+          "$ref": "locale-common-v1.schema.json#/$defs/text",
+          "description": "A textarea's outline, inserted by the \"fill in with a template\" button while the field is empty: headings and blank lines only, never a value that could be mistaken for a real one."
+        }
       }
     }
   }
