@@ -186,7 +186,17 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   `npm run check:slots` confirm the counts still add up. The matrix counts
   must equal the product feed's (`check-data` fails otherwise), so a
   refresh that brings a new matrix is committed together with the matching
-  `facts.matrix`. Mechanism constants
+  `facts.matrix`. `facts.taxonomy` (families, providers, families without a
+  detector) is not hand-kept: `npm run sync:taxonomy` rewrites it from the
+  published `results/provider-dossiers-v1.json` (validated against a
+  vendored copy of its schema in `scripts/fixtures/benchmarks/`, offline
+  tests in `scripts/test-taxonomy-sync.mjs`). It reads
+  `benchmarks.redactsecret.dev` first and falls back to
+  `staging.benchmarks.redactsecret.dev` while production does not have the
+  file yet; `--url` or `BENCHMARKS_DOSSIERS_URL` names one explicitly. The
+  fact's `note` records the origin and the benchmarks revision the file was
+  generated at. `npm run check:taxonomy` exits 3 on drift; the weekly
+  `data-freshness` run does that check. Mechanism constants
   that describe code behaviour (an entropy threshold, a minimum length) may
   stay in prose; anything that changes when the matrix or a release changes
   may not.

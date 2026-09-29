@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "taxonomySchemaVersion": 1,
+  "supportMatrix": {
+    "runId": "807faf2b-36ae-40b8-af0c-814988d9de66",
+    "generatedAt": "2026-09-29T16:15:15.660Z",
+    "revision": "be0fb9f35045bf05e5b999a2c0ed368541f9e963"
+  },
+  "providerCount": 2,
+  "familyCount": 2,
+  "stageDistribution": {
+    "researched": 0,
+    "in-taxonomy": 1,
+    "benchmarked": 0,
+    "core-detector": 0,
+    "measured": 1
+  },
+  "verdictDistribution": {
+    "unresearched": 1,
+    "ready": 1,
+    "issuance-gated": 0,
+    "date-gated": 0,
+    "not-found": 0,
+    "rejected": 0
+  },
+  "providers": [
+    {
+      "id": "anthropic",
+      "name": "Anthropic",
+      "families": [
+        {
+          "family": "anthropic:secret-api-key",
+          "name": "Secret API key",
+          "verdict": "ready",
+          "tier": "T1",
+          "researchedAt": "2026-09-23",
+          "blockedBy": null,
+          "issues": [
+            {
+              "ref": "redact-secret/redact-secret#642",
+              "url": "https://github.com/redact-secret/redact-secret/issues/642"
+            }
+          ],
+          "sources": [
+            "https://platform.claude.com/docs/en/manage-claude/compliance-api-access"
+          ],
+          "evidence": "https://github.com/redact-secret/redact-secret/blob/0a35cc713feb77419e40436bcfd083f9078c2cb8/docs/audits/evidence/642/README.md",
+          "detectors": [
+            "anthropic-token"
+          ],
+          "reached": {
+            "researched": true,
+            "in-taxonomy": true,
+            "benchmarked": true,
+            "core-detector": true,
+            "measured": true
+          },
+          "stage": "measured",
+          "supportStatus": "provisional",
+          "fixtureGaps": []
+        }
+      ]
+    },
+    {
+      "id": "atlassian",
+      "name": "Atlassian",
+      "families": [
+        {
+          "family": "atlassian:access-token",
+          "name": "Access token",
+          "verdict": "unresearched",
+          "tier": null,
+          "researchedAt": null,
+          "blockedBy": null,
+          "issues": [],
+          "sources": [],
+          "evidence": null,
+          "detectors": [],
+          "reached": {
+            "researched": false,
+            "in-taxonomy": true,
+            "benchmarked": false,
+            "core-detector": false,
+            "measured": false
+          },
+          "stage": "in-taxonomy",
+          "supportStatus": "unsupported",
+          "fixtureGaps": []
+        }
+      ]
+    }
+  ]
+}

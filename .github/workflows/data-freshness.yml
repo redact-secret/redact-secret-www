@@ -66,6 +66,13 @@ jobs:
           cat "$RUNNER_TEMP/drift.md" >> "$GITHUB_STEP_SUMMARY"
           echo "report=$(base64 -w0 < "$RUNNER_TEMP/drift.md")" >> "$GITHUB_OUTPUT"
 
+      # facts.taxonomy is fed from the published benchmarks file. Exit 3 is
+      # drift: run npm run sync:taxonomy and commit. Not a PR gate, because
+      # the published file moves independently of this repository.
+      - name: Taxonomy counts vs the published benchmarks file
+        if: ${{ !cancelled() }}
+        run: node scripts/sync-taxonomy.mjs --check
+
       # The committed data must still pass on its own, stale records named.
       - name: Committed data
         if: ${{ !cancelled() }}
