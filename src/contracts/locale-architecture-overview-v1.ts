@@ -30,7 +30,7 @@ export type Inline =
   | FlagNode
   | PlaceholderNode;
 /**
- * An internal link target: a route ID from src/routes.ts (home, architecture, architecture/<page>), optionally followed by #<anchor> from src/content/shared.ts anchors; or #<anchor> alone for the current page. Resolved to /… or /ko/… in code.
+ * An internal link target: a route ID from src/routes.ts (home, community, architecture, architecture/<page>), optionally followed by #<anchor> from src/content/shared.ts anchors; or #<anchor> alone for the current page. Resolved to /… or /ko/… in code.
  */
 export type RouteRef = string;
 /**

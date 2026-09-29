@@ -1,0 +1,60 @@
+.kinds {
+  display: grid;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.head {
+  margin-bottom: var(--space-2);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  border-top: var(--hairline) solid var(--line);
+}
+
+.kind {
+  display: grid;
+  grid-template-columns: var(--space-4) minmax(0, 1fr);
+  gap: var(--space-1) var(--space-3);
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-bottom: var(--hairline) solid var(--line);
+  padding: var(--space-3) 0;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+}
+
+.dot {
+  width: var(--space-2);
+  height: var(--space-2);
+  margin-top: var(--space-2);
+  border: var(--hairline) solid var(--ink-muted);
+}
+
+.name {
+  font: 600 var(--text-ml) / var(--leading-lg) var(--font-mont);
+}
+
+.where {
+  grid-column: 2;
+  font: 400 var(--text-sm) / var(--leading-xs) var(--font-roboto);
+  color: var(--ink-muted);
+}
+
+.kind:hover .name {
+  text-decoration: underline;
+}
+
+.kind[aria-current='true'] .dot {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.kind[aria-current='true'] .name {
+  font-weight: 800;
+}

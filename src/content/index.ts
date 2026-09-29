@@ -21,6 +21,7 @@ import type {
   LocaleArchitectureSectionV1,
   LocaleArchitectureSupportClaimsV1,
   LocaleArchitectureVaultV1,
+  LocaleCommunityV1,
   LocaleHomeV1,
   LocaleShellV1,
 } from '../contracts';
@@ -28,6 +29,8 @@ import enShell from '../../i18n/en/shell.json';
 import koShell from '../../i18n/ko/shell.json';
 import enHome from '../../i18n/en/home.json';
 import koHome from '../../i18n/ko/home.json';
+import enCommunity from '../../i18n/en/community.json';
+import koCommunity from '../../i18n/ko/community.json';
 import enSection from '../../i18n/en/architecture/section.json';
 import koSection from '../../i18n/ko/architecture/section.json';
 import enOverview from '../../i18n/en/architecture/overview.json';
@@ -47,6 +50,7 @@ import koVault from '../../i18n/ko/architecture/vault.json';
 
 export type ShellCopy = LocaleShellV1.LocaleShellV1;
 export type HomeCopy = LocaleHomeV1.LocaleHomeV1;
+export type CommunityCopy = LocaleCommunityV1.LocaleCommunityV1;
 export type SectionCopy = LocaleArchitectureSectionV1.LocaleArchitectureSectionV1;
 export type OverviewCopy = LocaleArchitectureOverviewV1.LocaleArchitectureOverviewV1;
 
@@ -65,6 +69,7 @@ export type ArchitecturePagesCopy = {
 export type LocaleContent = {
   shell: ShellCopy;
   home: HomeCopy;
+  community: CommunityCopy;
   architecture: { section: SectionCopy; pages: ArchitecturePagesCopy };
 };
 
@@ -78,6 +83,7 @@ export const content: ContentBundle = {
   en: {
     shell: typed(enShell),
     home: typed(enHome),
+    community: typed(enCommunity),
     architecture: {
       section: typed(enSection),
       pages: {
@@ -94,6 +100,7 @@ export const content: ContentBundle = {
   ko: {
     shell: typed(koShell),
     home: typed(koHome),
+    community: typed(koCommunity),
     architecture: {
       section: typed(koSection),
       pages: {

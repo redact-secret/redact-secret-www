@@ -1,0 +1,216 @@
+.handoff {
+  border-top: var(--hairline) solid var(--line);
+  padding-top: var(--space-6);
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.scan {
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+  font: var(--type-small);
+}
+
+.verdict {
+  font: 700 var(--text-md) / var(--leading-sm) var(--font-mont);
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.verdict svg {
+  flex: none;
+}
+
+/* Status colors: a detection result, which is what they are reserved for. */
+.ok {
+  background: var(--status-success-fill);
+}
+
+.ok .verdict {
+  color: var(--status-success);
+}
+
+.bad {
+  background: var(--status-danger-fill);
+}
+
+.bad .verdict {
+  color: var(--status-danger);
+}
+
+.idle {
+  border: var(--hairline) dashed var(--ink-muted);
+  color: var(--ink-muted);
+}
+
+.hits {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.hits li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  min-width: 0;
+}
+
+.chip {
+  font: 600 var(--text-xs) / var(--leading-2xs) var(--font-mono);
+  padding: 0 var(--space-2);
+  border: var(--hairline) solid var(--ink-muted);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+/* A value that must not be readable: a solid ink bar (CONVENTIONS.md § Synthetic data). */
+.bar {
+  display: inline-block;
+  height: var(--redacted-h);
+  background: var(--ink);
+}
+
+.len1 {
+  width: var(--space-6);
+}
+
+.len2 {
+  width: var(--space-12);
+}
+
+.len3 {
+  width: calc(var(--space-12) * 2);
+}
+
+.len4 {
+  width: calc(var(--space-12) * 3);
+}
+
+.len5 {
+  width: calc(var(--space-12) * 4);
+  max-width: 100%;
+}
+
+.urlbox {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font: 400 var(--text-sm) / var(--leading-xs) var(--font-roboto);
+  color: var(--ink-muted);
+}
+
+/* One cell per twentieth of the limit: no computed width, so no style attribute (CSP). */
+.meter {
+  display: grid;
+  grid-template-columns: repeat(20, minmax(0, 1fr));
+  gap: var(--hairline);
+  height: var(--space-1);
+}
+
+.meter span {
+  background: var(--line);
+}
+
+.meter .on {
+  background: var(--ink-muted);
+}
+
+.over .on {
+  background: var(--status-danger);
+}
+
+.url {
+  font: 400 var(--text-xs) / var(--leading-xs) var(--font-mono);
+  padding: var(--space-3);
+  border: var(--hairline) solid var(--line);
+  background: var(--sunken);
+  overflow: auto;
+  white-space: pre;
+  max-height: calc(var(--space-16) * 2);
+  color: var(--ink);
+}
+
+.hidden {
+  white-space: normal;
+  font-family: var(--font-roboto);
+  color: var(--ink-muted);
+}
+
+.blocked {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.todo {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--space-1);
+  font: var(--type-small);
+}
+
+.todo li::before {
+  content: '— ';
+  color: var(--status-warning);
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+  align-items: center;
+}
+
+.go {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font: 600 var(--text-base) / var(--leading-lg) var(--font-roboto);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-sm);
+  border: var(--hairline) solid var(--brand-green);
+  background: var(--brand-green);
+  color: var(--on-brand);
+  text-decoration: none;
+}
+
+.go:hover {
+  background: var(--on-brand);
+  border-color: var(--on-brand);
+  color: var(--surface);
+  text-decoration: none;
+}
+
+.off,
+.off:hover {
+  background: var(--surface);
+  color: var(--ink-muted);
+  border: var(--hairline) dashed var(--ink-muted);
+  cursor: not-allowed;
+}
+
+.privacy {
+  max-width: var(--measure);
+}
+
+@media (max-width: 520px) {
+  .go {
+    width: 100%;
+    justify-content: center;
+  }
+}

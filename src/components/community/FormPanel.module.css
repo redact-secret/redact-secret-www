@@ -1,0 +1,161 @@
+.panel {
+  display: grid;
+  gap: var(--space-6);
+  align-content: start;
+  min-width: 0;
+}
+
+.head {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.dest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  font: 400 var(--text-sm) / var(--leading-xs) var(--font-roboto);
+  color: var(--ink-muted);
+}
+
+.chip {
+  font: 600 var(--text-xs) / var(--leading-2xs) var(--font-mono);
+  padding: 0 var(--space-2);
+  border: var(--hairline) solid var(--ink-muted);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.intro {
+  padding: var(--space-4);
+  border-left: var(--space-1) solid var(--status-info);
+  background: var(--sunken);
+  font: var(--type-small);
+  max-width: var(--measure);
+}
+
+.form {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.top label,
+.top legend {
+  font: 600 var(--text-ml) / var(--leading-md) var(--font-mont);
+  padding: 0;
+}
+
+.req {
+  font: 600 var(--text-xs) / var(--leading-2xs) var(--font-mont);
+  color: var(--status-danger);
+}
+
+.opt {
+  font: 400 var(--text-xs) / var(--leading-2xs) var(--font-mont);
+  color: var(--ink-muted);
+}
+
+.help {
+  font: var(--type-small);
+  color: var(--ink-muted);
+  max-width: var(--measure);
+}
+
+/* 16px text: iOS does not zoom a field on focus at this size. */
+.control {
+  width: 100%;
+  min-width: 0;
+  font: 400 var(--text-base) / var(--leading-md) var(--font-roboto);
+  color: var(--ink);
+  background: var(--surface);
+  border: var(--hairline) solid var(--ink-muted);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+}
+
+.control::placeholder {
+  color: var(--ink-muted);
+  opacity: 0.8;
+}
+
+.area {
+  resize: vertical;
+}
+
+.code {
+  font: 400 var(--text-md) / var(--leading-sm) var(--font-mono);
+}
+
+.titleRow {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.prefix {
+  font: 400 var(--text-md) / var(--leading-md) var(--font-mono);
+  padding: var(--space-2) var(--space-3);
+  border: var(--hairline) solid var(--ink-muted);
+  border-right: 0;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  color: var(--ink-muted);
+  white-space: nowrap;
+  background: var(--sunken);
+}
+
+.titleRow .control {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.flag .control {
+  border: var(--rule) solid var(--status-danger);
+}
+
+.check {
+  display: grid;
+  grid-template-columns: var(--space-6) minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: start;
+  font: 400 var(--text-ml) / var(--leading-md) var(--font-roboto);
+  cursor: pointer;
+}
+
+.check input {
+  width: var(--space-4);
+  height: var(--space-4);
+  margin: var(--space-1) 0 0;
+  accent-color: var(--ink);
+}
+
+.quiet {
+  font: 600 var(--text-md) / var(--leading-sm) var(--font-roboto);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: var(--hairline) solid var(--ink-muted);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.quiet:hover {
+  background: var(--ink);
+  color: var(--surface);
+}

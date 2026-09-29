@@ -48,6 +48,9 @@ const tables = {
 // keys count as read; the schema still requires them.
 const clientOnly = {
   'home.json': [/^\/playground\/(loadFailed|retry|staleEngine|reload|engine|findingCount|findingsTitle|columns|noFindings|errors)(\/|$)/],
+  // The community check's verdicts after a visitor types. Every form and the
+  // security panel are rendered below (step 5b), so their copy is not listed.
+  'community.json': [/^\/handoff\/(loading|clean|foundOne|foundMany|foundBody|failed|stale|position|length|urlHidden|needSafe|needCheck|tooLong|fallback)(\/|$)/],
 };
 
 // Counts written as words in the copy, each tied to the list it counts
@@ -116,7 +119,7 @@ try {
   const { architecturePages } = await server.ssrLoadModule('/src/content/architecture/pages.ts');
 
   // 1. The file set: what the loader imports, derived from the page registry.
-  const expected = ['shell.json', 'home.json', 'architecture/section.json', ...architecturePages.map((p) => `architecture/${p.id}.json`)];
+  const expected = ['shell.json', 'home.json', 'community.json', 'architecture/section.json', ...architecturePages.map((p) => `architecture/${p.id}.json`)];
   const docs = {};
   for (const locale of locales) {
     docs[locale] = {};
@@ -151,7 +154,12 @@ try {
   let largest = { bytes: 0 };
   for (const locale of locales) {
     for (const route of routes.pageRoutes) {
-      const files = route.page.kind === 'home' ? ['shell.json', 'home.json'] : ['shell.json', 'architecture/section.json', `architecture/${route.page.id}.json`];
+      const files =
+        route.page.kind === 'home'
+          ? ['shell.json', 'home.json']
+          : route.page.kind === 'community'
+            ? ['shell.json', 'community.json']
+            : ['shell.json', 'architecture/section.json', `architecture/${route.page.id}.json`];
       const bytes = files.reduce((sum, f) => sum + (docs[locale][f] ? shippedBytes(docs[locale][f]) : 0), 0);
       const page = routes.localizedRoutes.find((r) => r.locale === locale && r.path === route.path).localized;
       if (bytes > largest.bytes) largest = { bytes, page };
@@ -172,6 +180,7 @@ try {
       content[locale] = {
         shell: track('shell.json'),
         home: track('home.json'),
+        community: track('community.json'),
         architecture: {
           section: track('architecture/section.json'),
           pages: Object.fromEntries(architecturePages.map((p) => [p.id, track(`architecture/${p.id}.json`)])),
@@ -186,6 +195,10 @@ try {
         errors.push(`${path}: render failed: ${e.message}`);
       }
     }
+    // 5b. The community page prerenders one form; render every kind, so each
+    // form's words are read (and a field without copy fails) in both locales.
+    const { renderEveryForm } = await server.ssrLoadModule('/scripts/i18n/community-forms.tsx');
+    for (const locale of locales) errors.push(...renderEveryForm(locale, content[locale].community));
     for (const locale of locales) {
       for (const name of expected) {
         const seen = reads[locale][name];

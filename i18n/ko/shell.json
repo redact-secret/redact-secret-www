@@ -29,7 +29,7 @@
       },
       {
         "label": "커뮤니티",
-        "to": "#community"
+        "to": "community"
       }
     ],
     "getStarted": "시작하기",
@@ -85,6 +85,10 @@
       {
         "title": "커뮤니티",
         "links": [
+          {
+            "label": "제보·질문",
+            "to": "community"
+          },
           {
             "label": "GitHub Issues",
             "href": "https://github.com/redact-secret/redact-secret/issues"

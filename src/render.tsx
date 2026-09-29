@@ -39,7 +39,7 @@ export function localeOfPath(path: string): Locale | null {
   return path === notFoundPath ? null : splitLocalePath(path).locale;
 }
 
-const copyFiles = ['shell.json', 'home.json', 'architecture/section.json', ...architecturePages.map((p) => `architecture/${p.id}.json`)];
+const copyFiles = ['shell.json', 'home.json', 'community.json', 'architecture/section.json', ...architecturePages.map((p) => `architecture/${p.id}.json`)];
 
 /** Every source file of a content release, repository-relative: each locale's copy, then the data. */
 export function inputFiles(): string[] {
@@ -55,6 +55,7 @@ export function inputsFrom(files: Record<string, unknown>): { content: ContentBu
   const localeContent = (l: Locale): LocaleContent => ({
     shell: read(`i18n/${l}/shell.json`),
     home: read(`i18n/${l}/home.json`),
+    community: read(`i18n/${l}/community.json`),
     architecture: {
       section: read(`i18n/${l}/architecture/section.json`),
       pages: Object.fromEntries(architecturePages.map((p) => [p.id, read(`i18n/${l}/architecture/${p.id}.json`)])) as LocaleContent['architecture']['pages'],
@@ -84,6 +85,10 @@ function headFor(path: string, content: ContentBundle): PageHead {
   const meta = content[locale].home.meta;
   const alternates = alternatesFor(unprefixed);
   if (route.page.kind === 'home') return { lang: locale, title: meta.title, description: meta.description, alternates };
+  if (route.page.kind === 'community') {
+    const c = content[locale].community.meta;
+    return { lang: locale, title: c.title, description: c.description, alternates };
+  }
   const a = content[locale].architecture.section;
   const id = route.page.id;
   const page = a.pages[id];
