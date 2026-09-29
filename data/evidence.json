@@ -61,8 +61,9 @@
     },
     "taxonomy": {
       "source": "benchmarks",
-      "paths": ["benchmarks/support/taxonomy.json"],
-      "value": { "families": 128, "providers": 63, "withoutDetector": 25 }
+      "paths": ["results/provider-dossiers-v1.json"],
+      "note": "Synced by npm run sync:taxonomy from https://staging.benchmarks.redactsecret.dev/results/provider-dossiers-v1.json (generated 2026-09-29T16:15:15.660Z at redact-secret-benchmarks be0fb9f35045bf05e5b999a2c0ed368541f9e963). The counts come from that published file, not from the revision pinned in sources.benchmarks.",
+      "value": { "families": 152, "providers": 77, "withoutDetector": 25 }
     },
     "staleProse": {
       "source": "benchmarks",
