@@ -69,7 +69,7 @@ function baseRegistry() {
     state.set(`${entry.registry}:${entry.name}`, rec.value.unpublished ? null : { ...rec.value, revision: rec.source.revision });
     for (const [reg, m] of Object.entries(rec.mirrors ?? {})) state.set(`${reg}:${m.value.name}`, { registry: reg, ...m.value });
   }
-  // The product fixture is 0.1.0-beta.10; the registries agree with it.
+  // The product fixture is 0.1.0-beta.11; the registries agree with it.
   const feed = JSON.parse(fixture('product-feed.json'));
   for (const p of feed.release.packages) {
     const key = `${p.ecosystem}:${p.name}`;
@@ -202,8 +202,8 @@ test('feeds: both feeds are read at a full commit, validated, digested and cross
 test('feeds: the measured version is recorded next to the released one, never replaced by it', async () => {
   const { release } = await run(world(), committed, T0);
   const { release: rel, supportMatrix: m } = release.feeds.product.value;
-  assert.equal(rel.version, '0.1.0-beta.10');
-  assert.equal(m.measuredProductVersion, '0.1.0-beta.7');
+  assert.equal(rel.version, '0.1.0-beta.11');
+  assert.equal(m.measuredProductVersion, '0.1.0-beta.10');
   assert.equal(m.gatedLatestRelease, true);
   // Counts are recomputed from the families, and agree with the committed evidence.
   const evidence = read('data/evidence.json').facts.matrix.value;
@@ -229,7 +229,11 @@ test('feeds: the GitHub API resolves the commit; every file is read at that comm
 // --- adapters: registry fallback while the feed is not on main ---
 
 test('adapters: no feed on main → registry fallback, recorded explicitly, registry records unchanged', async () => {
-  const { release, stale } = await run(world({ adapters: null, registry: baseRegistry() }), committed, T0);
+  // A committed document that never read the adapters feed: with one, a
+  // missing feed is stale instead (the next test).
+  const neverRead = structuredClone(committed);
+  delete neverRead.feeds.adapters;
+  const { release, stale } = await run(world({ adapters: null, registry: baseRegistry() }), neverRead, T0);
   assert.deepEqual(stale, []);
   assert.deepEqual(check(release), []);
   const a = release.feeds.adapters;
@@ -332,28 +336,30 @@ test('digest mismatch: an input that does not hash to the digest in the feed is 
 test('inconsistent: the feed release is not what the registry has published', async () => {
   const before = await baseline();
   const registry = adaptersPublished();
-  registry.set('npm:@redact-secret/core', { ...registry.get('npm:@redact-secret/core'), version: '0.1.0-beta.11', latest: '0.1.0-beta.11' });
+  registry.set('npm:@redact-secret/core', { ...registry.get('npm:@redact-secret/core'), version: '0.1.0-beta.12', latest: '0.1.0-beta.12' });
   const { release, stale } = await run(world({ registry }), before);
   assertKeptStale(release.feeds.product, before.feeds.product);
-  assert.match(reasonFor(stale, 'product'), /inconsistent: .*@redact-secret\/core 0\.1\.0-beta\.10, the registry has 0\.1\.0-beta\.11/);
+  assert.match(reasonFor(stale, 'product'), /inconsistent: .*@redact-secret\/core 0\.1\.0-beta\.11, the registry has 0\.1\.0-beta\.12/);
   // The registry record itself is still read fresh: it is the published fact.
-  assert.equal(release.packages.core.value.version, '0.1.0-beta.11');
+  assert.equal(release.packages.core.value.version, '0.1.0-beta.12');
   assert.equal(release.packages.core.freshness, 'fresh');
 });
 
 test('inconsistent: an adapters feed declaring versions the registry does not have (develop ahead of the registries)', async () => {
   const before = await baseline();
-  const { release, stale } = await run(world({ registry: baseRegistry() }), before);
+  const registry = baseRegistry();
+  registry.set('npm:@redact-secret/adapter', { ...registry.get('npm:@redact-secret/adapter'), version: '0.1.2', latest: '0.1.2' });
+  const { release, stale } = await run(world({ registry }), before);
   assertKeptStale(release.feeds.adapters, before.feeds.adapters);
   assert.match(reasonFor(stale, 'adapters'), /inconsistent: @redact-secret\/adapter 0\.1\.3 is declared, the registry has 0\.1\.2/);
 });
 
 test('inconsistent: a channel other than the dist-tag the site installs from', async () => {
   const before = await baseline();
-  const adapters = adaptersFeed((f) => (f.packages.find((p) => p.id === 'adapter-mcp').channel = 'latest'));
+  const adapters = adaptersFeed((f) => (f.packages.find((p) => p.id === 'adapter-mcp').channel = 'alpha'));
   const { release, stale } = await run(world({ adaptersSha: NEXT_ADAPTERS, adapters }), before);
   assertKeptStale(release.feeds.adapters, before.feeds.adapters);
-  assert.match(reasonFor(stale, 'adapters'), /adapter-mcp channel latest, the site installs from alpha/);
+  assert.match(reasonFor(stale, 'adapters'), /adapter-mcp channel alpha, the site installs from latest/);
 });
 
 test('inconsistent: a feed older than the committed one', async () => {
@@ -372,7 +378,7 @@ test('inconsistent: counts that do not add up to the families listed', async () 
   const before = await baseline();
   const { release, stale } = await run(world({ productSha: NEXT_PRODUCT, product: productFeed((f) => (f.supportMatrix.distribution.stable += 1)) }), before);
   assertKeptStale(release.feeds.product, before.feeds.product);
-  assert.match(reasonFor(stale, 'product'), /distribution\.stable 84 but 83 families/);
+  assert.match(reasonFor(stale, 'product'), /distribution\.stable 106 but 105 families/);
 });
 
 test('network error: the GitHub API or a raw read failing keeps the previous record, stale', async () => {
@@ -433,18 +439,18 @@ test('drift: an unchanged world is no drift; only timestamps moved', async () =>
   const report = driftReport(before, release, stale);
   assert.equal(report.drift, false, report.markdown);
   assert.match(report.markdown, /No drift/);
-  assert.match(report.markdown, /measured on \*\*0\.1\.0-beta\.7\*\*/);
+  assert.match(report.markdown, /measured on \*\*0\.1\.0-beta\.10\*\*/);
 });
 
 test('drift: a stale feed and a changed value are drift, and the report names them', async () => {
   const before = await baseline();
   const registry = adaptersPublished();
-  registry.set('npm:@redact-secret/core', { ...registry.get('npm:@redact-secret/core'), version: '0.1.0-beta.11', latest: '0.1.0-beta.11' });
+  registry.set('npm:@redact-secret/core', { ...registry.get('npm:@redact-secret/core'), version: '0.1.0-beta.12', latest: '0.1.0-beta.12' });
   const { release, stale } = await run(world({ registry }), before);
   const report = driftReport(before, release, stale);
   assert.equal(report.drift, true);
   assert.match(report.markdown, /feeds\/product/);
-  assert.match(report.markdown, /`\/packages\/core\/value\/version` \| "0\.1\.0-beta\.10" \| "0\.1\.0-beta\.11"/);
+  assert.match(report.markdown, /`\/packages\/core\/value\/version` \| "0\.1\.0-beta\.11" \| "0\.1\.0-beta\.12"/);
 });
 
 test('drift: a digest-only change is listed but is not drift', () => {
@@ -487,13 +493,13 @@ const edit = (dir, file, fn) => {
 test('check-data: hand-kept matrix counts that disagree with the product feed fail', () => {
   const r = runCheck((dir) => edit(dir, 'evidence.json', (d) => (d.facts.matrix.value.stableBasis.documented += 1)));
   assert.equal(r.status, 1);
-  assert.match(r.stderr, /facts\/matrix: stableBasis\.documented is 58, the product feed .* says 57/);
+  assert.match(r.stderr, /facts\/matrix: stableBasis\.documented is 81, the product feed .* says 80/);
 });
 
 test('check-data: a fresh feed release that differs from the fresh registry record fails', () => {
-  const r = runCheck((dir) => edit(dir, 'release.json', (d) => (d.feeds.product.value.release.version = '0.1.0-beta.11')));
+  const r = runCheck((dir) => edit(dir, 'release.json', (d) => (d.feeds.product.value.release.version = '0.1.0-beta.12')));
   assert.equal(r.status, 1);
-  assert.match(r.stderr, /feeds\/product: release 0\.1\.0-beta\.11, but packages\.core is/);
+  assert.match(r.stderr, /feeds\/product: release 0\.1\.0-beta\.12, but packages\.core is/);
 });
 
 test('check-data: a stale feed is reported by name', () => {
@@ -520,5 +526,7 @@ test('schema: a fallback record may not carry a value or digest, and a feed reco
   const feed = structuredClone(committed);
   feed.feeds.adapters = { ...feed.feeds.adapters, mode: 'feed' };
   delete feed.feeds.adapters.fallbackReason;
+  delete feed.feeds.adapters.digest;
+  delete feed.feeds.adapters.value;
   assert.ok(check(feed).some((e) => /digest|value/.test(e)));
 });

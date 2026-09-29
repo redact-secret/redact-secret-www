@@ -37,11 +37,11 @@ Every file under `data/` must be registered in
 | `data/release.json` `packages.*` | `release-v1` | Release metadata | npm / PyPI / crates.io | `source.version` (+ npm `gitHead` as `source.revision`) | `observedAt` per record, `generatedAt` per file | `src/slots` → quickstart pins, integrations cards, `/architecture/adapters/`, `/architecture/vault/`, observed-date lines |
 | `data/release.json` `packages.core.mirrors` | `release-v1` | Release metadata | PyPI, crates.io | `source.version` | `observedAt` per mirror | Core card "registries", Python quickstart pin |
 | `data/release.json` `feeds.product` | `release-v1` | Release metadata + product evidence | `redact-secret` `docs/contracts/site-feed/v1/feed.json` (`redact-secret.site-feed/v1`) | `source.revision` = the full commit `main` resolved to, `digest` computed here, `schemaDigest` | `observedAt`; the feed's `generatedAt` | `/architecture/support-claims/` (measured vs released version, benchmarks pin); `check-data` (matrix counts, core version) |
-| `data/release.json` `feeds.adapters` | `release-v1` | Release metadata (declared) | `redact-secret-adapters` `site-feed/v1/adapters.json` on `main` | `source.revision`; `mode: registry-fallback` while the feed is not on `main` (today), `mode: feed` + `digest` once it is | `observedAt` (+ `generatedAt` in feed mode) | `check-data` (versions against `packages`); not rendered yet |
-| `data/evidence.json` `facts.matrix` | `evidence-v1` | Product evidence | `redact-secret` site feed `supportMatrix` (the pinned `benchmarks/support-matrix.json`); first read from `docs/support-matrix.md` | `sources.core` = `redact-secret@9ab0fa02…` (`0.1.0-beta.10`); `check-data` holds the counts equal to `feeds.product` | `observedAt` | `/architecture/how-it-works/`, `/support-claims/`, `/detection/`; `check-slots` sums |
+| `data/release.json` `feeds.adapters` | `release-v1` | Release metadata (declared) | `redact-secret-adapters` `site-feed/v1/adapters.json` on `main` | `source.revision`; `mode: feed` + `digest` (on `main` since 2026-09-29); `mode: registry-fallback` only while a feed is not on `main` | `observedAt` (+ `generatedAt` in feed mode) | `check-data` (versions against `packages`); not rendered yet |
+| `data/evidence.json` `facts.matrix` | `evidence-v1` | Product evidence | `redact-secret` site feed `supportMatrix` (the pinned `benchmarks/support-matrix.json`); first read from `docs/support-matrix.md` | `sources.core` = `redact-secret@67a7b9e4…` (`0.1.0-beta.11`); `check-data` holds the counts equal to `feeds.product` | `observedAt` | `/architecture/how-it-works/`, `/support-claims/`, `/detection/`; `check-slots` sums |
 | `data/evidence.json` `facts.detectors` | `evidence-v1` | Product evidence (mechanism counts) | `redact-secret` | `sources.core` | `observedAt` | `/architecture/how-it-works/`, `/detection/` |
 | `data/evidence.json` `facts.coreLimits` | `evidence-v1` | Product evidence | `redact-secret` `README.md`, `ARCHITECTURE.md` | `sources.core` | `observedAt` | `/architecture/how-it-works/` |
-| `data/evidence.json` `facts.adapterBudgets` | `evidence-v1` | Product evidence | `redact-secret-adapters` (`@redact-secret/adapter` README `DEFAULT_LIMITS`) | `sources.adapters` = npm `@redact-secret/adapter@0.1.2`, gitHead `be3f2ad5…` | `observedAt` | `/architecture/adapters/` |
+| `data/evidence.json` `facts.adapterBudgets` | `evidence-v1` | Product evidence | `redact-secret-adapters` (`@redact-secret/adapter` README `DEFAULT_LIMITS`) | `sources.adapters` = npm `@redact-secret/adapter@0.1.3`, gitHead `f57bd4e7…` | `observedAt` | `/architecture/adapters/` |
 | `data/evidence.json` `facts.taxonomy` | `evidence-v1` | Benchmark evidence (counts) | the published `results/provider-dossiers-v1.json` (`npm run sync:taxonomy`; the same counts as `benchmarks/support/taxonomy.json`) | `facts.taxonomy.note` names the file's origin and benchmarks revision; `sources.benchmarks` = `redact-secret-benchmarks@0a73b7db…` still pins `staleProse` and `baseline` | `observedAt` | `/architecture/support-claims/` |
 | `data/evidence.json` `facts.staleProse` | `evidence-v1` | Benchmark evidence (counts quoted from prose) | `redact-secret-benchmarks` `docs/specs/taxonomy.md` | `sources.benchmarks` | `observedAt` | `/architecture/support-claims/` |
 | `data/evidence.json` `facts.baseline` | `evidence-v1` | Benchmark evidence (a name) | `redact-secret-benchmarks` `baselines/0.1.0-beta.9.json` | `sources.benchmarks` | `observedAt` | `/architecture/evaluation-methods/` |
@@ -109,15 +109,13 @@ a slot (above), never typed into the sentence.
 Found while tying each value to a revision; not changed here because each
 changes what a page says.
 
-- ~~**`facts.baseline` = `0.1.0-beta.10`.**~~ Resolved in #12. No
-  `baselines/0.1.0-beta.10.json` exists on any branch of
-  `redact-secret-benchmarks`. At the recorded `sources.benchmarks` revision
-  (`0a73b7db`, where the evaluation-method specs were read) the newest
-  frozen baseline is `0.1.0-beta.9`, so the fact now names that file, with
-  its path. The product feed's `supportMatrix.benchmarksRevision`
-  (`cfaeac4d…`) was considered and not used: it pins the support-matrix
-  measurement (newest baseline there: `0.1.0-beta.7`), not the specs the
-  page cites.
+- ~~**`facts.baseline`.**~~ Resolved in #12, updated in #27.
+  `baselines/0.1.0-beta.10.json` is now on `redact-secret-benchmarks`
+  `main`; at the recorded `sources.benchmarks` revision (`86efbaf2`) it is
+  the newest frozen baseline, so the fact names that file, with its path.
+  The product feed's `supportMatrix.benchmarksRevision` (`ec9ffbec…`) was
+  considered and not used: it pins the support-matrix measurement (newest
+  baseline there: `0.1.0-beta.9`), not the specs the page cites.
 - **Hand-written counts in prose.** A few architecture sentences carry counts
   as words: "Six packages" / "Six of them" (05 Adapters), "Ten test
   methods" / "The ten methods" / "The ten specs" (04), "Ten ways" (hub card
@@ -136,11 +134,10 @@ changes what a page says.
   source (the published `@redact-secret/adapter@0.1.2` and its `gitHead`),
   because that is where the budgets were verified. The page therefore cites
   the repository without a commit, as before. The adapters' release feed is
-  merged to `develop` but not yet on `main` (`feeds.adapters.mode` is
-  `registry-fallback`); once a refresh reads it in `feed` mode, cite its
-  revision instead. The feed does not carry the walker budgets, so
+  on `main` and `feeds.adapters.mode` is `feed` (#27); citing its
+  revision on the page is still to do. The feed does not carry the walker budgets, so
   `facts.adapterBudgets` stays hand-read.
 - **Matrix measured on an older version than the release.** The product
-  feed says the shipped matrix was measured on `0.1.0-beta.7` while the
-  release is `0.1.0-beta.10` (its drift gate ran against that matrix).
+  feed says the shipped matrix was measured on `0.1.0-beta.10` while the
+  release is `0.1.0-beta.11` (its drift gate ran against that matrix).
   This is not an error; `/architecture/support-claims/` states both.
