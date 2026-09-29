@@ -63,6 +63,22 @@
   padding: 0;
 }
 
+.template {
+  margin-left: auto;
+  font: 600 var(--text-sm) / var(--leading-xs) var(--font-roboto);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: var(--hairline) dashed var(--ink-muted);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.template:hover {
+  border-style: solid;
+  border-color: var(--ink);
+}
+
 .req {
   font: 600 var(--text-xs) / var(--leading-2xs) var(--font-mont);
   color: var(--status-danger);
@@ -102,6 +118,11 @@
 
 .code {
   font: 400 var(--text-md) / var(--leading-sm) var(--font-mono);
+}
+
+/* Hints are prose, in either locale; only what is typed is code. */
+.code::placeholder {
+  font-family: var(--font-roboto);
 }
 
 .titleRow {

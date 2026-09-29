@@ -7,6 +7,8 @@
 //      CSP violation; lang, one <h1>, the header marks Community current;
 //   2. no horizontal page scroll;
 //   3. Continue starts off, and says why (title, required fields, safety box);
+//      the template button fills an empty textarea with an outline, which
+//      alone does not count as an answer;
 //   4. a filled, clean form turns Continue on, and its address is exactly
 //      the GitHub form with every field as a parameter (title prefixed);
 //   5. the synthetic fixture in a field is found: Continue goes off, the
@@ -128,6 +130,24 @@ async function checkEngine(type) {
         if (!s.disabled || s.href) fail(`Continue is on before anything is typed (${JSON.stringify(s)})`);
         const reasons = await page.locator('[class*="_todo_"] li').count();
         if (reasons < 2) fail(`only ${reasons} reason(s) listed for Continue being off`);
+
+        // 3b. The outline button fills an empty textarea, focuses it, and
+        // steps aside; an untouched outline does not satisfy a required field.
+        const outline = page.locator('[data-field-template="what-happened"]');
+        if ((await outline.count()) !== 1) fail('no template button on an empty textarea');
+        else {
+          await outline.click();
+          const filled = await page.inputValue('#cf-what-happened');
+          if (!filled.includes('\n')) fail('the template button inserted no outline');
+          const focused = await page
+            .waitForFunction(() => document.activeElement?.id === 'cf-what-happened', null, { timeout: 2000 })
+            .then(() => true, () => false);
+          if (!focused) fail('the outline field is not focused');
+          if (await outline.count()) fail('the template button stays after the field has text');
+          const todo = await page.locator('[class*="_todo_"]').innerText();
+          const label = await page.locator('label[for="cf-what-happened"]').innerText();
+          if (!todo.includes(label)) fail('an untouched outline counts as an answer');
+        }
 
         // 4. A clean, filled bug report.
         await page.fill('#cf-title', `streaming write fails ${MARKER}`);

@@ -69,7 +69,7 @@ export const feedbackKinds = [
         'redact instead of block',
         'Other (describe below)',
       ]),
-      textarea('repro-shape', true, true),
+      textarea('repro-shape', true),
     ],
   },
   {
@@ -89,7 +89,7 @@ export const feedbackKinds = [
         'Should have been block but was warn/allow/redact',
         'Other (describe below)',
       ]),
-      textarea('repro-shape', true, true),
+      textarea('repro-shape', true),
     ],
   },
   {
@@ -134,7 +134,7 @@ export const feedbackKinds = [
       input('package-version', false),
       input('runtime', false),
       input('guide', false),
-      textarea('safe-reproduction', false, true),
+      textarea('safe-reproduction', false),
     ],
   },
   { key: 'question', group: 'talk', kind: 'discussion', category: 'q-a', template: 'q-a.yml', prefix: '[Q&A] ', fields: [textarea('question', true)] },

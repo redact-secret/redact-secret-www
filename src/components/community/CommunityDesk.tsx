@@ -158,7 +158,10 @@ export function CommunityDesk({ locale, copy, version, loadEngine = defaultLoade
     const url = prefillUrl(form, values);
     const missing = [
       ...(values.title?.trim() ? [] : [copy.form.titleLabel]),
-      ...form.fields.filter((f) => f.required && !(values[f.id] ?? '').trim()).map((f) => formCopy.fields[f.id]?.label ?? f.id),
+      // An outline left as inserted is not an answer yet.
+      ...form.fields
+        .filter((f) => f.required && (!(values[f.id] ?? '').trim() || values[f.id]!.trim() === formCopy.fields[f.id]?.template?.trim()))
+        .map((f) => formCopy.fields[f.id]?.label ?? f.id),
     ];
     const reasons = [
       ...(missing.length ? [plainText(copy.handoff.needFields, { fields: missing.join(', ') })] : []),
