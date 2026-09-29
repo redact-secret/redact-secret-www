@@ -203,8 +203,9 @@ test('feeds: the measured version is recorded next to the released one, never re
   const { release } = await run(world(), committed, T0);
   const { release: rel, supportMatrix: m } = release.feeds.product.value;
   assert.equal(rel.version, '0.1.0-beta.11');
-  assert.equal(m.measuredProductVersion, '0.1.0-beta.10');
-  assert.equal(m.gatedLatestRelease, true);
+  // Measured on the released version here; the two stay separate fields.
+  assert.equal(m.measuredProductVersion, '0.1.0-beta.11');
+  assert.equal(m.gatedLatestRelease, false);
   // Counts are recomputed from the families, and agree with the committed evidence.
   const evidence = read('data/evidence.json').facts.matrix.value;
   assert.deepEqual({ families: m.families, providers: m.providers, status: m.status, stableBasis: m.stableBasis, tiers: m.tiers }, {
@@ -351,7 +352,7 @@ test('inconsistent: an adapters feed declaring versions the registry does not ha
   registry.set('npm:@redact-secret/adapter', { ...registry.get('npm:@redact-secret/adapter'), version: '0.1.2', latest: '0.1.2' });
   const { release, stale } = await run(world({ registry }), before);
   assertKeptStale(release.feeds.adapters, before.feeds.adapters);
-  assert.match(reasonFor(stale, 'adapters'), /inconsistent: @redact-secret\/adapter 0\.1\.3 is declared, the registry has 0\.1\.2/);
+  assert.match(reasonFor(stale, 'adapters'), /inconsistent: @redact-secret\/adapter 0\.1\.4 is declared, the registry has 0\.1\.2/);
 });
 
 test('inconsistent: a channel other than the dist-tag the site installs from', async () => {
@@ -439,7 +440,7 @@ test('drift: an unchanged world is no drift; only timestamps moved', async () =>
   const report = driftReport(before, release, stale);
   assert.equal(report.drift, false, report.markdown);
   assert.match(report.markdown, /No drift/);
-  assert.match(report.markdown, /measured on \*\*0\.1\.0-beta\.10\*\*/);
+  assert.match(report.markdown, /measured on \*\*0\.1\.0-beta\.11\*\*/);
 });
 
 test('drift: a stale feed and a changed value are drift, and the report names them', async () => {

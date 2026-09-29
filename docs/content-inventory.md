@@ -38,13 +38,13 @@ Every file under `data/` must be registered in
 | `data/release.json` `packages.core.mirrors` | `release-v1` | Release metadata | PyPI, crates.io | `source.version` | `observedAt` per mirror | Core card "registries", Python quickstart pin |
 | `data/release.json` `feeds.product` | `release-v1` | Release metadata + product evidence | `redact-secret` `docs/contracts/site-feed/v1/feed.json` (`redact-secret.site-feed/v1`) | `source.revision` = the full commit `main` resolved to, `digest` computed here, `schemaDigest` | `observedAt`; the feed's `generatedAt` | `/architecture/support-claims/` (measured vs released version, benchmarks pin); `check-data` (matrix counts, core version) |
 | `data/release.json` `feeds.adapters` | `release-v1` | Release metadata (declared) | `redact-secret-adapters` `site-feed/v1/adapters.json` on `main` | `source.revision`; `mode: feed` + `digest` (on `main` since 2026-09-29); `mode: registry-fallback` only while a feed is not on `main` | `observedAt` (+ `generatedAt` in feed mode) | `check-data` (versions against `packages`); not rendered yet |
-| `data/evidence.json` `facts.matrix` | `evidence-v1` | Product evidence | `redact-secret` site feed `supportMatrix` (the pinned `benchmarks/support-matrix.json`); first read from `docs/support-matrix.md` | `sources.core` = `redact-secret@67a7b9e4…` (`0.1.0-beta.11`); `check-data` holds the counts equal to `feeds.product` | `observedAt` | `/architecture/how-it-works/`, `/support-claims/`, `/detection/`; `check-slots` sums |
+| `data/evidence.json` `facts.matrix` | `evidence-v1` | Product evidence | `redact-secret` site feed `supportMatrix` (the pinned `benchmarks/support-matrix.json`); first read from `docs/support-matrix.md` | `sources.core` = `redact-secret@b9e90915…` (`0.1.0-beta.11`); `check-data` holds the counts equal to `feeds.product` | `observedAt` | `/architecture/how-it-works/`, `/support-claims/`, `/detection/`; `check-slots` sums |
 | `data/evidence.json` `facts.detectors` | `evidence-v1` | Product evidence (mechanism counts) | `redact-secret` | `sources.core` | `observedAt` | `/architecture/how-it-works/`, `/detection/` |
 | `data/evidence.json` `facts.coreLimits` | `evidence-v1` | Product evidence | `redact-secret` `README.md`, `ARCHITECTURE.md` | `sources.core` | `observedAt` | `/architecture/how-it-works/` |
 | `data/evidence.json` `facts.adapterBudgets` | `evidence-v1` | Product evidence | `redact-secret-adapters` (`@redact-secret/adapter` README `DEFAULT_LIMITS`) | `sources.adapters` = npm `@redact-secret/adapter@0.1.3`, gitHead `f57bd4e7…` | `observedAt` | `/architecture/adapters/` |
-| `data/evidence.json` `facts.taxonomy` | `evidence-v1` | Benchmark evidence (counts) | the published `results/provider-dossiers-v1.json` (`npm run sync:taxonomy`; the same counts as `benchmarks/support/taxonomy.json`) | `facts.taxonomy.note` names the file's origin and benchmarks revision; `sources.benchmarks` = `redact-secret-benchmarks@0a73b7db…` still pins `staleProse` and `baseline` | `observedAt` | `/architecture/support-claims/` |
+| `data/evidence.json` `facts.taxonomy` | `evidence-v1` | Benchmark evidence (counts) | the published `results/provider-dossiers-v1.json` (`npm run sync:taxonomy`; the same counts as `benchmarks/support/taxonomy.json`) | `facts.taxonomy.note` names the file's origin and benchmarks revision; `sources.benchmarks` = `redact-secret-benchmarks@d7da5c45…` still pins `staleProse` and `baseline` | `observedAt` | `/architecture/support-claims/` |
 | `data/evidence.json` `facts.staleProse` | `evidence-v1` | Benchmark evidence (counts quoted from prose) | `redact-secret-benchmarks` `docs/specs/taxonomy.md` | `sources.benchmarks` | `observedAt` | `/architecture/support-claims/` |
-| `data/evidence.json` `facts.baseline` | `evidence-v1` | Benchmark evidence (a name) | `redact-secret-benchmarks` `baselines/0.1.0-beta.9.json` | `sources.benchmarks` | `observedAt` | `/architecture/evaluation-methods/` |
+| `data/evidence.json` `facts.baseline` | `evidence-v1` | Benchmark evidence (a name) | `redact-secret-benchmarks` `baselines/0.1.0-beta.11.json` | `sources.benchmarks` | `observedAt` | `/architecture/evaluation-methods/` |
 | `data/evidence.json` `sources.vault` | `evidence-v1` | Product evidence (citation) | `redact-secret-vault` | `redact-secret-vault@2feebe8b…` | `observedAt` | `/architecture/vault/` source strip |
 
 ## Application-owned data (TypeScript)
@@ -109,13 +109,14 @@ a slot (above), never typed into the sentence.
 Found while tying each value to a revision; not changed here because each
 changes what a page says.
 
-- ~~**`facts.baseline`.**~~ Resolved in #12, updated in #27.
-  `baselines/0.1.0-beta.10.json` is now on `redact-secret-benchmarks`
-  `main`; at the recorded `sources.benchmarks` revision (`86efbaf2`) it is
+- ~~**`facts.baseline`.**~~ Resolved in #12, updated in #27 and again
+  for the beta.11 re-pin (redact-secret#956).
+  `baselines/0.1.0-beta.11.json` is now on `redact-secret-benchmarks`
+  `main`; at the recorded `sources.benchmarks` revision (`d7da5c45`) it is
   the newest frozen baseline, so the fact names that file, with its path.
-  The product feed's `supportMatrix.benchmarksRevision` (`ec9ffbec…`) was
+  The product feed's `supportMatrix.benchmarksRevision` (`a30282d9…`) was
   considered and not used: it pins the support-matrix measurement (newest
-  baseline there: `0.1.0-beta.9`), not the specs the page cites.
+  baseline there: `0.1.0-beta.10`), not the specs the page cites.
 - **Hand-written counts in prose.** A few architecture sentences carry counts
   as words: "Six packages" / "Six of them" (05 Adapters), "Ten test
   methods" / "The ten methods" / "The ten specs" (04), "Ten ways" (hub card
@@ -137,7 +138,8 @@ changes what a page says.
   on `main` and `feeds.adapters.mode` is `feed` (#27); citing its
   revision on the page is still to do. The feed does not carry the walker budgets, so
   `facts.adapterBudgets` stays hand-read.
-- **Matrix measured on an older version than the release.** The product
-  feed says the shipped matrix was measured on `0.1.0-beta.10` while the
-  release is `0.1.0-beta.11` (its drift gate ran against that matrix).
-  This is not an error; `/architecture/support-claims/` states both.
+- ~~**Matrix measured on an older version than the release.**~~ Resolved by
+  the beta.11 re-pin (redact-secret#956): the product feed at `b9e90915`
+  says the shipped matrix was measured on `0.1.0-beta.11`, the release
+  itself. Its drift gate has not run against that matrix
+  (`gatedLatestRelease: false`); `/architecture/support-claims/` says so.
