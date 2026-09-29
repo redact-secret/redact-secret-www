@@ -149,3 +149,12 @@ jobs:
 
       - name: Negative control — without its page data a page stays complete but must not hydrate
         run: node scripts/check-first-paint.mjs --negative-control --engine chromium
+
+      # /community/ and /ko/community/ at 360px and 1280px, with the real core
+      # under the proposed CSP: the fixture is found and never shown, Continue
+      # opens the exact prefilled GitHub form, and nothing typed leaves the page.
+      - name: Check the community page
+        run: node scripts/check-community.mjs
+
+      - name: Negative control — without the engine the fixture check must fail
+        run: node scripts/check-community.mjs --negative-control --engine chromium
