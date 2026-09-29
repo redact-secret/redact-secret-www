@@ -10,11 +10,17 @@ import { architecturePages, architecturePath, type ArchitecturePageId } from './
 import { anchors } from './content/shared';
 import { defaultLocale, homePath, localePath, locales, type Locale } from './i18n';
 
-export type PageRoute = { path: string; page: { kind: 'home' } | { kind: 'architecture'; id: ArchitecturePageId } };
+export type PageRoute = { path: string; page: { kind: 'home' } | { kind: 'community' } | { kind: 'architecture'; id: ArchitecturePageId } };
+
+/** The community page: `/community/` or `/ko/community/`. */
+export function communityPath(locale: Locale) {
+  return localePath(locale, '/community/');
+}
 
 /** Every indexable page, by its English (unprefixed) path. */
 export const pageRoutes: readonly PageRoute[] = [
   { path: '/', page: { kind: 'home' } },
+  { path: communityPath(defaultLocale), page: { kind: 'community' } },
   ...architecturePages.map((p) => ({
     path: architecturePath(defaultLocale, p.id),
     page: { kind: 'architecture' as const, id: p.id },
@@ -23,13 +29,13 @@ export const pageRoutes: readonly PageRoute[] = [
 
 /**
  * Route IDs: how locale copy (i18n/**) names an internal link target, so the
- * copy never carries a locale path. `home`, `architecture` (the hub), and
- * `architecture/<page>`.
+ * copy never carries a locale path. `home`, `community`, `architecture` (the
+ * hub), and `architecture/<page>`.
  */
-export type RouteId = 'home' | 'architecture' | `architecture/${Exclude<ArchitecturePageId, 'overview'>}`;
+export type RouteId = 'home' | 'community' | 'architecture' | `architecture/${Exclude<ArchitecturePageId, 'overview'>}`;
 
 export const routeIds: readonly RouteId[] = pageRoutes.map((r) =>
-  r.page.kind === 'home' ? 'home' : r.page.id === 'overview' ? 'architecture' : (`architecture/${r.page.id}` as RouteId),
+  r.page.kind === 'home' ? 'home' : r.page.kind === 'community' ? 'community' : r.page.id === 'overview' ? 'architecture' : (`architecture/${r.page.id}` as RouteId),
 );
 
 /** In-page anchor IDs a link may name after `#`. */
@@ -47,7 +53,9 @@ export function routeHref(locale: Locale, ref: string): string {
   if (id === '') return hash;
   const route = pageRoutes.find((_r, i) => routeIds[i] === id);
   if (!route) throw new Error(`unknown route in link "${ref}"`);
-  return `${route.page.kind === 'home' ? homePath(locale) : architecturePath(locale, route.page.id)}${hash}`;
+  const { page } = route;
+  const path = page.kind === 'home' ? homePath(locale) : page.kind === 'community' ? communityPath(locale) : architecturePath(locale, page.id);
+  return `${path}${hash}`;
 }
 
 /** The href of a copy link (i18n/**): a route reference resolved in `locale`, or its external URL. */

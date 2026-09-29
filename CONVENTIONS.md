@@ -6,8 +6,8 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
 ## Scope
 
 - This repository holds one bilingual marketing/navigation page, the
-  architecture section (`/architecture/`), its build, and its publish
-  workflow. It never holds documentation content (that is a
+  architecture section (`/architecture/`), the community page
+  (`/community/`), its build, and its publish workflow. It never holds documentation content (that is a
   separate, not-yet-created repository), scanning logic, benchmark results,
   or PII content. The one exception is the playground's opt-in PII switch and
   its synthetic PII fixtures
@@ -53,7 +53,8 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   much longer or shorter than its English counterpart is expected, not a
   bug.
 - Every visitor-visible word lives in `i18n/<locale>/`, one JSON file per
-  page and locale: `shell.json` (header, footer, 404 body), `home.json`, and
+  page and locale: `shell.json` (header, footer, 404 body), `home.json`,
+  `community.json`, and
   `architecture/<page>.json` for the hub (`overview`), each sub-page, and the
   section's own shell (`section`). A copy correction touches only `i18n/**`;
   if one cannot, the word is in code by mistake. Each file names its schema
@@ -303,11 +304,20 @@ behind them are in [ARCHITECTURE.md](./ARCHITECTURE.md).
   system's convention for "a value that must not be readable," distinct from
   the typed placeholder chip (`<SECRET_1>`) that represents the product's
   actual output.
-- The playground is the only input on this site, and it stays inside
-  [ADR 0001](./docs/decisions/0001-browser-only-playground.md): no
-  transmission, no persistence, spellcheck and autofill off, metadata-only
-  findings. No form or endpoint accepts visitor text. Any change that
-  loosens one of those rules needs a new decision record.
+- The site has two inputs, each inside its decision record: the playground
+  ([ADR 0001](./docs/decisions/0001-browser-only-playground.md)) and the
+  community forms
+  ([ADR 0004](./docs/decisions/0004-community-feedback-handoff.md)). Both:
+  no transmission by this site, no persistence, spellcheck and autofill
+  off, metadata-only findings. No form submits and no endpoint accepts
+  visitor text; the community page's only exit is the prefilled
+  `github.com` address the visitor opens, and only once the check is clean.
+  Any change that loosens one of those rules needs a new decision record.
+- The community forms mirror `redact-secret/redact-secret`'s `.github/`
+  YAML (`src/content/community.ts`: ids, types, options, prefixes, labels —
+  the prefill contract, never translated); their words are
+  `i18n/<locale>/community.json`. Change both in one PR when an upstream
+  form changes, and run `npm run check:community`.
 - Run `npm run qualify:playground` (Chromium, Firefox, WebKit) before
   merging a change to the playground or a `@redact-secret/core` bump, and
   commit the record it writes under `docs/qualification/`.

@@ -25,7 +25,7 @@ const files = walk(dist).map((path) => relative(dist, path));
 // document at every legacy /en/ path. Written out here rather than read
 // from src/routes.ts, so the check is a second source, not an echo.
 const architecture = ['', 'how-it-works/', 'detection/', 'support-claims/', 'evaluation-methods/', 'adapters/', 'vault/'];
-const english = ['/', ...architecture.map((sub) => `/architecture/${sub}`)];
+const english = ['/', '/community/', ...architecture.map((sub) => `/architecture/${sub}`)];
 const prefixes = { en: '', ko: '/ko' };
 /** Indexable pages: served path → { locale, English path }. */
 const indexable = new Map(

@@ -124,6 +124,37 @@ Deliberate departures from the mockup:
 - The mockup's note about adapter versions disagreeing between sources is
   replaced by the observed-date line every slot carries.
 
+## Community page
+
+`/community/` and `/ko/community/`
+([ADR 0004](./docs/decisions/0004-community-feedback-handoff.md),
+[mockup](https://claude.ai/artifact/5V7EaU571e3ftttvL7Wtqs)): a hero, then a
+two-column router — the feedback kinds on the left (sticky), the selected
+form and its hand-off on the right; stacked below 900px, where choosing a
+kind scrolls the form into view.
+
+- **Forms mirror GitHub.** `src/content/community.ts` lists the six issue
+  forms, the two discussion categories and the security route with each
+  form's field ids, types, required flags, dropdown options, title prefix
+  and labels, as in `redact-secret/redact-secret` `.github/` on `main`.
+  Continue opens `…/issues/new?template=…` or
+  `…/discussions/new?category=…` with the title and one parameter per
+  filled field; the safety checkbox is never prefilled.
+- **The check.** Once a field has text, the playground's worker
+  (`src/playground/engine.ts`, PII off) scans every field; a finding shows
+  field, line, column, type and length, never the value. Continue is off
+  until the check is clean, the required fields and safety box are done,
+  and the address is under 8,000 characters. If the engine cannot load,
+  Continue stays off and the blank GitHub form is offered instead.
+- **Prerendered state.** The page prerenders the default form (bug report)
+  in its empty, unchecked state, so hydration changes no text; `#<kind>` in
+  the address selects a kind after hydration. Without JavaScript a note
+  (hidden by an attribute once hydrated) links GitHub's form chooser.
+  `check-i18n` renders every kind, so each form's copy is read and a field
+  without copy fails the build.
+- **No inline styles.** The address-length meter is twenty cells and a
+  finding's bar has five length steps, so nothing sets a computed width.
+
 ## Bilingual model
 
 Two directory-routed locales on one host
@@ -545,11 +576,15 @@ adopted).
 
 ## Security boundary
 
-- **Input stays in the browser.** The one surface that accepts visitor
-  text is the playground, which runs the core locally and never transmits
-  or persists what is typed
-  ([ADR 0001](./docs/decisions/0001-browser-only-playground.md)). Every
-  static example is the one committed synthetic fixture.
+- **Input stays in the browser.** Two surfaces accept visitor text, and
+  both run the core locally and never transmit or persist what is typed:
+  the playground
+  ([ADR 0001](./docs/decisions/0001-browser-only-playground.md)) and the
+  community forms
+  ([ADR 0004](./docs/decisions/0004-community-feedback-handoff.md)), whose
+  only exit is the prefilled `github.com` address the visitor chooses to
+  open once the check is clean. Every static example is the one committed
+  synthetic fixture.
 - **No real credentials, anywhere** — source, fixtures, copy, screenshots, or
   commit history. Same rule as the rest of the project
   ([AGENTS.md § Security boundary](./AGENTS.md#security-boundary)).

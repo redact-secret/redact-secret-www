@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/locale-community-v1.schema.json",
+  "title": "LocaleCommunityV1",
+  "description": "i18n/<locale>/community.json: the community page's copy in one locale — the hero, the feedback kinds, the words around each form's fields, the in-browser check and hand-off to GitHub, and the private security route. The forms' field ids, types, options, labels and title prefixes are the prefill contract and live in src/content/community.ts, not here. Editorial; reviewed per locale; no versions, dates or counts (those are slots).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "locale", "meta", "hero", "kindsLabel", "groups", "forms", "security", "form", "handoff", "noscript", "boundary"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "locale-community-v1" },
+    "locale": { "$ref": "locale-common-v1.schema.json#/$defs/locale" },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "description"],
+      "properties": {
+        "title": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "description": { "$ref": "locale-common-v1.schema.json#/$defs/text" }
+      }
+    },
+    "hero": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eyebrow", "title", "lede", "facts"],
+      "properties": {
+        "eyebrow": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "title": { "$ref": "locale-common-v1.schema.json#/$defs/rich" },
+        "lede": { "$ref": "locale-common-v1.schema.json#/$defs/rich" },
+        "facts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["lead", "body"],
+            "properties": {
+              "lead": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+              "body": { "$ref": "locale-common-v1.schema.json#/$defs/rich" }
+            }
+          }
+        }
+      }
+    },
+    "kindsLabel": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+    "groups": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wrong", "missing", "talk", "security"],
+      "properties": {
+        "wrong": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "missing": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "talk": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "security": { "$ref": "locale-common-v1.schema.json#/$defs/text" }
+      }
+    },
+    "forms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bug", "false-positive", "missed-detection", "website", "detector", "integration", "question", "idea"],
+      "properties": {
+        "bug": { "$ref": "#/$defs/formCopy" },
+        "false-positive": { "$ref": "#/$defs/formCopy" },
+        "missed-detection": { "$ref": "#/$defs/formCopy" },
+        "website": { "$ref": "#/$defs/formCopy" },
+        "detector": { "$ref": "#/$defs/formCopy" },
+        "integration": { "$ref": "#/$defs/formCopy" },
+        "question": { "$ref": "#/$defs/formCopy" },
+        "idea": { "$ref": "#/$defs/formCopy" }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "where", "title", "body", "rules", "advisory", "policy"],
+      "properties": {
+        "name": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "where": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "title": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "body": { "$ref": "locale-common-v1.schema.json#/$defs/rich" },
+        "rules": { "type": "array", "minItems": 1, "items": { "$ref": "locale-common-v1.schema.json#/$defs/rich" } },
+        "advisory": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "policy": { "$ref": "locale-common-v1.schema.json#/$defs/text" }
+      }
+    },
+    "form": {
+      "description": "Words every form shares.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "optional", "choose", "titleLabel", "titleHelp", "ackLegend", "issueForm", "discussion", "labels", "category", "source", "clear"],
+      "properties": {
+        "required": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "optional": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "choose": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "titleLabel": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "titleHelp": { "$ref": "locale-common-v1.schema.json#/$defs/rich" },
+        "ackLegend": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "issueForm": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "discussion": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "labels": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "category": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "source": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "clear": { "$ref": "locale-common-v1.schema.json#/$defs/text" }
+      }
+    },
+    "handoff": {
+      "description": "The in-browser check and the hand-off to GitHub. Only idle and the blocked list are prerendered; the other states appear once a visitor types.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "idle",
+        "loading",
+        "clean",
+        "foundOne",
+        "foundMany",
+        "foundBody",
+        "failed",
+        "stale",
+        "position",
+        "length",
+        "urlLabel",
+        "urlLength",
+        "urlHidden",
+        "go",
+        "blockedBy",
+        "needFields",
+        "needSafe",
+        "needCheck",
+        "needAck",
+        "tooLong",
+        "privacy",
+        "fallback"
+      ],
+      "properties": {
+        "title": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "idle": { "$ref": "#/$defs/verdict" },
+        "loading": { "$ref": "#/$defs/verdict" },
+        "clean": { "$ref": "#/$defs/verdict" },
+        "foundOne": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "foundMany": { "$ref": "locale-common-v1.schema.json#/$defs/rich", "description": "Plain text with { var: count }." },
+        "foundBody": { "$ref": "locale-common-v1.schema.json#/$defs/rich" },
+        "failed": { "$ref": "#/$defs/verdict" },
+        "stale": { "$ref": "#/$defs/verdict" },
+        "position": { "$ref": "locale-common-v1.schema.json#/$defs/rich", "description": "Plain text with { var: line } and { var: col }." },
+        "length": { "$ref": "locale-common-v1.schema.json#/$defs/rich", "description": "Plain text with { var: n }: the finding's length, spoken in place of the value." },
+        "urlLabel": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "urlLength": { "$ref": "locale-common-v1.schema.json#/$defs/rich", "description": "Plain text with { var: used } and { var: max }." },
+        "urlHidden": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "go": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "blockedBy": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "needFields": { "$ref": "locale-common-v1.schema.json#/$defs/rich", "description": "Plain text with { var: fields }." },
+        "needSafe": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "needCheck": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "needAck": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "tooLong": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "privacy": { "$ref": "locale-common-v1.schema.json#/$defs/rich" },
+        "fallback": { "$ref": "locale-common-v1.schema.json#/$defs/text" }
+      }
+    },
+    "noscript": { "$ref": "locale-common-v1.schema.json#/$defs/rich" },
+    "boundary": { "$ref": "locale-common-v1.schema.json#/$defs/rich" }
+  },
+  "$defs": {
+    "verdict": {
+      "title": "Verdict",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verdict", "body"],
+      "properties": {
+        "verdict": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "body": { "$ref": "locale-common-v1.schema.json#/$defs/rich" }
+      }
+    },
+    "formCopy": {
+      "title": "FormCopy",
+      "description": "One form's words. `fields` is keyed by the form's field ids in src/content/community.ts.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "where", "intro", "fields", "ack"],
+      "properties": {
+        "name": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "where": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "intro": { "$ref": "locale-common-v1.schema.json#/$defs/rich" },
+        "fields": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/$defs/fieldCopy" }
+        },
+        "ack": { "$ref": "locale-common-v1.schema.json#/$defs/text" }
+      }
+    },
+    "fieldCopy": {
+      "title": "FieldCopy",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label"],
+      "properties": {
+        "label": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "help": { "$ref": "locale-common-v1.schema.json#/$defs/rich" },
+        "placeholder": { "$ref": "locale-common-v1.schema.json#/$defs/rich", "description": "Plain text; { var: version } is the published core version." }
+      }
+    }
+  }
+}

@@ -29,7 +29,7 @@
       },
       {
         "label": "Community",
-        "to": "#community"
+        "to": "community"
       }
     ],
     "getStarted": "Get started",
@@ -85,6 +85,10 @@
       {
         "title": "Community",
         "links": [
+          {
+            "label": "Report or ask",
+            "to": "community"
+          },
           {
             "label": "GitHub Issues",
             "href": "https://github.com/redact-secret/redact-secret/issues"

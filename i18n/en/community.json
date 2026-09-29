@@ -1,0 +1,188 @@
+{
+  "schemaVersion": "locale-community-v1",
+  "locale": "en",
+  "meta": {
+    "title": "Community — Redact Secret",
+    "description": "Report a bug, a false positive or a missed detection, request a detector, or ask a question. This page checks your report for secrets in your browser, then opens the matching GitHub form already filled in."
+  },
+  "hero": {
+    "eyebrow": "COMMUNITY",
+    "title": ["Tell us what broke", { "br": true }, "or what's missing"],
+    "lede": "Pick what you want to tell us. You fill a short form here, this page checks it for secrets in your browser, and GitHub opens with the form already filled in. You review it and press Submit there.",
+    "facts": [
+      { "lead": "Nothing is sent from this page.", "body": "The check runs in your browser." },
+      { "lead": "Reports are public.", "body": ["They land in ", { "code": "redact-secret/redact-secret" }, "."] },
+      { "lead": "Best-effort support.", "body": "No response-time promise." }
+    ]
+  },
+  "kindsLabel": "Kinds of feedback",
+  "groups": {
+    "wrong": "Something is wrong",
+    "missing": "Something is missing",
+    "talk": "Talk with us",
+    "security": "Security"
+  },
+  "forms": {
+    "bug": {
+      "name": "Bug report",
+      "where": "A crash, an error, or JS/Python/Rust/CLI disagreeing",
+      "intro": "For code defects. If a value was flagged when it shouldn't be, or missed when it should be caught, use False positive or Missed detection instead.",
+      "fields": {
+        "package-version": { "label": "Package and exact version", "placeholder": ["@redact-secret/core@", { "var": "version" }] },
+        "binding-runtime": { "label": "Binding and runtime", "placeholder": "Node 22 on Linux x64" },
+        "what-happened": { "label": "What happened, and what did you expect instead?" },
+        "repro": {
+          "label": "Minimal synthetic reproduction",
+          "help": "Only independently authored synthetic values. Never a real credential, even truncated or masked."
+        }
+      },
+      "ack": "I have not included any live, revoked-but-real, or real-derived credential, or any real personal data, anywhere in this report."
+    },
+    "false-positive": {
+      "name": "False positive",
+      "where": "Flagged or redacted, but it isn't a secret",
+      "intro": ["Filing does not change a fixture by itself. Accepted reports go through the known-gap lifecycle in ", { "code": "redact-secret-benchmarks" }, ": observed, reviewed, promoted, fixed, verified."],
+      "fields": {
+        "package-version": { "label": "Package version", "placeholder": [{ "var": "version" }] },
+        "runtime": { "label": "Runtime", "placeholder": "Node 22 on Linux x64" },
+        "family": { "label": "Detector family (if known)", "placeholder": "github-token" },
+        "expected-action": { "label": "Expected action" },
+        "repro-shape": {
+          "label": "Safe reproduction shape",
+          "help": "A synthetic value with the same grammar, prefix, and length as the real one. Never the real value."
+        }
+      },
+      "ack": "I have not included any live, revoked-but-real, or real-derived credential, or any real personal data, anywhere in this report."
+    },
+    "missed-detection": {
+      "name": "Missed detection",
+      "where": "A secret got through, or got the wrong action",
+      "intro": "Describe the shape of the value, never the value. If this is an exploitable bypass, report it privately under Security instead.",
+      "fields": {
+        "package-version": { "label": "Package version", "placeholder": [{ "var": "version" }] },
+        "runtime": { "label": "Runtime", "placeholder": "Node 22 on Linux x64" },
+        "family": { "label": "Detector family (if known)", "placeholder": "stripe" },
+        "expected-action": { "label": "Expected action" },
+        "repro-shape": {
+          "label": "Safe reproduction shape",
+          "help": "A synthetic value with the same grammar, prefix, and length as the real one. Never the real value."
+        }
+      },
+      "ack": "I have not included any live, revoked-but-real, or real-derived credential, or any real personal data, anywhere in this report."
+    },
+    "website": {
+      "name": "Website problem",
+      "where": "A broken link, wrong copy, a translation, the playground",
+      "intro": "The site's own repository is private, so website reports are filed in the product repository and stay there.",
+      "fields": {
+        "page-url": { "label": "Page URL", "placeholder": "https://www.redactsecret.com/…" },
+        "kind": { "label": "What kind of problem is this?" },
+        "description": { "label": "Description" },
+        "locale": { "label": "Locale" }
+      },
+      "ack": "I have not included any real credential or real personal data, including anything I typed into the playground."
+    },
+    "detector": {
+      "name": "Request a detector",
+      "where": "A provider, credential family, or PII entity we don't cover",
+      "intro": "A public format description is enough to start. A request is not a commitment or a stable classification.",
+      "fields": {
+        "category": { "label": "What would you like detected?" },
+        "provider-or-entity": { "label": "Provider or entity name", "placeholder": "Example Provider API token" },
+        "use-case": { "label": "Where does it appear?", "help": "A prompt, tool result, log, trace, or user input. No production data." },
+        "public-docs": { "label": "Public format or specification link", "placeholder": "https://provider.example/docs/tokens" },
+        "relevant-details": {
+          "label": "Relevant format or context",
+          "help": "Only publicly documented structure and benign lookalikes. No values, no bypass recipe."
+        }
+      },
+      "ack": "I have not included real credentials, real-derived credentials, personal data, or unsanitized customer material."
+    },
+    "integration": {
+      "name": "Integration or docs",
+      "where": "Stuck installing, an adapter, or a guide that doesn't help",
+      "intro": "Tell us where you got stuck. A short description is welcome; the maintainer can ask for details later.",
+      "fields": {
+        "topic": { "label": "What kind of feedback is this?" },
+        "problem": { "label": "What happened, and what were you trying to do?", "placeholder": "I followed the Pino guide and got stuck at …" },
+        "package-version": { "label": "Package version (if known)", "placeholder": "@redact-secret/core@… and @redact-secret/adapter-pino@…" },
+        "runtime": { "label": "Language, host, and runtime", "placeholder": "Node 22, Pino, macOS" },
+        "guide": { "label": "Guide or example link", "placeholder": "https://github.com/redact-secret/redact-secret/blob/main/docs/…" },
+        "safe-reproduction": { "label": "Safe reproduction or error metadata" }
+      },
+      "ack": "I have not included real credentials, personal data, or unsanitized customer material."
+    },
+    "question": {
+      "name": "Ask a question",
+      "where": "How do I…? Answers stay findable for the next person",
+      "intro": "For usage and integration questions. For a reproducible bug or a concrete request, use an issue form instead.",
+      "fields": {
+        "question": { "label": "Your question" }
+      },
+      "ack": "I have not included any real, revoked-but-real, or real-derived credential, or any real personal data, in this post."
+    },
+    "idea": {
+      "name": "Share an idea",
+      "where": "Early, not yet concrete. Becomes a request once it is",
+      "intro": "When an idea has a public format link and a use case, it moves to a detector request.",
+      "fields": {
+        "idea": { "label": "Your idea" }
+      },
+      "ack": "I have not included any real, revoked-but-real, or real-derived credential, or any real personal data, in this post."
+    }
+  },
+  "security": {
+    "name": "Security vulnerability",
+    "where": "Private advisory. Never a public form",
+    "title": "Report a vulnerability privately",
+    "body": "A bypass, a leak of matched plaintext, or anything else an attacker could use goes to a private security advisory, not a public form. Only the maintainers see it until a fix is ready.",
+    "rules": [
+      "Use unmistakably synthetic or revoked examples.",
+      "Name the affected API or detector, the expected and observed result, and a minimal reproduction.",
+      "Do not disclose publicly until a fix and timeline are agreed."
+    ],
+    "advisory": "Open a private advisory",
+    "policy": "Read the security policy"
+  },
+  "form": {
+    "required": "Required",
+    "optional": "Optional",
+    "choose": "Choose one",
+    "titleLabel": "Short title",
+    "titleHelp": "One line. GitHub adds the prefix.",
+    "ackLegend": "Safety acknowledgement",
+    "issueForm": "Issue form",
+    "discussion": "Discussion",
+    "labels": "labels",
+    "category": "category",
+    "source": "Source",
+    "clear": "Clear"
+  },
+  "handoff": {
+    "title": "Check and continue",
+    "idle": { "verdict": "Not checked yet", "body": "The check runs as you type once a field has text." },
+    "loading": { "verdict": "Starting the check…", "body": "The detection engine loads in your browser. Nothing is sent." },
+    "clean": { "verdict": "No secrets found", "body": "Checked every field in your browser. Review the text again on GitHub before you submit." },
+    "foundOne": "1 possible secret found. Remove it to continue",
+    "foundMany": [{ "var": "count" }, " possible secrets found. Remove them to continue"],
+    "foundBody": "Replace the value with a synthetic one of the same shape. The value is never shown here.",
+    "failed": { "verdict": "The check could not start", "body": "Your browser could not run the detection engine, so this page cannot check your text." },
+    "stale": { "verdict": "This page is out of date", "body": "The site was updated while this tab was open. Reload to run the check." },
+    "position": ["line ", { "var": "line" }, ", col ", { "var": "col" }],
+    "length": [{ "var": "n" }, " chars"],
+    "urlLabel": "GitHub address this opens",
+    "urlLength": [{ "var": "used" }, " of ", { "var": "max" }, " characters"],
+    "urlHidden": "Hidden until the possible secrets are removed.",
+    "go": "Continue on GitHub",
+    "blockedBy": "Continue is off until:",
+    "needFields": ["required fields are filled: ", { "var": "fields" }],
+    "needSafe": "the possible secrets are removed",
+    "needCheck": "the check has run",
+    "needAck": "the safety checkbox is ticked",
+    "tooLong": "the address is short enough for GitHub (shorten the longest field and paste the rest on GitHub)",
+    "privacy": "What you typed goes into the GitHub address, so it also stays in your browser history. GitHub asks you to confirm the safety checkbox again before you submit.",
+    "fallback": "Open the blank form on GitHub instead"
+  },
+  "noscript": ["This page needs JavaScript to check your report. Without it, ", { "a": "choose a blank form on GitHub", "href": "https://github.com/redact-secret/redact-secret/issues/new/choose" }, " and never paste a real credential."],
+  "boundary": "The check on this page is preventive. It cannot see what you type on GitHub, and it is not the product's enforcement boundary."
+}

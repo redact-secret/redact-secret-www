@@ -7,9 +7,10 @@
  * rebuild when copy or data changes (#11).
  */
 import { Architecture, type ArchitecturePageCopy } from './pages/Architecture';
+import { Community } from './pages/Community';
 import { Home } from './pages/Home';
 import { NotFound } from './pages/NotFound';
-import type { ContentBundle, HomeCopy, SectionCopy, ShellCopy } from './content';
+import type { CommunityCopy, ContentBundle, HomeCopy, SectionCopy, ShellCopy } from './content';
 import type { Locale } from './i18n';
 import { localizedRoutes, notFoundPath } from './routes';
 import type { SiteData } from './site-data';
@@ -17,6 +18,7 @@ import type { SiteData } from './site-data';
 /** One page's copy: only what that page renders, never the whole bundle. */
 export type PageView =
   | { kind: 'home'; locale: Locale; shell: ShellCopy; copy: HomeCopy }
+  | { kind: 'community'; locale: Locale; shell: ShellCopy; copy: CommunityCopy }
   | { kind: 'architecture'; locale: Locale; shell: ShellCopy; section: SectionCopy; page: ArchitecturePageCopy }
   | { kind: 'not-found'; shells: Record<Locale, ShellCopy> };
 
@@ -31,6 +33,7 @@ export function viewFor(path: string, content: ContentBundle): PageView {
   if (!route) return { kind: 'not-found', shells: { en: content.en.shell, ko: content.ko.shell } };
   const c = content[route.locale];
   if (route.page.kind === 'home') return { kind: 'home', locale: route.locale, shell: c.shell, copy: c.home };
+  if (route.page.kind === 'community') return { kind: 'community', locale: route.locale, shell: c.shell, copy: c.community };
   const { id } = route.page;
   return {
     kind: 'architecture',
@@ -43,6 +46,7 @@ export function viewFor(path: string, content: ContentBundle): PageView {
 
 export function App({ view }: { view: PageView }) {
   if (view.kind === 'home') return <Home locale={view.locale} shell={view.shell} copy={view.copy} />;
+  if (view.kind === 'community') return <Community locale={view.locale} shell={view.shell} copy={view.copy} />;
   if (view.kind === 'architecture') return <Architecture locale={view.locale} shell={view.shell} section={view.section} page={view.page} />;
   return <NotFound shells={view.shells} />;
 }

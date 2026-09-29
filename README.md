@@ -16,7 +16,10 @@ what the product is, why runtime redaction matters, which of your tools it
 integrates with, how fast you can try it, where the trust boundary sits, and
 where the evidence lives — plus a seven-page bilingual architecture section
 (`/architecture/`) on how the core decides, how those decisions are
-measured, and what lives outside it. It links out — to the docs site, to
+measured, and what lives outside it — and a community page
+(`/community/`) that routes feedback to the right GitHub form, checks it
+for secrets in the browser, and opens that form prefilled
+([ADR 0004](./docs/decisions/0004-community-feedback-handoff.md)). It links out — to the docs site, to
 `benchmarks.redactsecret.dev`, and to the product repository — rather than
 duplicating their content.
 
@@ -55,9 +58,13 @@ Not in scope for this repository:
   and [its design spec](https://claude.ai/artifact/8drsKw3xovoR13xjq4sPhR) —
   the hub and six pages, the shared shell, the nine section components, and
   the one-claim-per-page rule.
+- [Community page mockup](https://claude.ai/artifact/5V7EaU571e3ftttvL7Wtqs)
+  — the feedback router, the in-browser check and the GitHub hand-off. Its
+  "design preview" bar and example/synthetic-secret buttons are review aids
+  and were not shipped.
 
-Both are private Claude artifacts owned by this repository's maintainer; ask
-for access rather than assuming a public link. Neither is a live site —
+All are private Claude artifacts owned by this repository's maintainer; ask
+for access rather than assuming a public link. None is a live site —
 copy, versions, and package states shown in them are point-in-time
 observations, not build output.
 
@@ -110,6 +117,8 @@ src/
   components/sections/     # the page blocks and their parts + stories
   components/architecture/ # the architecture section's shell and diagrams + stories
   pages/Home.tsx           # the landing page: shell + eight blocks
+  pages/Community.tsx      # the community page: hero + feedback router (components/community/)
+  content/community.ts     # the GitHub forms it mirrors: ids, options, prefixes (the prefill contract)
   pages/Architecture.tsx   # one architecture page: section shell + hub or sub-page body
   pages/architecture/      # one template per sub-page, shared by both locales
   tokens.css               # design-system tokens (+ documented local exceptions)

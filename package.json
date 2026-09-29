@@ -24,7 +24,8 @@
     "qualify:playground": "npm run build && node scripts/qualify-playground.mjs",
     "check:contract": "node scripts/check-build-contract.mjs",
     "check:architecture": "npm run build && node scripts/check-architecture.mjs",
-    "check:first-paint": "npm run build && node scripts/check-first-paint.mjs"
+    "check:first-paint": "npm run build && node scripts/check-first-paint.mjs",
+    "check:community": "npm run build && node scripts/check-community.mjs"
   },
   "dependencies": {
     "@redact-secret/core": "0.1.0-beta.10",
