@@ -265,7 +265,7 @@
   },
   "thePieces": {
     "eyebrow": "The pieces",
-    "title": "Two published, one research, one on paper",
+    "title": "Three published (one research-grade), one on paper",
     "tiles": [
       [
         "The portable piece: opt-in, bounded, in-memory capture and the token lifecycle. Qualified for Node.js 20/22/24 and the browser main thread, with an optional dedicated-Worker mode qualified ",
