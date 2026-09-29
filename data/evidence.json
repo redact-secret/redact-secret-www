@@ -1,25 +1,25 @@
 {
   "$schema": "../schemas/evidence-v1.schema.json",
   "schemaVersion": "evidence-v1",
-  "observedAt": "2026-09-28",
+  "observedAt": "2026-09-29",
   "sources": {
     "core": {
       "source": {
         "kind": "repository",
         "repository": "redact-secret/redact-secret",
-        "revision": "9ab0fa02f2aeeda16a2c99e04862ebb0f0e9b5e7",
-        "release": "0.1.0-beta.10"
+        "revision": "67a7b9e47a660cea69fb377da17041b4bc5dc677",
+        "release": "0.1.0-beta.11"
       },
-      "observedAt": "2026-09-28",
+      "observedAt": "2026-09-29",
       "freshness": "fresh"
     },
     "benchmarks": {
       "source": {
         "kind": "repository",
         "repository": "redact-secret/redact-secret-benchmarks",
-        "revision": "0a73b7db198c628dde74fb815d3029eb6c0acf42"
+        "revision": "86efbaf21a347fc6fbc7b4bf270d982ee26ae2ac"
       },
-      "observedAt": "2026-09-28",
+      "observedAt": "2026-09-29",
       "freshness": "fresh"
     },
     "adapters": {
@@ -28,21 +28,21 @@
         "registry": "npm",
         "package": "@redact-secret/adapter",
         "url": "https://registry.npmjs.org/@redact-secret%2fadapter",
-        "version": "0.1.2",
-        "revision": "be3f2ad5088d108867b7bae13933d706d8f1f861",
+        "version": "0.1.3",
+        "revision": "f57bd4e7c8ef84de63cf9a615904f6560f4661a8",
         "repository": "redact-secret/redact-secret-adapters",
         "paths": ["README.md"]
       },
-      "observedAt": "2026-09-28",
+      "observedAt": "2026-09-29",
       "freshness": "fresh"
     },
     "vault": {
       "source": {
         "kind": "repository",
         "repository": "redact-secret/redact-secret-vault",
-        "revision": "2feebe8b429582e3d09029a7fdc57abbcaf054cd"
+        "revision": "b2625b532bd78f0fa0ca9cdfd6a326d1c06044d0"
       },
-      "observedAt": "2026-09-28",
+      "observedAt": "2026-09-29",
       "freshness": "fresh"
     }
   },
@@ -52,17 +52,17 @@
       "paths": ["docs/support-matrix.md"],
       "note": "check-data fails when these counts differ from the product feed's supportMatrix (data/release.json feeds.product), which the pages also use for the measured and released versions.",
       "value": {
-        "families": 108,
-        "providers": 53,
-        "status": { "stable": 83, "unsupported": 17, "provisional": 7, "pending": 1 },
-        "stableBasis": { "documented": 57, "empirical": 26 },
-        "tiers": { "T1": 57, "T2": 29, "T3": 4, "T0": 1 }
+        "families": 152,
+        "providers": 76,
+        "status": { "stable": 105, "unsupported": 18, "provisional": 20, "pending": 9 },
+        "stableBasis": { "documented": 80, "empirical": 25 },
+        "tiers": { "T1": 86, "T2": 35, "T3": 4, "T0": 2 }
       }
     },
     "taxonomy": {
       "source": "benchmarks",
       "paths": ["results/provider-dossiers-v1.json"],
-      "note": "Synced by npm run sync:taxonomy from https://staging.benchmarks.redactsecret.dev/results/provider-dossiers-v1.json (generated 2026-09-29T16:15:15.660Z at redact-secret-benchmarks be0fb9f35045bf05e5b999a2c0ed368541f9e963). The counts come from that published file, not from the revision pinned in sources.benchmarks.",
+      "note": "Synced by npm run sync:taxonomy from https://benchmarks.redactsecret.dev/results/provider-dossiers-v1.json (generated 2026-09-29T17:57:21.579Z at redact-secret-benchmarks 86efbaf21a347fc6fbc7b4bf270d982ee26ae2ac). The counts come from that published file, not from the revision pinned in sources.benchmarks.",
       "value": { "families": 152, "providers": 77, "withoutDetector": 25 }
     },
     "staleProse": {
@@ -72,9 +72,9 @@
     },
     "baseline": {
       "source": "benchmarks",
-      "paths": ["baselines/0.1.0-beta.9.json"],
-      "note": "The newest frozen regression baseline at the recorded revision (baselines/ holds 0.1.0-beta.4 through 0.1.0-beta.9; no 0.1.0-beta.10 exists on any branch). A name only, never its contents. Not the support-matrix pin: the product feed's supportMatrix.benchmarksRevision is a different commit, where the newest baseline is 0.1.0-beta.7.",
-      "value": "0.1.0-beta.9"
+      "paths": ["baselines/0.1.0-beta.10.json"],
+      "note": "The newest frozen regression baseline at the recorded revision (baselines/ holds 0.1.0-beta.4 through 0.1.0-beta.10; none for 0.1.0-beta.11 at this revision). A name only, never its contents. Not the support-matrix pin: the product feed's supportMatrix.benchmarksRevision is a different commit, where the newest baseline is 0.1.0-beta.9.",
+      "value": "0.1.0-beta.10"
     },
     "detectors": {
       "source": "core",

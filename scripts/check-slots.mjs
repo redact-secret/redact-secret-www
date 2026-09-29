@@ -19,14 +19,19 @@ console.log(`check-slots: engine and quickstart both at ${shown}`);
 
 // data/evidence.json is copied by hand from the support matrix, so check that its
 // counts still describe one matrix: every family has exactly one status, every
-// stable family one basis, and every family but the unsupported ones one tier.
+// stable family one basis, and every family but the unsupported ones and some
+// pending ones one tier (since 0.1.0-beta.11 the feed lists pending families
+// with no evidence tier yet, so the untiered rest must fit within pending).
 const matrix = JSON.parse(readFileSync(new URL('../data/evidence.json', import.meta.url))).facts.matrix.value;
 const sum = (counts) => Object.values(counts).reduce((a, b) => a + b, 0);
 const mismatches = [
   [sum(matrix.status), matrix.families, 'status counts', 'families'],
   [sum(matrix.stableBasis), matrix.status.stable, 'stable bases', 'stable families'],
-  [sum(matrix.tiers) + matrix.status.unsupported, matrix.families, 'evidence tiers + unsupported', 'families'],
 ].filter(([a, b]) => a !== b);
+const untiered = matrix.families - sum(matrix.tiers) - matrix.status.unsupported;
+if (untiered < 0 || untiered > matrix.status.pending) {
+  mismatches.push([sum(matrix.tiers) + matrix.status.unsupported, matrix.families, 'evidence tiers + unsupported (+ at most the pending families)', 'families']);
+}
 
 if (mismatches.length) {
   for (const [a, b, what, of] of mismatches) {

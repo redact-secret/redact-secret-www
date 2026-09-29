@@ -1,7 +1,7 @@
 {
   "$schema": "../schemas/integrations-v1.schema.json",
   "schemaVersion": "integrations-v1",
-  "generatedAt": "2026-09-28",
+  "generatedAt": "2026-09-29",
   "source": { "kind": "authored", "repository": "redact-secret/redact-secret-www", "path": "data/integrations.json" },
   "freshness": "fresh",
   "packages": {
@@ -18,11 +18,11 @@
     "adapter": { "registry": "npm", "name": "@redact-secret/adapter" },
     "adapter-pino": { "registry": "npm", "name": "@redact-secret/adapter-pino" },
     "adapter-otel": { "registry": "npm", "name": "@redact-secret/adapter-otel" },
-    "adapter-ai-context": { "registry": "npm", "name": "@redact-secret/adapter-ai-context", "tag": "alpha" },
-    "adapter-mcp": { "registry": "npm", "name": "@redact-secret/adapter-mcp", "tag": "alpha" },
+    "adapter-ai-context": { "registry": "npm", "name": "@redact-secret/adapter-ai-context" },
+    "adapter-mcp": { "registry": "npm", "name": "@redact-secret/adapter-mcp" },
     "adapters-py": { "registry": "pypi", "name": "redact-secret-adapters" },
-    "vault": { "registry": "npm", "name": "@redact-secret/vault", "tag": "alpha" },
-    "vault-server": { "registry": "npm", "name": "@redact-secret/vault-server", "tag": "alpha" },
+    "vault": { "registry": "npm", "name": "@redact-secret/vault" },
+    "vault-server": { "registry": "npm", "name": "@redact-secret/vault-server" },
     "vault-py": {
       "registry": "pypi",
       "name": "redact-secret-vault",

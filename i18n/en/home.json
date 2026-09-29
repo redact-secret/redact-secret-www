@@ -210,7 +210,7 @@
       "vault-py": {
         "title": "Vault (Python)",
         "description": "A native Python implementation of the vault server’s authorization contract.",
-        "coverage": "Research-grade alpha on PyPI. Capture needs a node executable."
+        "coverage": "Research-grade on PyPI. Capture needs a node executable."
       }
     },
     "observed": [
