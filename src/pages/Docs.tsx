@@ -42,7 +42,7 @@ export function Docs({ locale, shell, copy, id }: DocsProps) {
 
   return (
     <AppShell locale={locale} copy={shell} alternates={alternates} current={docsPath(locale, 'overview')}>
-      <div class={styles.docs} data-docs-theme="light">
+      <div class={styles.docs} data-docs-theme="light" data-theme="light">
         <ArchitectureLayout
           section={copy.section.title}
           path={docsPath(locale, id)}
@@ -75,7 +75,7 @@ export function Docs({ locale, shell, copy, id }: DocsProps) {
                 {section.links && (
                   <div class={styles.links}>
                     {section.links.map((link) => (
-                      <a href={linkHref(locale, link)} target={link.href ? '_blank' : undefined} rel={link.href ? 'noreferrer' : undefined}>
+                      <a key={link.to ?? link.href} href={linkHref(locale, link)}>
                         {link.label}<span aria-hidden="true"> {link.href ? '↗' : '→'}</span>
                       </a>
                     ))}
