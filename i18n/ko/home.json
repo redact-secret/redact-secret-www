@@ -153,12 +153,7 @@
         "coverage": "브라우저 어댑터 패키지는 따로 없습니다. 코어의 이 서브패스가 곧 브라우저 연동입니다."
       },
       "pino": {
-        "title": [
-          {
-            "a": "Pino",
-            "href": "https://getpino.io/"
-          }
-        ],
+        "title": "Pino",
         "description": [
           "로그 호출의 값과 완성된 로그 줄을 가립니다. ",
           {
@@ -170,14 +165,15 @@
         "coverage": "객체 키는 가리지 않으며, 줄이 기록된 뒤 destination이나 transport가 덧붙인 내용도 다루지 않습니다."
       },
       "otel": {
-        "title": [
+        "title": "OpenTelemetry 트레이스",
+        "description": [
+          "전용 ",
           {
             "a": "OpenTelemetry",
             "href": "https://opentelemetry.io/"
           },
-          " 트레이스"
+          " 트레이스 어댑터가 다음 SpanProcessor를 감싸 span 이름, 속성, 이벤트, 링크, 상태 메시지를 가립니다."
         ],
-      "description": "전용 트레이스 어댑터가 다음 SpanProcessor를 감싸 span 이름, 속성, 이벤트, 링크, 상태 메시지를 가립니다.",
         "coverage": "속성 이름은 가리지 않습니다. 감싼 processor에 도달하지 않는 span은 처리할 수 없습니다."
       },
       "masking": {
@@ -197,14 +193,14 @@
         "coverage": "바이너리나 인코딩된 값은 디코딩하지 않고 차단합니다. 모델 출력은 다루지 않습니다."
       },
       "mcp": {
-        "title": [
+        "title": "MCP 도구 호출",
+        "description": [
           {
             "a": "MCP",
             "href": "https://modelcontextprotocol.io/"
           },
-          " 도구 호출"
+          " tools/call과 resources/read 결과를 로그에 남기거나 저장하거나 컨텍스트에 넣기 전에 검사합니다."
         ],
-        "description": "tools/call과 resources/read 결과를 로그에 남기거나 저장하거나 컨텍스트에 넣기 전에 검사합니다.",
         "coverage": [
           "다른 ",
           {
@@ -220,14 +216,15 @@
         "coverage": "붙인 곳에서만 동작합니다. 로거가 아니라 출력하는 핸들러마다 붙이세요."
       },
       "otel-py": {
-        "title": [
+        "title": "OpenTelemetry Python",
+        "description": [
+          "Python 서비스에서 다음 ",
           {
             "a": "OpenTelemetry",
             "href": "https://opentelemetry.io/"
           },
-          " Python"
+          " span processor를 감쌉니다."
         ],
-        "description": "Python 서비스에서 다음 span processor를 감쌉니다.",
         "coverage": "otel extra를 지정해야 설치됩니다. 다시 쓸 수 없는 span은 내보내지 않고 버립니다."
       },
       "masking-py": {

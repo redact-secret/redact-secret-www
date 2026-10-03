@@ -1,10 +1,18 @@
 .docs {
-  min-height: 70vh;
+  min-height: max(70rem, calc(100vh - var(--head-h)));
+  min-height: max(70rem, calc(100svh - var(--head-h)));
   color: var(--ink);
   background:
     radial-gradient(circle at 90% 6%, rgb(170 216 22 / 0.12), transparent 24rem),
     var(--surface);
   color-scheme: light;
+}
+
+@media (max-width: 1040px) {
+  .docs {
+    min-height: calc(100vh - var(--head-h));
+    min-height: calc(100svh - var(--head-h));
+  }
 }
 
 .article {
