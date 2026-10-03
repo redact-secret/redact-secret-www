@@ -18,6 +18,10 @@
         "to": "architecture"
       },
       {
+        "label": "커뮤니티",
+        "to": "community"
+      },
+      {
         "label": "벤치마크",
         "href": "https://benchmarks.redactsecret.dev",
         "external": true

@@ -18,6 +18,10 @@
         "to": "architecture"
       },
       {
+        "label": "Community",
+        "to": "community"
+      },
+      {
         "label": "Benchmarks",
         "href": "https://benchmarks.redactsecret.dev",
         "external": true
