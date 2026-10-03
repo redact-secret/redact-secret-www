@@ -18,6 +18,7 @@ export type * as LocaleArchitectureSectionV1 from './locale-architecture-section
 export type * as LocaleArchitectureSupportClaimsV1 from './locale-architecture-support-claims-v1';
 export type * as LocaleArchitectureVaultV1 from './locale-architecture-vault-v1';
 export type * as LocaleCommunityV1 from './locale-community-v1';
+export type * as LocaleDocsV1 from './locale-docs-v1';
 export type * as LocaleHomeV1 from './locale-home-v1';
 export type * as LocaleShellV1 from './locale-shell-v1';
 export type * as ReleaseV1 from './release-v1';

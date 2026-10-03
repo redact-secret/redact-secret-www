@@ -11,3 +11,4 @@ Each record carries `decision_id`, `status`, `scope`, `title`, and
 | [0002](./0002-pii-toggle-in-playground.md) | accepted | Demonstrate opt-in PII detection in the playground |
 | [0003](./0003-single-static-site-separate-releases.md) | accepted | One static site, English at /, with separate content and application releases |
 | [0004](./0004-community-feedback-handoff.md) | accepted | A community page that checks feedback in the browser and hands it to GitHub |
+| [0005](./0005-adoption-docs-in-site.md) | accepted | Launch adoption documentation inside the public static site |

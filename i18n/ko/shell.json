@@ -6,11 +6,11 @@
     "mainNavLabel": "주 메뉴",
     "nav": [
       {
-        "label": "플레이그라운드",
-        "to": "home#playground"
+        "label": "문서",
+        "to": "docs"
       },
       {
-        "label": "문서",
+        "label": "통합",
         "to": "home#integrations"
       },
       {
@@ -26,10 +26,6 @@
         "label": "GitHub",
         "href": "https://github.com/redact-secret/redact-secret",
         "external": true
-      },
-      {
-        "label": "커뮤니티",
-        "to": "community"
       }
     ],
     "getStarted": "시작하기",
@@ -45,11 +41,11 @@
         "links": [
           {
             "label": "빠른 시작",
-            "to": "home#first-run"
+            "to": "docs/quickstart"
           },
           {
             "label": "가이드",
-            "to": "home#integrations"
+            "to": "docs"
           },
           {
             "label": "아키텍처",
@@ -57,7 +53,7 @@
           },
           {
             "label": "참조 문서",
-            "to": "home#evidence"
+            "to": "docs/supported-credentials"
           }
         ]
       },

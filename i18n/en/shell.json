@@ -6,11 +6,11 @@
     "mainNavLabel": "Main",
     "nav": [
       {
-        "label": "Playground",
-        "to": "home#playground"
+        "label": "Docs",
+        "to": "docs"
       },
       {
-        "label": "Docs",
+        "label": "Integrations",
         "to": "home#integrations"
       },
       {
@@ -26,10 +26,6 @@
         "label": "GitHub",
         "href": "https://github.com/redact-secret/redact-secret",
         "external": true
-      },
-      {
-        "label": "Community",
-        "to": "community"
       }
     ],
     "getStarted": "Get started",
@@ -45,11 +41,11 @@
         "links": [
           {
             "label": "Quickstart",
-            "to": "home#first-run"
+            "to": "docs/quickstart"
           },
           {
             "label": "Guides",
-            "to": "home#integrations"
+            "to": "docs"
           },
           {
             "label": "Architecture",
@@ -57,7 +53,7 @@
           },
           {
             "label": "Reference",
-            "to": "home#evidence"
+            "to": "docs/supported-credentials"
           }
         ]
       },

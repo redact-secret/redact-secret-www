@@ -88,9 +88,9 @@
     },
     "routeRef": {
       "title": "RouteRef",
-      "description": "An internal link target: a route ID from src/routes.ts (home, community, architecture, architecture/<page>), optionally followed by #<anchor> from src/content/shared.ts anchors; or #<anchor> alone for the current page. Resolved to /… or /ko/… in code.",
+      "description": "An internal link target: a route ID from src/routes.ts (home, community, architecture, architecture/<page>, docs, docs/<page>), optionally followed by #<anchor> from src/content/shared.ts anchors; or #<anchor> alone for the current page. Resolved to /… or /ko/… in code.",
       "type": "string",
-      "pattern": "^(home|community|architecture(/[a-z0-9-]+)?)?(#[a-z0-9-]+)?$",
+      "pattern": "^(home|community|(architecture|docs)(/[a-z0-9-]+)?)?(#[a-z0-9-]+)?$",
       "minLength": 1
     },
     "httpsUrl": {

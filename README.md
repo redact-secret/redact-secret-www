@@ -16,18 +16,20 @@ what the product is, why runtime redaction matters, which of your tools it
 integrates with, how fast you can try it, where the trust boundary sits, and
 where the evidence lives — plus a seven-page bilingual architecture section
 (`/architecture/`) on how the core decides, how those decisions are
-measured, and what lives outside it — and a community page
+measured, and what lives outside it; a sixteen-page adoption-first documentation
+section (`/docs/`) for core, integrations, Gateway, Vault, and support; and a community page
 (`/community/`) that routes feedback to the right GitHub form, checks it
 for secrets in the browser, and opens that form prefilled
-([ADR 0004](./docs/decisions/0004-community-feedback-handoff.md)). It links out — to the docs site, to
-`benchmarks.redactsecret.dev`, and to the product repository — rather than
-duplicating their content.
+([ADR 0004](./docs/decisions/0004-community-feedback-handoff.md)). It links to
+authoritative upstream project documentation and `benchmarks.redactsecret.dev`
+rather than duplicating their volatile evidence.
 
 Not in scope for this repository:
 
-- **The documentation site.** `/docs/` is planned as a separate repository,
-  [`redact-secret/redact-secret-documentation`](https://github.com/redact-secret/redact-secret-documentation)
-  — not yet created. This hub links to it once it exists.
+- **A separate documentation deployment.** `/docs/` ships from this static
+  site so navigation, locales, canonical URLs, and release slots stay atomic
+  ([ADR 0005](./docs/decisions/0005-adoption-docs-in-site.md)). A separate
+  repository needs a later decision backed by an operational need.
 - **Benchmark numbers.** No score, rate, or bound is copied here. The
   evidence section links to `benchmarks.redactsecret.dev` and states what
   that link guarantees, never the number itself.
@@ -45,7 +47,6 @@ Not in scope for this repository:
 | [`redact-secret/redact-secret`](https://github.com/redact-secret/redact-secret) | The product this site markets. Release status and the support matrix this site links to live there. |
 | [`redact-secret/redact-secret-benchmarks`](https://github.com/redact-secret/redact-secret-benchmarks) | Measures the product and publishes `benchmarks.redactsecret.dev`. This site links to it and never copies a number from it — see [ARCHITECTURE.md § Evidence and repository boundaries](./ARCHITECTURE.md#evidence-and-repository-boundaries). |
 | [`redact-secret/redact-secret-sites`](https://github.com/redact-secret/redact-secret-sites) | Owns the hosting infrastructure this site publishes into — the bucket, the CloudFront distribution, the publisher role, and DNS. See [ARCHITECTURE.md § Deployment](./ARCHITECTURE.md#deployment). |
-| [`redact-secret/redact-secret-documentation`](https://github.com/redact-secret/redact-secret-documentation) | **Planned, not yet created.** Will hold `/docs/`. This hub's nav links to it once it exists; see [ARCHITECTURE.md § Open questions](./ARCHITECTURE.md#open-questions). |
 
 ## Design sources
 
@@ -91,14 +92,14 @@ path), not `spa`: see
 [redact-secret-sites' routing modes](https://github.com/redact-secret/redact-secret-sites/blob/main/ARCHITECTURE.md#routing-modes).
 
 ```text
-index.html                 # Vite entry; the page template every route is rendered into (/, /ko/, /architecture/…, /ko/architecture/…, /404/)
+index.html                 # Vite entry; the page template every route is rendered into (/, /docs/…, /architecture/…, their /ko/ variants, /404/)
 data/
   integrations.json        # which packages the page lists, where, and the integrations cards (integrations-v1)
   release.json             # versions, tags, ranges, dates per package + the upstream feeds — `npm run slots:refresh`, committed (release-v1)
   evidence.json            # counts and limits the architecture pages cite, each at a source revision (evidence-v1)
 i18n/
   en/, ko/                 # every visitor-visible word, per locale: shell.json, home.json,
-                           # architecture/{section,overview,how-it-works,…}.json (locale-*-v1)
+                           # docs.json and architecture/{section,overview,how-it-works,…}.json (locale-*-v1)
 schemas/                   # versioned JSON Schemas (draft 2020-12) for data/ and i18n/; see CONVENTIONS.md § Data contracts
 src/
   main.tsx                 # browser entry: hydrates from the page's embedded #page-data, never fetches
@@ -110,6 +111,7 @@ src/
   content/index.ts         # copy types; the working tree's i18n/** for the dev server and Storybook
   content/shared.ts        # never translated: URLs, the synthetic fixture, code snippets
   content/architecture/    # the architecture section's page registry
+  content/docs/            # docs route registry and source-driven snippets
   slots/index.ts           # the page's read-only view of data/ (versions, dates, counts)
   contracts/               # TypeScript types GENERATED from schemas/ (`npm run data:types`)
   components/ui/           # primitives (Button, StatusChip, Tabs, Rich — the rich-text renderer, …) + stories
@@ -121,6 +123,7 @@ src/
   content/community.ts     # the GitHub forms it mirrors: ids, options, prefixes (the prefill contract)
   pages/Architecture.tsx   # one architecture page: section shell + hub or sub-page body
   pages/architecture/      # one template per sub-page, shared by both locales
+  pages/Docs.tsx           # all docs routes: shared light reading canvas inside the dark site shell
   tokens.css               # design-system tokens (+ documented local exceptions)
   style.css                # global base and type classes, tokens only
 public/

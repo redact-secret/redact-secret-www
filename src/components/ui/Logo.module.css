@@ -16,18 +16,13 @@
   }
 }
 
-/* Swap files per theme — never recolor (CONVENTIONS.md § Design system). */
-:global(:root:not([data-theme='dark'])) .dark,
-:global(:root[data-theme='dark']) .light {
+/* Dark is the site default even before a data-theme attribute exists. */
+.light,
+:global(:root[data-theme='dark']) .light,
+:global(:root[data-theme='light']) .dark {
   display: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  :global(:root:not([data-theme='light'])) .light {
-    display: none;
-  }
-
-  :global(:root:not([data-theme='light'])) .dark {
-    display: block;
-  }
+:global(:root[data-theme='light']) .light {
+  display: block;
 }
