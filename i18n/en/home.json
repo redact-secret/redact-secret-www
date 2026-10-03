@@ -153,12 +153,7 @@
         "coverage": "There is no separate browser adapter package; this core subpath is the browser integration."
       },
       "pino": {
-        "title": [
-          {
-            "a": "Pino",
-            "href": "https://getpino.io/"
-          }
-        ],
+        "title": "Pino",
         "description": [
           "Redacts values in log calls and in the finished line, alongside ",
           {
@@ -170,14 +165,15 @@
         "coverage": "Not object keys, and nothing a destination or transport adds after the line is written."
       },
       "otel": {
-        "title": [
+        "title": "OpenTelemetry traces",
+        "description": [
+          "A dedicated ",
           {
             "a": "OpenTelemetry",
             "href": "https://opentelemetry.io/"
           },
-          " traces"
+          " trace adapter wraps the next SpanProcessor and redacts span names, attributes, events, links, and status messages."
         ],
-      "description": "A dedicated trace adapter wraps the next SpanProcessor and redacts span names, attributes, events, links, and status messages.",
         "coverage": "Attribute names are not redacted; spans the wrapped processor never receives are out of reach."
       },
       "masking": {
@@ -198,14 +194,15 @@
         "coverage": "Binary and encoded values are blocked, not decoded. Model output is not covered."
       },
       "mcp": {
-        "title": [
+        "title": "MCP tool calls",
+        "description": [
+          "Scans ",
           {
             "a": "MCP",
             "href": "https://modelcontextprotocol.io/"
           },
-          " tool calls"
+          " tools/call and resources/read results before they are logged, stored, or placed in context."
         ],
-        "description": "Scans tools/call and resources/read results before they are logged, stored, or placed in context.",
         "coverage": [
           "Other ",
           {
@@ -221,14 +218,15 @@
         "coverage": "Runs only where attached, so put it on every emitting handler rather than on the logger."
       },
       "otel-py": {
-        "title": [
+        "title": "OpenTelemetry Python",
+        "description": [
+          "Wraps the next ",
           {
             "a": "OpenTelemetry",
             "href": "https://opentelemetry.io/"
           },
-          " Python"
+          " span processor in Python services."
         ],
-        "description": "Wraps the next span processor in Python services.",
         "coverage": "Installed only with the otel extra. A span that cannot be rewritten is dropped, not exported."
       },
       "masking-py": {

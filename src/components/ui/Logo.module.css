@@ -17,12 +17,12 @@
 }
 
 /* Dark is the site default even before a data-theme attribute exists. */
-.light,
-:global(:root[data-theme='dark']) .light,
-:global(:root[data-theme='light']) .dark {
+.logo .light,
+:global(:root[data-theme='dark']) .logo .light,
+:global(:root[data-theme='light']) .logo .dark {
   display: none;
 }
 
-:global(:root[data-theme='light']) .light {
+:global(:root[data-theme='light']) .logo .light {
   display: block;
 }

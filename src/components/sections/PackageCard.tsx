@@ -21,6 +21,17 @@ const tones: Record<PackageStatus, StatusTone> = {
 
 const registryNames: Record<PackageSlot['registry'], string> = { npm: 'npm', pypi: 'PyPI', crates: 'crates.io' };
 
+function registryHref(slot: PackageSlot): string {
+  switch (slot.registry) {
+    case 'npm':
+      return `https://www.npmjs.com/package/${slot.name}`;
+    case 'pypi':
+      return `https://pypi.org/project/${slot.name}/`;
+    case 'crates':
+      return `https://crates.io/crates/${slot.name}`;
+  }
+}
+
 /** `redact-secret<0.2,>=0.1.0b6` → `redact-secret <0.2,>=0.1.0b6`; `extra` picks an extra's requirement. */
 function pythonRequirement(requires: string[] | undefined, match: (name: string, extra?: string) => boolean) {
   for (const line of requires ?? []) {
@@ -76,7 +87,9 @@ export function PackageCard({ def, slot, copy, labels }: PackageCardProps) {
     <Ruled as="article">
       <div class={styles.head}>
         <h4 class={styles.title}>
-          <Rich value={copy.title} />
+          <a href={registryHref(slot)}>
+            <Rich value={copy.title} />
+          </a>
         </h4>
         <StatusChip tone={tones[status]}>{labels.statusLabels[status]}</StatusChip>
       </div>
