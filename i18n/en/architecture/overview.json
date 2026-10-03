@@ -41,11 +41,11 @@
     },
     "adapters": {
       "question": "“Who fetches the text?”",
-      "body": "Packages that sit between your host and the engine. They decide nothing, and when they fail they print a marker instead of the value."
+      "body": "Packages between your host and the engine now cover pino, separate OpenTelemetry trace and log signals, Python logging, AI context and MCP. They decide nothing, and fail closed."
     },
     "vault": {
       "question": "“What if you need the original back?”",
-      "body": "The core throws the original away. The vault is the one place allowed to keep it, and it is built to make that hard."
+      "body": "The core throws the original away. The vault keeps its in-memory path beta and adds an alpha persistence profile whose support remains tied to qualified deployments."
     }
   },
   "repos": {
@@ -66,12 +66,12 @@
       },
       {
         "repo": "redact-secret-vault",
-        "owns": "Mapping lifecycle, opaque tokens, restore checks, storage extension points",
+        "owns": "Mapping lifecycle, opaque tokens, restore checks, encrypted persistence contracts and stores",
         "mustNot": "Detection rules, PII classification, changes to core policy"
       },
       {
         "repo": "redact-secret-adapters",
-        "owns": "Host integrations for logs, traces, AI context and MCP",
+        "owns": "Host integrations for pino, OpenTelemetry logs and traces, Python logging, AI context and MCP",
         "mustNot": "Restoration, or emitting mapped plaintext to observability"
       },
       {

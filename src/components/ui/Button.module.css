@@ -11,12 +11,15 @@
   cursor: pointer;
   white-space: nowrap;
   text-decoration: none;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
 }
 
-.button:hover {
-  background: var(--ink);
-  color: var(--surface);
-  text-decoration: none;
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    background: var(--ink);
+    color: var(--surface);
+    text-decoration: none;
+  }
 }
 
 .lg {
@@ -30,8 +33,15 @@
   border-color: var(--brand-green);
 }
 
-.primary:hover {
-  background: var(--on-brand);
-  color: var(--surface);
-  border-color: var(--on-brand);
+@media (hover: hover) and (pointer: fine) {
+  .primary:hover {
+    background: var(--surface);
+    color: var(--link);
+    border-color: var(--link);
+    transform: translateY(calc(var(--hairline) * -1));
+  }
+}
+
+.button:active {
+  transform: translateY(var(--hairline));
 }

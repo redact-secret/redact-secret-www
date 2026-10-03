@@ -18,7 +18,7 @@ export type SideNavProps = {
 };
 
 /**
- * The header's nav, language, and theme controls for widths below 1040px.
+ * The header's nav and language control for widths below 1040px.
  * A modal <dialog>: focus is trapped, Escape and the backdrop close it.
  */
 export function SideNav({ locale, copy, open, onClose, alternates, current }: SideNavProps) {

@@ -10,7 +10,7 @@
     "eyebrow": "05 · Adapters",
     "title": "The core knows what a secret is. Something has to go and get the text.",
     "lede": [
-      "Six packages that fetch text, hand it to the core and carry the answer back. ",
+      "Seven packages that fetch text, hand it to the core and carry the answer back. ",
       {
         "b": "They decide nothing."
       }
@@ -76,7 +76,7 @@
   },
   "thePackages": {
     "eyebrow": "The packages",
-    "title": "Six of them, on two registries",
+    "title": "Seven of them, on two registries",
     "tiles": [
       [
         "The shared base everything else is built on: one primitive for masking a string, and the ",
@@ -97,11 +97,18 @@
         ". pino cannot see a token inside a message string or an error message; this can."
       ],
       [
-        "Every string and string-array attribute on a span and its events, redacted before the span reaches the next processor. Attribute names are not allowlisted, so OpenInference and GenAI conventions are covered ",
+        "The dedicated OpenTelemetry trace adapter redacts span names, string attributes, events, links and status messages before the span reaches the next processor. Attribute names are not allowlisted, so OpenInference and GenAI conventions are covered ",
         {
           "b": "without hardcoding either"
         },
         "."
+      ],
+      [
+        "OpenTelemetry logs, kept separate from traces and published on the ",
+        {
+          "code": "beta"
+        },
+        " channel. It redacts log bodies and attributes before export; the split keeps each signal's host contract explicit."
       ],
       [
         "A framework-neutral boundary for AI work: user input, tool results, a constructed context and streamed text, sanitized before any of it reaches a model. ",

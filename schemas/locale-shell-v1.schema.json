@@ -31,9 +31,6 @@
         "nav",
         "getStarted",
         "languageLabel",
-        "themeLabel",
-        "themeLight",
-        "themeDark",
         "menu",
         "closeMenu"
       ],
@@ -54,15 +51,6 @@
           "$ref": "locale-common-v1.schema.json#/$defs/text"
         },
         "languageLabel": {
-          "$ref": "locale-common-v1.schema.json#/$defs/text"
-        },
-        "themeLabel": {
-          "$ref": "locale-common-v1.schema.json#/$defs/text"
-        },
-        "themeLight": {
-          "$ref": "locale-common-v1.schema.json#/$defs/text"
-        },
-        "themeDark": {
           "$ref": "locale-common-v1.schema.json#/$defs/text"
         },
         "menu": {

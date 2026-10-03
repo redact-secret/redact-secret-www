@@ -26,6 +26,10 @@ const sha256 = (text) => createHash('sha256').update(text, 'utf8').digest('hex')
 
 const integrations = read('data/integrations.json');
 const committed = read('data/release.json');
+// These fixtures intentionally preserve the first v1 feeds. Exercise them
+// without comparing their historical timestamps to today's committed feeds.
+const fixturePrevious = structuredClone(committed);
+fixturePrevious.feeds = {};
 const { product: P, adapters: A } = upstreamFeeds;
 
 // Synthetic commits: the stubs serve rewritten bytes, which must never be
@@ -157,7 +161,8 @@ function world(options = {}) {
   return fetchText;
 }
 
-const run = (fetchText, previous, now = T1) => buildRelease({ integrations, previous, fetchText, now, feeds: upstreamFeeds });
+const run = (fetchText, previous, now = T1) =>
+  buildRelease({ integrations, previous: previous === committed ? fixturePrevious : previous, fetchText, now, feeds: upstreamFeeds });
 
 /** A committed document where both feeds were read at T0. */
 async function baseline() {
@@ -196,7 +201,7 @@ test('feeds: both feeds are read at a full commit, validated, digested and cross
   assert.equal(a.mode, 'feed');
   assert.equal(a.source.revision, ADAPTERS_SHA);
   assert.equal(a.digest, `sha256:${sha256(adapters)}`);
-  assert.deepEqual(a.crossChecked, ['adapter', 'adapter-ai-context', 'adapter-mcp', 'adapter-otel', 'adapter-pino', 'adapters-py']);
+  assert.deepEqual(a.crossChecked, ['adapter', 'adapter-ai-context', 'adapter-mcp', 'adapter-pino', 'adapters-py']);
 });
 
 test('feeds: the measured version is recorded next to the released one, never replaced by it', async () => {
@@ -206,15 +211,12 @@ test('feeds: the measured version is recorded next to the released one, never re
   // Measured on the released version here; the two stay separate fields.
   assert.equal(m.measuredProductVersion, '0.1.0-beta.11');
   assert.equal(m.gatedLatestRelease, false);
-  // Counts are recomputed from the families, and agree with the committed evidence.
-  const evidence = read('data/evidence.json').facts.matrix.value;
-  assert.deepEqual({ families: m.families, providers: m.providers, status: m.status, stableBasis: m.stableBasis, tiers: m.tiers }, {
-    families: evidence.families,
-    providers: evidence.providers,
-    status: { stable: evidence.status.stable, provisional: evidence.status.provisional, pending: evidence.status.pending, unsupported: evidence.status.unsupported },
-    stableBasis: evidence.stableBasis,
-    tiers: { T0: evidence.tiers.T0, T1: evidence.tiers.T1, T2: evidence.tiers.T2, T3: evidence.tiers.T3 },
-  });
+  // Counts are recomputed from the fixture's full family list rather than
+  // copied from the newer committed evidence snapshot.
+  const feed = JSON.parse(fixture('product-feed.json')).supportMatrix;
+  assert.equal(m.families, feed.familyCount);
+  assert.equal(m.providers, feed.providerCount);
+  assert.deepEqual(m.status, feed.distribution);
 });
 
 test('feeds: the GitHub API resolves the commit; every file is read at that commit, never at a branch', async () => {
@@ -232,7 +234,7 @@ test('feeds: the GitHub API resolves the commit; every file is read at that comm
 test('adapters: no feed on main → registry fallback, recorded explicitly, registry records unchanged', async () => {
   // A committed document that never read the adapters feed: with one, a
   // missing feed is stale instead (the next test).
-  const neverRead = structuredClone(committed);
+  const neverRead = structuredClone(fixturePrevious);
   delete neverRead.feeds.adapters;
   const { release, stale } = await run(world({ adapters: null, registry: baseRegistry() }), neverRead, T0);
   assert.deepEqual(stale, []);
@@ -245,7 +247,9 @@ test('adapters: no feed on main → registry fallback, recorded explicitly, regi
   assert.match(a.fallbackReason, /not on main at bbbbbbb/);
   assert.equal(a.value, undefined);
   assert.equal(a.digest, undefined);
-  for (const id of ['adapter', 'adapter-pino', 'adapter-otel', 'adapters-py']) assert.equal(release.packages[id].value.version, committed.packages[id].value.version, id);
+  for (const id of ['adapter', 'adapter-pino', 'adapter-otel-trace', 'adapter-otel-logs', 'adapters-py']) {
+    assert.equal(release.packages[id].value.version, committed.packages[id].value.version, id);
+  }
 });
 
 test('adapters: a feed that is on main is used and cross-checked against the registry', async () => {
@@ -494,7 +498,7 @@ const edit = (dir, file, fn) => {
 test('check-data: hand-kept matrix counts that disagree with the product feed fail', () => {
   const r = runCheck((dir) => edit(dir, 'evidence.json', (d) => (d.facts.matrix.value.stableBasis.documented += 1)));
   assert.equal(r.status, 1);
-  assert.match(r.stderr, /facts\/matrix: stableBasis\.documented is 81, the product feed .* says 80/);
+  assert.match(r.stderr, /facts\/matrix: stableBasis\.documented is 107, the product feed .* says 106/);
 });
 
 test('check-data: a fresh feed release that differs from the fresh registry record fails', () => {

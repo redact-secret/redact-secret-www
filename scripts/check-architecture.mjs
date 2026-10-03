@@ -114,9 +114,6 @@ async function checkEngine(type) {
           h1: document.querySelectorAll('h1').length,
           claims: document.querySelectorAll('main [class*="_claim_"]').length,
           current,
-          switchHref: document.querySelector(`a[hreflang][aria-current="page"]`)?.parentElement
-            ?.querySelector('a:not([aria-current])')
-            ?.getAttribute('href'),
           alternates: Object.fromEntries(
             [...document.querySelectorAll('link[rel="alternate"][hreflang]')].map((l) => [l.hreflang, new URL(l.href).pathname]),
           ),
@@ -142,7 +139,9 @@ async function checkEngine(type) {
 
       // 5. Other locale, pager, links.
       const counterpart = counterpartOf(path);
-      if (facts.switchHref !== counterpart) fail(path, `language switch goes to ${facts.switchHref}`);
+      await page.locator('header button[aria-haspopup="menu"]').first().click();
+      const switchHref = await page.locator(`header [role="menu"] a[hreflang="${other}"]`).first().getAttribute('href');
+      if (switchHref !== counterpart) fail(path, `language switch goes to ${switchHref}`);
       const english = locale === 'en' ? path : counterpart;
       if (facts.alternates[other] !== counterpart || facts.alternates[locale] !== path || facts.alternates['x-default'] !== english) {
         fail(path, `hreflang alternates ${JSON.stringify(facts.alternates)}`);
@@ -190,16 +189,16 @@ async function checkEngine(type) {
         if (response?.status() !== 200) fail(path, `status ${response?.status()}`);
         const facts = await page.evaluate(() => ({
           lang: document.documentElement.lang,
-          switchHref: document.querySelector(`a[hreflang][aria-current="page"]`)?.parentElement
-            ?.querySelector('a:not([aria-current])')
-            ?.getAttribute('href'),
           alternates: Object.fromEntries(
             [...document.querySelectorAll('link[rel="alternate"][hreflang]')].map((l) => [l.hreflang, new URL(l.href).pathname]),
           ),
         }));
         const locale = localeOf(path);
         if (facts.lang !== locale) fail(path, `<html lang="${facts.lang}">`);
-        if (facts.switchHref !== counterpartOf(path)) fail(path, `language switch goes to ${facts.switchHref}`);
+        const other = locale === 'en' ? 'ko' : 'en';
+        await page.locator('header button[aria-haspopup="menu"]').first().click();
+        const switchHref = await page.locator(`header [role="menu"] a[hreflang="${other}"]`).first().getAttribute('href');
+        if (switchHref !== counterpartOf(path)) fail(path, `language switch goes to ${switchHref}`);
         if (JSON.stringify(facts.alternates) !== JSON.stringify({ en: '/', ko: '/ko/', 'x-default': '/' })) {
           fail(path, `hreflang alternates ${JSON.stringify(facts.alternates)}`);
         }

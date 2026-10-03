@@ -6,7 +6,7 @@ A static landing page plus a seven-page architecture section, built once per
 locale, with no server and no runtime API. Preact components are rendered
 to complete HTML ahead of time — by the build, and by a content publish
 through the same renderer artifact — and hydrated in the browser for tab
-switching, theme, and the playground only — every link, including the
+switching, the language menu, optional theme support, and the playground only — every link, including the
 language switch, loads a prerendered document; nothing is routed
 client-side — nothing on the page calls back to this repository, the
 product repository, or any API at request time.

@@ -8,7 +8,7 @@
 //   2. JavaScript enabled, every JSON request blocked (aborted on even
 //      pages, answered 500 on odd ones): no page error, the body's text is
 //      exactly the no-JavaScript text (hydration neither empties nor
-//      replaces it), and the page is interactive — the theme switch works,
+//      replaces it), and the page is interactive — the language menu opens,
 //      which only a hydrated page does.
 //
 // Usage: npm run check:first-paint   (builds first; exits non-zero on any
@@ -122,10 +122,10 @@ async function checkEngine(type) {
     for (const e of errors) fail(path, e);
     const hydrated = await p2.evaluate(facts);
     if (hydrated.text !== still.text) fail(path, 'hydration changed the page text (it must hydrate the prerendered content, not replace it)');
-    await p2.getByRole('button', { name: shell.header.themeDark, exact: true }).first().click();
-    const theme = await p2.evaluate(() => document.documentElement.getAttribute('data-theme'));
-    if (theme === 'dark') interactive++;
-    else fail(path, `not interactive with JSON blocked: the theme switch left data-theme=${theme}`);
+    const language = p2.getByRole('button', { name: shell.header.languageLabel, exact: true }).first();
+    await language.click();
+    if ((await language.getAttribute('aria-expanded')) === 'true') interactive++;
+    else fail(path, 'not interactive with JSON blocked: the language menu did not open');
     await js.close();
   }
   await browser.close();

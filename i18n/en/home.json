@@ -159,7 +159,7 @@
       },
       "otel": {
         "title": "OpenTelemetry traces",
-        "description": "Wraps the next SpanProcessor and redacts string attributes, events, span names, and status messages.",
+      "description": "A dedicated trace adapter wraps the next SpanProcessor and redacts span names, attributes, events, links, and status messages.",
         "coverage": "Attribute names are not redacted; spans the wrapped processor never receives are out of reach."
       },
       "masking": {
@@ -205,12 +205,12 @@
       "vault-server": {
         "title": "Vault server",
         "description": "Authorizes every restore by principal, tenant, source, destination, and value path.",
-        "coverage": "In-memory backend only. Persistent stores are proposed but not packaged."
+      "coverage": "In-memory is beta. The opt-in persistent profile is alpha and qualified only for its documented PostgreSQL profiles."
       },
       "vault-py": {
         "title": "Vault (Python)",
         "description": "A native Python implementation of the vault server’s authorization contract.",
-        "coverage": "Research-grade on PyPI. Capture needs a node executable."
+      "coverage": "Research-grade on PyPI. Capture needs Node.js; persistent extras are published but not supported."
       }
     },
     "observed": [

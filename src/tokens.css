@@ -9,6 +9,28 @@
  * TODO: vendor tokens.json and add the drift test (CONVENTIONS.md § Code style).
  */
 :root,
+[data-theme='dark'] {
+  --brand-green: #aad816;
+  --on-brand: #0d0d0d;
+  --surface: #000000;
+  --ink: #f2f2f2;
+  --ink-muted: #a6a6a6;
+  --link: #aad816;
+  --focus: #aad816;
+  --line: #333333;
+  --status-success: #5fcf9b;
+  --status-success-fill: #0f2a1e;
+  --status-warning: #f0ad4e;
+  --status-warning-fill: #2e1f08;
+  --status-danger: #ff7b72;
+  --status-danger-fill: #351310;
+  --status-info: #7fb0ff;
+  --status-info-fill: #0f1d36;
+  --sunken: #0f0f0f;
+  --sunken-2: #171717;
+  color-scheme: dark;
+}
+
 [data-theme='light'] {
   --brand-green: #aad816;
   --on-brand: #0d0d0d;
@@ -29,48 +51,6 @@
   --sunken: #f7f7f5;
   --sunken-2: #efefec;
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --surface: #000000;
-    --ink: #f2f2f2;
-    --ink-muted: #a6a6a6;
-    --link: #aad816;
-    --focus: #aad816;
-    --line: #333333;
-    --status-success: #5fcf9b;
-    --status-success-fill: #0f2a1e;
-    --status-warning: #f0ad4e;
-    --status-warning-fill: #2e1f08;
-    --status-danger: #ff7b72;
-    --status-danger-fill: #351310;
-    --status-info: #7fb0ff;
-    --status-info-fill: #0f1d36;
-    --sunken: #0f0f0f;
-    --sunken-2: #171717;
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme='dark'] {
-  --surface: #000000;
-  --ink: #f2f2f2;
-  --ink-muted: #a6a6a6;
-  --link: #aad816;
-  --focus: #aad816;
-  --line: #333333;
-  --status-success: #5fcf9b;
-  --status-success-fill: #0f2a1e;
-  --status-warning: #f0ad4e;
-  --status-warning-fill: #2e1f08;
-  --status-danger: #ff7b72;
-  --status-danger-fill: #351310;
-  --status-info: #7fb0ff;
-  --status-info-fill: #0f1d36;
-  --sunken: #0f0f0f;
-  --sunken-2: #171717;
-  color-scheme: dark;
 }
 
 :root {

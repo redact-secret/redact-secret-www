@@ -30,7 +30,7 @@
     "check:community": "npm run build && node scripts/check-community.mjs"
   },
   "dependencies": {
-    "@redact-secret/core": "0.1.0-beta.11",
+    "@redact-secret/core": "0.1.0-beta.13",
     "preact": "^10.29.8",
     "preact-iso": "^2.12.2"
   },

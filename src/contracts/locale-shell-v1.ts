@@ -55,9 +55,6 @@ export interface LocaleShellV1 {
     nav: Link[];
     getStarted: Text;
     languageLabel: Text;
-    themeLabel: Text;
-    themeLight: Text;
-    themeDark: Text;
     menu: Text;
     closeMenu: Text;
   };

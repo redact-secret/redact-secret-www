@@ -136,7 +136,7 @@ export function Vault({ copy }: { locale: Locale; copy: ArchitecturePagesCopy['v
           <PackageTile {...tile('vault-py')} name={`${p['vault-py'].name} (Python)`}>
             <Rich value={pieces.tiles[2]} />
           </PackageTile>
-          <PackageTile name="@redact-secret/store-*" status="contract" statusLabel={pieces.contractLabel}>
+          <PackageTile name="@redact-secret/store-*" status="alpha" statusLabel={pieces.contractLabel}>
             <Rich value={pieces.tiles[3]} />
           </PackageTile>
         </Grid>

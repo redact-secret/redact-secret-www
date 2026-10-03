@@ -63,14 +63,15 @@ export function Adapters({ locale, copy }: { locale: Locale; copy: ArchitectureP
   const tiles: [string, string][] = [
     ['adapter', meta(p.adapter)],
     ['adapter-pino', meta(p['adapter-pino'], hostRange(p['adapter-pino']))],
-    ['adapter-otel', meta(p['adapter-otel'], hostRange(p['adapter-otel']))],
+    ['adapter-otel-trace', meta(p['adapter-otel-trace'], hostRange(p['adapter-otel-trace']))],
+    ['adapter-otel-logs', meta(p['adapter-otel-logs'], hostRange(p['adapter-otel-logs']))],
     ['adapter-ai-context', meta(p['adapter-ai-context'])],
     ['adapter-mcp', meta(p['adapter-mcp'])],
     ['adapters-py', meta(p['adapters-py'], pkgs.pythonMeta, '[otel] extra')],
   ];
   const hostRanges = [
     ['adapter-pino', hostRange(p['adapter-pino'])],
-    ['adapter-otel', hostRange(p['adapter-otel'])],
+    ['adapter-otel-trace', hostRange(p['adapter-otel-trace'])],
     ['Python logging', 'CPython >=3.10'],
     ['Python otel', pythonExtra(p['adapters-py'].requires, 'otel')],
   ];

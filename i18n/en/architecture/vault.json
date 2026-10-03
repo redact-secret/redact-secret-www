@@ -265,7 +265,7 @@
   },
   "thePieces": {
     "eyebrow": "The pieces",
-    "title": "Three published (one research-grade), one on paper",
+    "title": "Three beta surfaces, plus an alpha persistence profile",
     "tiles": [
       [
         "The portable piece: opt-in, bounded, in-memory capture and the token lifecycle. Qualified for Node.js 20/22/24 and the browser main thread, with an optional dedicated-Worker mode qualified ",
@@ -278,22 +278,22 @@
         },
         ", and the two modes' guarantees are documented apart."
       ],
-      "The authority layer: principal, tenant, source, sink, path and purpose checks on every restore, with an in-memory backend built on the package above. Tested on Node.js 20/22/24.",
+      "The authority layer: principal, tenant, source, sink, path and purpose checks on every restore. Its default in-memory path remains beta; an opt-in persistent entry point composes encrypted records with an injected store and key provider.",
       [
         "Research-grade. A native Python implementation of the same ",
         {
           "em": "server authority"
         },
-        " contract, not of the portable vault API. It passes the shared conformance corpus against the real core through a documented Node.js service boundary."
+        " contract, not of the portable vault API. Its base install is in memory; persistent modules ship behind extras but remain explicitly unsupported. Detection still crosses a documented Node.js service boundary."
       ],
       [
-        "Persistent backends. A written contract exists; no implementation does. ",
+        "Published alpha persistence pieces: contracts, record encryption, PostgreSQL and SQLite stores, an AWS KMS key provider, and conformance tooling. Only the documented PostgreSQL profiles carry a qualification claim. ",
         {
           "b": "Persistence is a storage choice, not a third trust environment."
         }
       ]
     ],
-    "contractLabel": "Contract only",
+    "contractLabel": "Alpha",
     "p": "The npm names do not make this JavaScript-only. The server security contract is language-neutral, and Python, Rust and Go each need their own native distribution or a separately qualified service boundary."
   },
   "beingHonest": {
@@ -303,9 +303,9 @@
     "items": [
       [
         {
-          "b": "No persistence."
+          "b": "Persistence is alpha and profile-specific."
         },
-        " In-memory only. The persistent-store contract is written; nothing implements it."
+        " PostgreSQL is qualified only for the documented Node.js 22 topologies. SQLite has a partial record, and Python persistent extras are published but unsupported."
       ],
       [
         {
@@ -438,7 +438,7 @@
       {
         "code": "redact-secret-reversible"
       },
-      ". Exact API signatures, TTL defaults, token syntax, store implementations and release dates are all described as still open."
+      ". Persistence is published but remains alpha: support claims apply only to the runtime, store and topology cells named in the repository's qualification records."
     ],
     "atCommit": [
       " at ",
