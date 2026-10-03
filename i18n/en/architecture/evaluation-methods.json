@@ -246,7 +246,19 @@
       },
       {
         "title": "Competitor disagreement",
-        "ask": "Where do we and Gitleaks and TruffleHog differ on identical bytes?",
+        "ask": [
+          "Where do we and ",
+          {
+            "a": "Gitleaks",
+            "href": "https://gitleaks.io/"
+          },
+          " and ",
+          {
+            "a": "TruffleHog",
+            "href": "https://github.com/trufflesecurity/trufflehog"
+          },
+          " differ on identical bytes?"
+        ],
         "gist": [
           "Competitors are ",
           {

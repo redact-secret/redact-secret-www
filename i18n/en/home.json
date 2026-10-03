@@ -153,18 +153,43 @@
         "coverage": "There is no separate browser adapter package; this core subpath is the browser integration."
       },
       "pino": {
-        "title": "Pino",
-        "description": "Redacts values in log calls and in the finished line, alongside pino’s own path-based redact.",
+        "title": [
+          {
+            "a": "Pino",
+            "href": "https://getpino.io/"
+          }
+        ],
+        "description": [
+          "Redacts values in log calls and in the finished line, alongside ",
+          {
+            "a": "pino’s",
+            "href": "https://getpino.io/"
+          },
+          " own path-based redact."
+        ],
         "coverage": "Not object keys, and nothing a destination or transport adds after the line is written."
       },
       "otel": {
-        "title": "OpenTelemetry traces",
+        "title": [
+          {
+            "a": "OpenTelemetry",
+            "href": "https://opentelemetry.io/"
+          },
+          " traces"
+        ],
       "description": "A dedicated trace adapter wraps the next SpanProcessor and redacts span names, attributes, events, links, and status messages.",
         "coverage": "Attribute names are not redacted; spans the wrapped processor never receives are out of reach."
       },
       "masking": {
         "title": "Masking callbacks",
-        "description": "createMaskSecrets() for hosts that hand you a value to mask, such as Langfuse.",
+        "description": [
+          "createMaskSecrets() for hosts that hand you a value to mask, such as ",
+          {
+            "a": "Langfuse",
+            "href": "https://langfuse.com/"
+          },
+          "."
+        ],
         "coverage": "Covers only what the host routes through its callback."
       },
       "ai-context": {
@@ -173,9 +198,22 @@
         "coverage": "Binary and encoded values are blocked, not decoded. Model output is not covered."
       },
       "mcp": {
-        "title": "MCP tool calls",
+        "title": [
+          {
+            "a": "MCP",
+            "href": "https://modelcontextprotocol.io/"
+          },
+          " tool calls"
+        ],
         "description": "Scans tools/call and resources/read results before they are logged, stored, or placed in context.",
-        "coverage": "Other MCP methods are out of scope; binary payloads block the result by default."
+        "coverage": [
+          "Other ",
+          {
+            "a": "MCP",
+            "href": "https://modelcontextprotocol.io/"
+          },
+          " methods are out of scope; binary payloads block the result by default."
+        ]
       },
       "logging": {
         "title": "Python logging",
@@ -183,13 +221,26 @@
         "coverage": "Runs only where attached, so put it on every emitting handler rather than on the logger."
       },
       "otel-py": {
-        "title": "OpenTelemetry Python",
+        "title": [
+          {
+            "a": "OpenTelemetry",
+            "href": "https://opentelemetry.io/"
+          },
+          " Python"
+        ],
         "description": "Wraps the next span processor in Python services.",
         "coverage": "Installed only with the otel extra. A span that cannot be rewritten is dropped, not exported."
       },
       "masking-py": {
         "title": "Masking callbacks",
-        "description": "mask_secrets for hosts that hand you a value to mask, such as Langfuse.",
+        "description": [
+          "mask_secrets for hosts that hand you a value to mask, such as ",
+          {
+            "a": "Langfuse",
+            "href": "https://langfuse.com/"
+          },
+          "."
+        ],
         "coverage": "Covers only what the host routes through its callback."
       },
       "vault-browser": {
@@ -538,11 +589,27 @@
       "rows": [
         {
           "problem": "Find credentials already committed to Git history",
-          "start": "Gitleaks or TruffleHog"
+          "start": [
+            {
+              "a": "Gitleaks",
+              "href": "https://gitleaks.io/"
+            },
+            " or ",
+            {
+              "a": "TruffleHog",
+              "href": "https://github.com/trufflesecurity/trufflehog"
+            }
+          ]
         },
         {
           "problem": "De-identify broad personal data in documents and images",
-          "start": "Presidio or a managed data-protection service"
+          "start": [
+            {
+              "a": "Presidio",
+              "href": "https://microsoft.github.io/presidio/"
+            },
+            " or a managed data-protection service"
+          ]
         },
         {
           "problem": "Replace supported credentials in a running application before they reach logs, traces, tools or AI context",

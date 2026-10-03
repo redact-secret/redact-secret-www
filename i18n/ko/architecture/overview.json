@@ -41,7 +41,24 @@
     },
     "adapters": {
       "question": "“텍스트는 누가 가져오나요?”",
-      "body": "호스트와 엔진 사이에서 pino, 분리된 OpenTelemetry 트레이스·로그 신호, Python 로깅, AI 컨텍스트와 MCP를 다룹니다. 판단은 하지 않고 실패 시 닫힌 상태로 끝납니다."
+      "body": [
+        "호스트와 엔진 사이에서 ",
+        {
+          "a": "pino",
+          "href": "https://getpino.io/"
+        },
+        ", 분리된 ",
+        {
+          "a": "OpenTelemetry",
+          "href": "https://opentelemetry.io/"
+        },
+        " 트레이스·로그 신호, Python 로깅, AI 컨텍스트와 ",
+        {
+          "a": "MCP",
+          "href": "https://modelcontextprotocol.io/"
+        },
+        "를 다룹니다. 판단은 하지 않고 실패 시 닫힌 상태로 끝납니다."
+      ]
     },
     "vault": {
       "question": "“원본이 다시 필요하면요?”",
@@ -71,7 +88,23 @@
       },
       {
         "repo": "redact-secret-adapters",
-        "owns": "pino·OpenTelemetry 로그와 트레이스·Python 로깅·AI 컨텍스트·MCP용 호스트 연동",
+        "owns": [
+          {
+            "a": "pino",
+            "href": "https://getpino.io/"
+          },
+          "·",
+          {
+            "a": "OpenTelemetry",
+            "href": "https://opentelemetry.io/"
+          },
+          " 로그와 트레이스·Python 로깅·AI 컨텍스트·",
+          {
+            "a": "MCP",
+            "href": "https://modelcontextprotocol.io/"
+          },
+          "용 호스트 연동"
+        ],
         "mustNot": "복원, 매핑된 평문을 관측 도구로 내보내기"
       },
       {

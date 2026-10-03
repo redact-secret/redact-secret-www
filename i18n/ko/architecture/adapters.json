@@ -28,7 +28,12 @@
           {
             "code": "pino-redact.mjs"
           },
-          "를 복사합니다. 지금은 잘 동작합니다. 하지만 pino 다음 메이저 버전에서 훅 시그니처가 바뀌어도 ",
+          "를 복사합니다. 지금은 잘 동작합니다. 하지만 ",
+          {
+            "a": "pino",
+            "href": "https://getpino.io/"
+          },
+          " 다음 메이저 버전에서 훅 시그니처가 바뀌어도 ",
           {
             "b": "알려 주는 사람이 없습니다."
           }
@@ -45,7 +50,12 @@
               }
             ]
           },
-          ". 지원하는 pino 버전 범위가 명시되어 있고 ",
+          ". 지원하는 ",
+          {
+            "a": "pino",
+            "href": "https://getpino.io/"
+          },
+          " 버전 범위가 명시되어 있고 ",
           {
             "b": "범위의 양 끝 버전에서 테스트"
           },
@@ -65,7 +75,23 @@
     "eyebrow": "위치",
     "title": "호스트와 엔진 사이",
     "nodeTitle1": "호스트",
-    "node1": "pino 로거, OpenTelemetry span, Python 로그 레코드, MCP 도구 결과, 모델 프롬프트.",
+    "node1": [
+      {
+        "a": "pino",
+        "href": "https://getpino.io/"
+      },
+      " 로거, ",
+      {
+        "a": "OpenTelemetry",
+        "href": "https://opentelemetry.io/"
+      },
+      " span, Python 로그 레코드, ",
+      {
+        "a": "MCP",
+        "href": "https://modelcontextprotocol.io/"
+      },
+      " 도구 결과, 모델 프롬프트."
+    ],
     "arrow1": "어댑터가 텍스트를 넘기고",
     "claimSub": "무엇이 시크릿인지는 코어가 판단합니다. 어댑터는 판단하지 않습니다.",
     "claim": "Redact Secret 코어",
@@ -88,21 +114,40 @@
         {
           "b": "값 기준"
         },
-        "으로 가리며, pino 자체의 경로 기반 ",
+        "으로 가리며, ",
+        {
+          "a": "pino",
+          "href": "https://getpino.io/"
+        },
+        " 자체의 경로 기반 ",
         {
           "code": "redact"
         },
-        "와 함께 씁니다. pino는 메시지 문자열이나 오류 메시지 속 토큰을 보지 못하지만, 이 패키지는 찾아냅니다."
+        "와 함께 씁니다. ",
+        {
+          "a": "pino",
+          "href": "https://getpino.io/"
+        },
+        "는 메시지 문자열이나 오류 메시지 속 토큰을 보지 못하지만, 이 패키지는 찾아냅니다."
       ],
       [
-        "전용 OpenTelemetry 트레이스 어댑터가 span 이름, 문자열 속성, 이벤트, 링크, 상태 메시지를 다음 processor로 넘어가기 전에 가립니다. 속성 이름을 허용 목록으로 제한하지 않으므로 OpenInference와 GenAI 규약도 ",
+        "전용 ",
+        {
+          "a": "OpenTelemetry",
+          "href": "https://opentelemetry.io/"
+        },
+        " 트레이스 어댑터가 span 이름, 문자열 속성, 이벤트, 링크, 상태 메시지를 다음 processor로 넘어가기 전에 가립니다. 속성 이름을 허용 목록으로 제한하지 않으므로 OpenInference와 GenAI 규약도 ",
         {
           "b": "따로 하드코딩하지 않고"
         },
         " 처리합니다."
       ],
       [
-        "OpenTelemetry 로그는 트레이스와 분리되어 ",
+        {
+          "a": "OpenTelemetry",
+          "href": "https://opentelemetry.io/"
+        },
+        " 로그는 트레이스와 분리되어 ",
         {
           "code": "beta"
         },
@@ -115,13 +160,29 @@
         }
       ],
       [
-        "Model Context Protocol 경계입니다. 도구 결과와 (선택적으로) 인자, 클라이언트가 ",
+        {
+          "a": "Model Context Protocol",
+          "href": "https://modelcontextprotocol.io/"
+        },
+        " 경계입니다. 도구 결과와 (선택적으로) 인자, 클라이언트가 ",
         {
           "code": "resources/read"
         },
-        "로 읽는 내용을 검사합니다. 위 패키지를 얇게 특화해 MCP 형식만 더했습니다. ",
+        "로 읽는 내용을 검사합니다. 위 패키지를 얇게 특화해 ",
         {
-          "b": "타입 정의용으로도 MCP SDK를 import하지 않습니다."
+          "a": "MCP",
+          "href": "https://modelcontextprotocol.io/"
+        },
+        " 형식만 더했습니다. ",
+        {
+          "b": [
+            "타입 정의용으로도 ",
+            {
+              "a": "MCP",
+              "href": "https://modelcontextprotocol.io/"
+            },
+            " SDK를 import하지 않습니다."
+          ]
         }
       ],
       [
@@ -134,7 +195,11 @@
     ],
     "pythonMeta": "logging 필터",
     "note": [
-      "Langfuse처럼 마스킹 콜백을 쓰는 호스트는 ",
+      {
+        "a": "Langfuse",
+        "href": "https://langfuse.com/"
+      },
+      "처럼 마스킹 콜백을 쓰는 호스트는 ",
       {
         "b": "전용 패키지가 필요 없습니다"
       },
@@ -242,7 +307,11 @@
       " 코어는 Rust·npm·PyPI·CLI가 같은 버전으로 함께 릴리스되지만, 이 패키지들은 여기에 묶이지 않습니다. ",
       {
         "b": [
-          "pino 새 버전이 나오면 ",
+          {
+            "a": "pino",
+            "href": "https://getpino.io/"
+          },
+          " 새 버전이 나오면 ",
           {
             "code": "adapter-pino"
           },
@@ -268,7 +337,14 @@
       "검증 방법"
     ],
     "verifiedBy": [
-      "캡처한 스트림에 기록하는 실제 pino 로거",
+      [
+        "캡처한 스트림에 기록하는 실제 ",
+        {
+          "a": "pino",
+          "href": "https://getpino.io/"
+        },
+        " 로거"
+      ],
       [
         {
           "code": "onEnd"
@@ -279,7 +355,12 @@
       "실제 tracer provider를 거치는 실제 span"
     ],
     "p": [
-      "선언한 범위 밖의 pino 메이저 버전은 ",
+      "선언한 범위 밖의 ",
+      {
+        "a": "pino",
+        "href": "https://getpino.io/"
+      },
+      " 메이저 버전은 ",
       {
         "b": "일부러"
       },
@@ -325,7 +406,18 @@
       ],
       [
         {
-          "b": "LangChain 패키지와 Langfuse 패키지."
+          "b": [
+            {
+              "a": "LangChain",
+              "href": "https://www.langchain.com/"
+            },
+            " 패키지와 ",
+            {
+              "a": "Langfuse",
+              "href": "https://langfuse.com/"
+            },
+            " 패키지."
+          ]
         },
         " 마스킹 콜백을 쓰는 호스트는 패키지가 필요 없습니다. 공용 탐색기로 충분합니다."
       ],

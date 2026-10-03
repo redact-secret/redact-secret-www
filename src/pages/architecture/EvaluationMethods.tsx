@@ -73,7 +73,7 @@ export function EvaluationMethods({ copy }: { locale: Locale; copy: Architecture
                 <MethodBlock
                   n={n}
                   title={m.title}
-                  ask={m.ask}
+                  ask={<Rich value={m.ask} />}
                   gist={<Rich value={m.gist} vars={{ baseline: evidence.baseline }} />}
                 >
                   {m.sample && (

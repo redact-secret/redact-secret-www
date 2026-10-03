@@ -41,7 +41,24 @@
     },
     "adapters": {
       "question": "“Who fetches the text?”",
-      "body": "Packages between your host and the engine now cover pino, separate OpenTelemetry trace and log signals, Python logging, AI context and MCP. They decide nothing, and fail closed."
+      "body": [
+        "Packages between your host and the engine now cover ",
+        {
+          "a": "pino",
+          "href": "https://getpino.io/"
+        },
+        ", separate ",
+        {
+          "a": "OpenTelemetry",
+          "href": "https://opentelemetry.io/"
+        },
+        " trace and log signals, Python logging, AI context and ",
+        {
+          "a": "MCP",
+          "href": "https://modelcontextprotocol.io/"
+        },
+        ". They decide nothing, and fail closed."
+      ]
     },
     "vault": {
       "question": "“What if you need the original back?”",
@@ -71,7 +88,23 @@
       },
       {
         "repo": "redact-secret-adapters",
-        "owns": "Host integrations for pino, OpenTelemetry logs and traces, Python logging, AI context and MCP",
+        "owns": [
+          "Host integrations for ",
+          {
+            "a": "pino",
+            "href": "https://getpino.io/"
+          },
+          ", ",
+          {
+            "a": "OpenTelemetry",
+            "href": "https://opentelemetry.io/"
+          },
+          " logs and traces, Python logging, AI context and ",
+          {
+            "a": "MCP",
+            "href": "https://modelcontextprotocol.io/"
+          }
+        ],
         "mustNot": "Restoration, or emitting mapped plaintext to observability"
       },
       {
