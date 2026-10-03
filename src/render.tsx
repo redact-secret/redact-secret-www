@@ -39,7 +39,7 @@ export function localeOfPath(path: string): Locale | null {
   return path === notFoundPath ? null : splitLocalePath(path).locale;
 }
 
-const copyFiles = ['shell.json', 'home.json', 'community.json', 'architecture/section.json', ...architecturePages.map((p) => `architecture/${p.id}.json`)];
+const copyFiles = ['shell.json', 'home.json', 'community.json', 'docs.json', 'architecture/section.json', ...architecturePages.map((p) => `architecture/${p.id}.json`)];
 
 /** Every source file of a content release, repository-relative: each locale's copy, then the data. */
 export function inputFiles(): string[] {
@@ -56,6 +56,7 @@ export function inputsFrom(files: Record<string, unknown>): { content: ContentBu
     shell: read(`i18n/${l}/shell.json`),
     home: read(`i18n/${l}/home.json`),
     community: read(`i18n/${l}/community.json`),
+    docs: read(`i18n/${l}/docs.json`),
     architecture: {
       section: read(`i18n/${l}/architecture/section.json`),
       pages: Object.fromEntries(architecturePages.map((p) => [p.id, read(`i18n/${l}/architecture/${p.id}.json`)])) as LocaleContent['architecture']['pages'],
@@ -88,6 +89,12 @@ function headFor(path: string, content: ContentBundle): PageHead {
   if (route.page.kind === 'community') {
     const c = content[locale].community.meta;
     return { lang: locale, title: c.title, description: c.description, alternates };
+  }
+  if (route.page.kind === 'docs') {
+    const id = route.page.id;
+    const d = content[locale].docs.pages.find((page) => page.id === id);
+    if (!d) throw new Error(`renderer: missing docs copy for ${id}`);
+    return { lang: locale, title: `${d.title} — Redact Secret`, description: d.description, alternates };
   }
   const a = content[locale].architecture.section;
   const id = route.page.id;

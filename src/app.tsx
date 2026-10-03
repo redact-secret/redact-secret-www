@@ -8,9 +8,11 @@
  */
 import { Architecture, type ArchitecturePageCopy } from './pages/Architecture';
 import { Community } from './pages/Community';
+import { Docs } from './pages/Docs';
 import { Home } from './pages/Home';
 import { NotFound } from './pages/NotFound';
-import type { CommunityCopy, ContentBundle, HomeCopy, SectionCopy, ShellCopy } from './content';
+import type { CommunityCopy, ContentBundle, DocsCopy, HomeCopy, SectionCopy, ShellCopy } from './content';
+import type { DocsPageId } from './content/docs/pages';
 import type { Locale } from './i18n';
 import { localizedRoutes, notFoundPath } from './routes';
 import type { SiteData } from './site-data';
@@ -20,6 +22,7 @@ export type PageView =
   | { kind: 'home'; locale: Locale; shell: ShellCopy; copy: HomeCopy }
   | { kind: 'community'; locale: Locale; shell: ShellCopy; copy: CommunityCopy }
   | { kind: 'architecture'; locale: Locale; shell: ShellCopy; section: SectionCopy; page: ArchitecturePageCopy }
+  | { kind: 'docs'; locale: Locale; shell: ShellCopy; copy: DocsCopy; id: DocsPageId }
   | { kind: 'not-found'; shells: Record<Locale, ShellCopy> };
 
 /** Embedded in every page as `<script type="application/json" id="page-data">`. */
@@ -34,6 +37,7 @@ export function viewFor(path: string, content: ContentBundle): PageView {
   const c = content[route.locale];
   if (route.page.kind === 'home') return { kind: 'home', locale: route.locale, shell: c.shell, copy: c.home };
   if (route.page.kind === 'community') return { kind: 'community', locale: route.locale, shell: c.shell, copy: c.community };
+  if (route.page.kind === 'docs') return { kind: 'docs', locale: route.locale, shell: c.shell, copy: c.docs, id: route.page.id };
   const { id } = route.page;
   return {
     kind: 'architecture',
@@ -48,5 +52,6 @@ export function App({ view }: { view: PageView }) {
   if (view.kind === 'home') return <Home locale={view.locale} shell={view.shell} copy={view.copy} />;
   if (view.kind === 'community') return <Community locale={view.locale} shell={view.shell} copy={view.copy} />;
   if (view.kind === 'architecture') return <Architecture locale={view.locale} shell={view.shell} section={view.section} page={view.page} />;
+  if (view.kind === 'docs') return <Docs locale={view.locale} shell={view.shell} copy={view.copy} id={view.id} />;
   return <NotFound shells={view.shells} />;
 }

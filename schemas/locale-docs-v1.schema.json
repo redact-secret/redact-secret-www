@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.redactsecret.com/schemas/locale-docs-v1.schema.json",
+  "title": "LocaleDocsV1",
+  "description": "i18n/<locale>/docs.json: adoption-first documentation shell and page copy. Versions, support counts, snippets, and upstream ownership stay source-driven outside prose.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "locale", "section", "pages"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": "locale-docs-v1" },
+    "locale": { "$ref": "locale-common-v1.schema.json#/$defs/locale" },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "navLabel", "contents", "groups", "pager"],
+      "properties": {
+        "title": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "navLabel": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "contents": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+        "groups": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "core", "integrations", "products", "concepts"],
+          "properties": {
+            "start": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+            "core": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+            "integrations": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+            "products": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+            "concepts": { "$ref": "locale-common-v1.schema.json#/$defs/text" }
+          }
+        },
+        "pager": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["label", "prev", "next", "back"],
+          "properties": {
+            "label": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+            "prev": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+            "next": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+            "back": { "$ref": "locale-common-v1.schema.json#/$defs/text" }
+          }
+        }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "nav", "description", "eyebrow", "lede", "sections"],
+        "properties": {
+          "id": {
+            "enum": ["overview", "quickstart", "installation", "javascript", "python", "pino", "opentelemetry", "python-logging", "mcp", "ai-context", "gateway", "vault", "detection-policies", "supported-credentials", "security", "troubleshooting"]
+          },
+          "title": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+          "nav": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+          "description": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+          "eyebrow": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+          "lede": { "$ref": "locale-common-v1.schema.json#/$defs/rich" },
+          "sections": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["title", "body"],
+              "properties": {
+                "title": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+                "body": { "type": "array", "minItems": 1, "items": { "$ref": "locale-common-v1.schema.json#/$defs/rich" } },
+                "bullets": { "type": "array", "minItems": 1, "items": { "$ref": "locale-common-v1.schema.json#/$defs/rich" } },
+                "snippet": {
+                  "enum": ["js-core-install", "js-core", "python-core-install", "python-core", "pino-install", "pino", "otel-install", "otel", "python-logging-install", "python-logging", "mcp-install", "mcp", "ai-context-install", "ai-context", "gateway", "vault-install", "vault"]
+                },
+                "snippetLabel": { "$ref": "locale-common-v1.schema.json#/$defs/text" },
+                "links": { "type": "array", "minItems": 1, "items": { "$ref": "locale-common-v1.schema.json#/$defs/link" } }
+              },
+              "dependentRequired": { "snippet": ["snippetLabel"], "snippetLabel": ["snippet"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

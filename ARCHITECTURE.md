@@ -2,8 +2,8 @@
 
 ## Overview
 
-A static landing page plus a seven-page architecture section, built once per
-locale, with no server and no runtime API. Preact components are rendered
+A static landing page, a sixteen-page documentation section, and a seven-page
+architecture section, built once per locale, with no server and no runtime API. Preact components are rendered
 to complete HTML ahead of time — by the build, and by a content publish
 through the same renderer artifact — and hydrated in the browser for tab
 switching, the language menu, optional theme support, and the playground only — every link, including the
@@ -124,6 +124,27 @@ Deliberate departures from the mockup:
 - The mockup's note about adapter versions disagreeing between sources is
   replaced by the observed-date line every slot carries.
 
+## Documentation section
+
+`/docs/` and `/ko/docs/` are adoption-first entry points owned by this
+repository under [ADR 0005](./docs/decisions/0005-adoption-docs-in-site.md).
+Sixteen pages cover direct JavaScript and Python use, Pino, OpenTelemetry,
+Python logging, MCP, AI context, Gateway, Vault, detection and policy,
+support status, security, and troubleshooting.
+
+- `src/content/docs/pages.ts` is the route, sidebar, and pager order.
+- `i18n/{en,ko}/docs.json` owns prose with structural parity. Package versions
+  never appear there; `src/content/docs/snippets.ts` renders install commands
+  from `data/release.json`.
+- The global header and footer remain the dark site shell. Only the docs
+  section scopes light color tokens onto its reading canvas, so the retained
+  light-theme capability does not control the public header.
+- `scripts/check-docs.mjs` verifies page IDs, unique metadata, snippet coverage,
+  official ecosystem links, version freshness, and a real core smoke path.
+- Gateway is explicitly source-only and experimental. Vault distinguishes the
+  beta in-memory boundary from alpha persistence. An empty finding set is never
+  presented as proof that input is secret-free.
+
 ## Community page
 
 `/community/` and `/ko/community/`
@@ -164,21 +185,21 @@ kind scrolls the form into view.
 
 Two directory-routed locales on one host
 ([ADR 0003](./docs/decisions/0003-single-static-site-separate-releases.md)):
-English without a prefix (`/`, `/architecture/…`) and Korean under `/ko/`
-(`/ko/`, `/ko/architecture/…`), built from the same block structure and the
+English without a prefix (`/`, `/docs/…`, `/architecture/…`) and Korean under `/ko/`
+(`/ko/`, `/ko/docs/…`, `/ko/architecture/…`), built from the same block structure and the
 same code examples, with independently authored prose. Korean is not a
 translation appended to an English layout — see
 [CONVENTIONS.md](./CONVENTIONS.md#bilingual-content) for what is shared
 between locales and what each locale authors on its own.
 
 **Copy is data, structure is code.** Every visitor-visible word is in
-`i18n/<locale>/`: `shell.json`, `home.json`, and `architecture/<page>.json`
+`i18n/<locale>/`: `shell.json`, `home.json`, `docs.json`, and `architecture/<page>.json`
 per page (plus `architecture/section.json` for the section's sidebar,
 titles and pager), each under its own JSON Schema
 (`schemas/locale-*-v1.schema.json`, types generated into `src/contracts/`).
 Markup is a small structured rich-text form rendered by one component
 (`src/components/ui/Rich.tsx`) — no HTML strings. Internal links in copy are
-route IDs (`architecture/vault`, `home#playground`) that `src/routes.ts`
+route IDs (`docs/vault`, `architecture/vault`, `home#playground`) that `src/routes.ts`
 resolves per locale; versions, dates, counts and commits are `var` nodes the
 page fills from the slots. Components and page templates take the copy
 objects as props and never fetch.
@@ -200,7 +221,8 @@ integration groups) are derived from the release's data at render time
 copy, for the dev server and Storybook only. `npm run build` checks the copy
 first (`check-data`: schema and secret scan; `check-i18n`: files, en/ko
 parity, links, a 32 KiB per-page budget, and no key left unread by any page,
-rendering every page through `src/render.tsx`).
+rendering every page through `src/render.tsx`; `check-docs`: docs-specific
+route, metadata, link, snippet, and smoke contracts).
 
 ```text
 i18n/<locale>/*.json, data/*.json ─ check-data (schema, secrets) ─ check-i18n (parity, links, size, unread keys)
@@ -596,7 +618,9 @@ adopted).
 - **No telemetry, no third-party scripts** beyond Google Fonts, matching
   `redact-secret-benchmarks`' `index.html`.
 - **No AWS credentials or scanner binaries in this repository.** This site
-  never runs Gitleaks or TruffleHog; it has nothing to scan.
+  never runs [Gitleaks](https://gitleaks.io/) or
+  [TruffleHog](https://github.com/trufflesecurity/trufflehog); it has nothing
+  to scan.
 
 ## Open questions
 

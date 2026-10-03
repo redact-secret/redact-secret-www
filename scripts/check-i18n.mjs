@@ -119,7 +119,7 @@ try {
   const { architecturePages } = await server.ssrLoadModule('/src/content/architecture/pages.ts');
 
   // 1. The file set: what the loader imports, derived from the page registry.
-  const expected = ['shell.json', 'home.json', 'community.json', 'architecture/section.json', ...architecturePages.map((p) => `architecture/${p.id}.json`)];
+  const expected = ['shell.json', 'home.json', 'community.json', 'docs.json', 'architecture/section.json', ...architecturePages.map((p) => `architecture/${p.id}.json`)];
   const docs = {};
   for (const locale of locales) {
     docs[locale] = {};
@@ -159,7 +159,9 @@ try {
           ? ['shell.json', 'home.json']
           : route.page.kind === 'community'
             ? ['shell.json', 'community.json']
-            : ['shell.json', 'architecture/section.json', `architecture/${route.page.id}.json`];
+            : route.page.kind === 'docs'
+              ? ['shell.json', 'docs.json']
+              : ['shell.json', 'architecture/section.json', `architecture/${route.page.id}.json`];
       const bytes = files.reduce((sum, f) => sum + (docs[locale][f] ? shippedBytes(docs[locale][f]) : 0), 0);
       const page = routes.localizedRoutes.find((r) => r.locale === locale && r.path === route.path).localized;
       if (bytes > largest.bytes) largest = { bytes, page };
@@ -181,6 +183,7 @@ try {
         shell: track('shell.json'),
         home: track('home.json'),
         community: track('community.json'),
+        docs: track('docs.json'),
         architecture: {
           section: track('architecture/section.json'),
           pages: Object.fromEntries(architecturePages.map((p) => [p.id, track(`architecture/${p.id}.json`)])),

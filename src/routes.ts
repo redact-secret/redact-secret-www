@@ -7,10 +7,14 @@
  * checks the output.
  */
 import { architecturePages, architecturePath, type ArchitecturePageId } from './content/architecture/pages';
+import { docsPages, docsPath, type DocsPageId } from './content/docs/pages';
 import { anchors } from './content/shared';
 import { defaultLocale, homePath, localePath, locales, type Locale } from './i18n';
 
-export type PageRoute = { path: string; page: { kind: 'home' } | { kind: 'community' } | { kind: 'architecture'; id: ArchitecturePageId } };
+export type PageRoute = {
+  path: string;
+  page: { kind: 'home' } | { kind: 'community' } | { kind: 'architecture'; id: ArchitecturePageId } | { kind: 'docs'; id: DocsPageId };
+};
 
 /** The community page: `/community/` or `/ko/community/`. */
 export function communityPath(locale: Locale) {
@@ -25,6 +29,10 @@ export const pageRoutes: readonly PageRoute[] = [
     path: architecturePath(defaultLocale, p.id),
     page: { kind: 'architecture' as const, id: p.id },
   })),
+  ...docsPages.map((p) => ({
+    path: docsPath(defaultLocale, p.id),
+    page: { kind: 'docs' as const, id: p.id },
+  })),
 ];
 
 /**
@@ -32,11 +40,20 @@ export const pageRoutes: readonly PageRoute[] = [
  * copy never carries a locale path. `home`, `community`, `architecture` (the
  * hub), and `architecture/<page>`.
  */
-export type RouteId = 'home' | 'community' | 'architecture' | `architecture/${Exclude<ArchitecturePageId, 'overview'>}`;
+export type RouteId =
+  | 'home'
+  | 'community'
+  | 'architecture'
+  | `architecture/${Exclude<ArchitecturePageId, 'overview'>}`
+  | 'docs'
+  | `docs/${Exclude<DocsPageId, 'overview'>}`;
 
-export const routeIds: readonly RouteId[] = pageRoutes.map((r) =>
-  r.page.kind === 'home' ? 'home' : r.page.kind === 'community' ? 'community' : r.page.id === 'overview' ? 'architecture' : (`architecture/${r.page.id}` as RouteId),
-);
+export const routeIds: readonly RouteId[] = pageRoutes.map((r) => {
+  if (r.page.kind === 'home') return 'home';
+  if (r.page.kind === 'community') return 'community';
+  if (r.page.kind === 'architecture') return r.page.id === 'overview' ? 'architecture' : (`architecture/${r.page.id}` as RouteId);
+  return r.page.id === 'overview' ? 'docs' : (`docs/${r.page.id}` as RouteId);
+});
 
 /** In-page anchor IDs a link may name after `#`. */
 export const anchorIds: readonly string[] = Object.values(anchors);
@@ -54,7 +71,14 @@ export function routeHref(locale: Locale, ref: string): string {
   const route = pageRoutes.find((_r, i) => routeIds[i] === id);
   if (!route) throw new Error(`unknown route in link "${ref}"`);
   const { page } = route;
-  const path = page.kind === 'home' ? homePath(locale) : page.kind === 'community' ? communityPath(locale) : architecturePath(locale, page.id);
+  const path =
+    page.kind === 'home'
+      ? homePath(locale)
+      : page.kind === 'community'
+        ? communityPath(locale)
+        : page.kind === 'architecture'
+          ? architecturePath(locale, page.id)
+          : docsPath(locale, page.id);
   return `${path}${hash}`;
 }
 

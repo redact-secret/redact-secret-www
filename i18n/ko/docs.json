@@ -1,0 +1,240 @@
+{
+  "$schema": "../../schemas/locale-docs-v1.schema.json",
+  "schemaVersion": "locale-docs-v1",
+  "locale": "ko",
+  "section": {
+    "title": "문서",
+    "navLabel": "문서 탐색",
+    "contents": "문서 둘러보기",
+    "groups": {
+      "start": "시작하기",
+      "core": "코어 사용",
+      "integrations": "연동",
+      "products": "게이트웨이와 볼트",
+      "concepts": "개념과 지원"
+    },
+    "pager": { "label": "문서 페이지", "prev": "이전", "next": "다음", "back": "문서로 돌아가기" }
+  },
+  "pages": [
+    {
+      "id": "overview",
+      "title": "애플리케이션이 보내려는 텍스트를 보호하세요",
+      "nav": "문서 홈",
+      "description": "보호하려는 경계에 맞는 Redact Secret 연동을 선택하세요.",
+      "eyebrow": "Redact Secret 문서",
+      "lede": "직접 통제하는 경계에서 시작하세요. 한 경로를 안전하게 만들기 전에 모든 패키지를 배울 필요는 없습니다.",
+      "sections": [
+        {
+          "title": "무엇을 보호하려고 하나요?",
+          "body": ["가장 가까운 작업을 고르세요. 각 경로는 최소 예제와 정직한 적용 범위로 바로 이어집니다."],
+          "bullets": [
+            [{ "a": "애플리케이션 로그", "to": "docs/pino" }, " — Pino 또는 ", { "a": "Python logging", "to": "docs/python-logging" }],
+            [{ "a": "트레이스와 텔레메트리", "to": "docs/opentelemetry" }, " — OpenTelemetry span과 로그"],
+            [{ "a": "MCP, LLM, 에이전트 컨텍스트", "to": "docs/mcp" }, " — MCP 또는 ", { "a": "AI Context", "to": "docs/ai-context" }],
+            [{ "a": "API 트래픽", "to": "docs/gateway" }, " — 선택형 Gateway"],
+            [{ "a": "나중에 복원할 값", "to": "docs/vault" }, " — 선택형 Vault"],
+            [{ "a": "직접 검사할 텍스트", "to": "docs/javascript" }, " — JavaScript 또는 ", { "a": "Python", "to": "docs/python" }]
+          ]
+        },
+        {
+          "title": "하나의 탐지기, 여러 경계",
+          "body": ["코어는 탐지하고 정책을 적용합니다. 어댑터는 호스트 값을 코어로 전달합니다. Vault는 통제된 복원을 더하고 Gateway는 검토된 API 범위를 전달 전에 보호합니다. 어느 것도 finding이 없다고 입력에 시크릿이 없음을 보장하지 않습니다."],
+          "links": [
+            { "label": "아키텍처 근거 읽기", "to": "architecture" },
+            { "label": "현재 지원 근거 보기", "href": "https://benchmarks.redactsecret.dev" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quickstart",
+      "title": "빠른 시작",
+      "nav": "빠른 시작",
+      "description": "JavaScript 또는 Python 빠른 시작을 골라 첫 가림 결과를 확인하세요.",
+      "eyebrow": "몇 분 안에 시작",
+      "lede": "먼저 코어를 직접 실행한 다음, 같은 탐지 경계를 실제로 사용하는 호스트 연동에 배치하세요.",
+      "sections": [
+        {
+          "title": "런타임 선택",
+          "body": ["두 경로 모두 배포된 패키지와 합성 입력을 사용합니다. 무엇이 바뀌었는지 설명하는 finding과 가려진 텍스트를 함께 돌려줍니다."],
+          "bullets": [
+            [{ "a": "JavaScript", "to": "docs/javascript" }, " — Node.js와 브라우저에서 쓸 수 있는 코어"],
+            [{ "a": "Python", "to": "docs/python" }, " — Python 코어 패키지"]
+          ]
+        },
+        {
+          "title": "경계 배치",
+          "body": ["텍스트가 이미 로거, 트레이서, 도구 호출, 모델 컨텍스트 빌더를 거친다면 호스트 동작을 직접 다시 만들지 말고 맞는 어댑터를 사용하세요."],
+          "links": [{ "label": "연동 선택", "to": "docs" }]
+        }
+      ]
+    },
+    {
+      "id": "installation",
+      "title": "설치",
+      "nav": "설치",
+      "description": "문구에 오래된 버전을 복사하지 않고 현재 Redact Secret 패키지를 설치하세요.",
+      "eyebrow": "배포된 패키지",
+      "lede": "이 사이트의 명령은 다른 페이지와 같은 릴리스 레코드에서 만들어집니다.",
+      "sections": [
+        { "title": "JavaScript", "body": ["현재 코어 릴리스를 설치하세요. 연동 가이드는 필요한 어댑터 패키지로 이를 바꿉니다."], "snippet": "js-core-install", "snippetLabel": "npm으로 설치" },
+        { "title": "Python", "body": ["현재 코어 릴리스의 Python 미러를 설치하세요."], "snippet": "python-core-install", "snippetLabel": "pip으로 설치" }
+      ]
+    },
+    {
+      "id": "javascript",
+      "title": "JavaScript 코어",
+      "nav": "JavaScript",
+      "description": "Redact Secret JavaScript 코어로 애플리케이션이 통제하는 텍스트를 검사하고 가립니다.",
+      "eyebrow": "코어 직접 사용 · JavaScript",
+      "lede": "애플리케이션이 텍스트 경계를 이미 소유하고 finding과 가려진 출력을 직접 필요로 할 때 코어를 사용하세요.",
+      "sections": [
+        { "title": "검사하고 가리기", "body": ["한 번 초기화하고 문자열을 전달한 다음 반환된 가림 텍스트를 사용하세요. 예제 값은 의도적으로 합성된 값입니다."], "snippet": "js-core", "snippetLabel": "JavaScript" },
+        { "title": "런타임 경계", "body": ["패키지는 Node.js와 브라우저를 지원합니다. 브라우저 스트리밍 텍스트에는 web-stream 서브패스를 사용하세요. 탐지는 입력을 네트워크로 보내지 않습니다."], "bullets": ["finding은 바이트 범위, 탐지기, 신뢰도, 액션을 알려 줍니다.", "차단 또는 처리 실패가 나면 호출자는 원본 값 전달을 멈춰야 합니다."], "links": [{ "label": "고급 JavaScript 및 Rust 가이드", "href": "https://github.com/redact-secret/redact-secret/tree/main/docs/guides" }] }
+      ]
+    },
+    {
+      "id": "python",
+      "title": "Python 코어",
+      "nav": "Python",
+      "description": "Redact Secret Python 패키지로 애플리케이션이 통제하는 텍스트를 검사하고 가립니다.",
+      "eyebrow": "코어 직접 사용 · Python",
+      "lede": "로거, 요청, 저장소, 모델에 도달하기 전에 코드가 값을 소유할 때 Python 패키지를 사용하세요.",
+      "sections": [
+        { "title": "검사하고 가리기", "body": ["결과는 가려진 텍스트와 finding을 함께 유지하므로 호출자가 교체 결과를 다시 조립할 필요가 없습니다."], "snippet": "python-core", "snippetLabel": "Python" },
+        { "title": "결과의 의미", "body": ["finding은 설정된 탐지기가 본 것의 근거입니다. finding이 없다고 입력이 안전하다는 뜻은 아닙니다."], "links": [{ "label": "코어 지원 매트릭스", "href": "https://github.com/redact-secret/redact-secret/blob/main/docs/support-matrix.md" }] }
+      ]
+    },
+    {
+      "id": "pino",
+      "title": "Pino 로그 보호",
+      "nav": "Pino",
+      "description": "Pino 로그 값과 완성된 로그 줄을 destination stream에 닿기 전에 가립니다.",
+      "eyebrow": "연동 · Pino",
+      "lede": "어댑터는 Pino에 전달된 값과 완성된 줄을 설정된 destination에 도달하기 전에 보호합니다.",
+      "sections": [
+        { "title": "설치하고 연결", "body": ["배포된 어댑터를 설치하고 로거 경계를 감싸세요."], "snippet": "pino-install", "snippetLabel": "npm으로 설치" },
+        { "title": "적용 범위", "body": ["값 기반 탐지는 Pino의 경로 기반 redact 옵션을 보완합니다."], "bullets": ["로그 호출 값과 완성된 줄을 다룹니다.", "객체 키나 줄이 기록된 뒤 destination이 더한 내용은 가리지 않습니다.", "탐지 정책은 계속 Redact Secret 코어가 소유합니다."], "snippet": "pino", "snippetLabel": "JavaScript", "links": [{ "label": "Pino 문서", "href": "https://getpino.io/" }, { "label": "어댑터 소스와 실행 예제", "href": "https://github.com/redact-secret/redact-secret-adapters" }] }
+      ]
+    },
+    {
+      "id": "opentelemetry",
+      "title": "OpenTelemetry 데이터 보호",
+      "nav": "OpenTelemetry",
+      "description": "다음 processor와 export 전에 OpenTelemetry span 필드와 로그 본문을 가립니다.",
+      "eyebrow": "연동 · OpenTelemetry",
+      "lede": "신호별 어댑터를 사용해 트레이스와 로그 계약을 명확히 유지하세요.",
+      "sections": [
+        { "title": "트레이스 어댑터", "body": ["다음 SpanProcessor를 감쌉니다. 위임 전에 span 이름, 문자열 속성, 이벤트, 링크, 상태 메시지를 가립니다."], "snippet": "otel-install", "snippetLabel": "npm으로 설치" },
+        { "title": "적용 범위와 한계", "body": ["속성 이름은 가리지 않습니다. 감싼 processor가 받지 못한 span은 경계 밖입니다. OpenTelemetry 로그는 별도 베타 채널 패키지입니다."], "snippet": "otel", "snippetLabel": "JavaScript", "links": [{ "label": "OpenTelemetry 문서", "href": "https://opentelemetry.io/docs/" }, { "label": "어댑터 소스", "href": "https://github.com/redact-secret/redact-secret-adapters" }] }
+      ]
+    },
+    {
+      "id": "python-logging",
+      "title": "Python 로그 보호",
+      "nav": "Python logging",
+      "description": "fail-closed 필터로 Python logging handler에 값 기반 가림 처리를 더합니다.",
+      "eyebrow": "연동 · Python logging",
+      "lede": "출력 경계에서 레코드가 가려지도록 출력하는 모든 handler에 필터를 붙이세요.",
+      "sections": [
+        { "title": "설치", "body": ["어댑터 패키지는 Python 코어와 독립적으로 릴리스됩니다."], "snippet": "python-logging-install", "snippetLabel": "pip으로 설치" },
+        { "title": "필터 연결", "body": ["필터는 붙인 handler만 다룹니다. 로거가 어디서나 적용한다고 가정하지 말고 출력하는 각 handler에 붙이세요."], "snippet": "python-logging", "snippetLabel": "Python", "links": [{ "label": "Python logging 문서", "href": "https://docs.python.org/3/library/logging.html" }, { "label": "어댑터 소스", "href": "https://github.com/redact-secret/redact-secret-adapters" }] }
+      ]
+    },
+    {
+      "id": "mcp",
+      "title": "MCP 도구 호출 보호",
+      "nav": "MCP",
+      "description": "MCP tools/call과 resources/read 결과를 로그·저장·모델 컨텍스트 전에 가립니다.",
+      "eyebrow": "연동 · Model Context Protocol",
+      "lede": "탐지를 특정 MCP SDK 구현에 결합하지 않고 클라이언트 경계에서 도구 결과를 보호하세요.",
+      "sections": [
+        { "title": "설치", "body": ["MCP 어댑터는 AI 컨텍스트 경계 위에 구축되며 배포된 패키지를 사용합니다."], "snippet": "mcp-install", "snippetLabel": "npm으로 설치" },
+        { "title": "결과 보호", "body": ["지원 경계는 tools/call과 resources/read 결과를 다루며 도구 인자를 포함할 수 있습니다. 바이너리와 인코딩 값은 추측해 디코딩하지 않고 기본 차단합니다."], "snippet": "mcp", "snippetLabel": "JavaScript", "links": [{ "label": "Model Context Protocol 문서", "href": "https://modelcontextprotocol.io/" }, { "label": "어댑터 소스", "href": "https://github.com/redact-secret/redact-secret-adapters" }] }
+      ]
+    },
+    {
+      "id": "ai-context",
+      "title": "AI와 LLM 컨텍스트 보호",
+      "nav": "AI Context",
+      "description": "fail-closed 동작으로 사용자 텍스트와 도구 결과에서 가려진 모델 컨텍스트를 만듭니다.",
+      "eyebrow": "연동 · AI 컨텍스트",
+      "lede": "애플리케이션이 모델로 보낼 텍스트를 조립하지만 프로토콜 전용 어댑터가 필요하지 않을 때 이 경계를 사용하세요.",
+      "sections": [
+        { "title": "설치", "body": ["패키지는 지원하는 텍스트 값을 탐색하고 모든 탐지 판단을 코어에 위임합니다."], "snippet": "ai-context-install", "snippetLabel": "npm으로 설치" },
+        { "title": "컨텍스트 만들기", "body": ["변환은 전부 성공하거나 전부 실패합니다. 지원하지 않는 바이너리와 인코딩 콘텐츠는 결과를 막으며, 모델 출력은 이 입력 경계 밖입니다."], "snippet": "ai-context", "snippetLabel": "JavaScript", "links": [{ "label": "어댑터 소스와 예제", "href": "https://github.com/redact-secret/redact-secret-adapters" }, { "label": "아키텍처: 어댑터", "to": "architecture/adapters" }] }
+      ]
+    },
+    {
+      "id": "gateway",
+      "title": "Gateway로 검토된 API 트래픽 보호",
+      "nav": "Gateway",
+      "description": "지원되는 OpenAI SDK 요청을 실험적 fail-closed Redact Secret Gateway로 전달합니다.",
+      "eyebrow": "선택형 제품 · Gateway",
+      "lede": "Gateway는 제한된 OpenAI 텍스트 범위를 위한 미배포 후보입니다. 선택 기능이며 범용 프록시나 안정적 프로덕션 릴리스가 아닙니다.",
+      "sections": [
+        { "title": "SDK 라우팅", "body": ["소스에서 후보를 빌드하고 설정을 검증한 뒤 기존 SDK가 loopback endpoint를 사용하게 하세요."], "snippet": "gateway", "snippetLabel": "JavaScript 라우팅" },
+        { "title": "Fail-closed 경계", "body": ["지원되는 요청 본문은 어떤 바이트도 upstream에 보내기 전에 완전히 수용·검사·변환됩니다."], "bullets": ["알 수 없는 필드, 지원하지 않는 콘텐츠, 잘못된 입력, 한도 초과, 처리 실패는 거부됩니다.", "Provider 응답과 upstream 오류는 응답 콘텐츠를 가리지 않고 전달합니다.", "어떤 산출물도 게시·서명되거나 프로덕션 배포 승인을 받지 않았습니다."], "links": [{ "label": "Gateway 소스와 현재 상태", "href": "https://github.com/redact-secret/gateway" }, { "label": "Gateway 보안 문서", "href": "https://github.com/redact-secret/gateway/blob/main/SECURITY.md" }] }
+      ]
+    },
+    {
+      "id": "vault",
+      "title": "Vault로 보호된 값 복원",
+      "nav": "Vault",
+      "description": "민감한 값을 불투명 토큰으로 캡처하고 명시적으로 허용한 sink와 path에만 복원합니다.",
+      "eyebrow": "선택형 제품 · Vault",
+      "lede": "Vault는 나중에 원본 값을 복구해야 하는 워크플로용입니다. 코어 검사와 가림에 필수는 아닙니다.",
+      "sections": [
+        { "title": "캡처와 복원", "body": ["캡처는 값을 불투명 토큰으로 바꿉니다. 복원은 허용된 sink와 path에서만 성공합니다."], "snippet": "vault-install", "snippetLabel": "npm으로 설치" },
+        { "title": "보안 의미", "body": ["인메모리 Vault 사용은 베타입니다. 영구 저장 프로필은 알파이며 검증된 배포 조합에만 지원됩니다."], "bullets": ["토큰은 만료되며 일회용일 수 있습니다.", "지정한 필드의 복원은 전부 성공하거나 전부 실패합니다.", "토큰 자체는 권한 부여가 아닙니다."], "snippet": "vault", "snippetLabel": "JavaScript", "links": [{ "label": "Vault 위협 모델과 가이드", "href": "https://github.com/redact-secret/redact-secret-vault" }, { "label": "아키텍처: Vault", "to": "architecture/vault" }] }
+      ]
+    },
+    {
+      "id": "detection-policies",
+      "title": "탐지, finding, 정책",
+      "nav": "탐지와 정책",
+      "description": "Redact Secret이 탐지 근거와 런타임 경계에서 적용할 액션을 어떻게 분리하는지 이해하세요.",
+      "eyebrow": "개념",
+      "lede": "탐지는 근거를 보고합니다. 정책은 finding을 가릴지, 막을지, 경고할지 결정합니다.",
+      "sections": [
+        { "title": "계층 분리", "body": ["어댑터와 게이트웨이는 무엇이 시크릿인지 판단하지 않습니다. 값을 코어로 전달하고 반환된 결과를 자기 경계에서 집행합니다."], "bullets": ["finding은 바이트 범위와 탐지 근거를 식별합니다.", "액션은 설정된 대응을 설명합니다.", "겹치는 finding은 교체 전에 결정론적으로 정리됩니다."], "links": [{ "label": "탐지 아키텍처", "to": "architecture/detection" }, { "label": "평가 방법", "to": "architecture/evaluation-methods" }] },
+        { "title": "PII는 선택적이며 제한적입니다", "body": ["자격 증명 탐지와 PII 선택은 다른 제어입니다. PII 모드는 문서화된 selector만 다루며 Redact Secret은 범용 DLP 플랫폼이 아닙니다."] }
+      ]
+    },
+    {
+      "id": "supported-credentials",
+      "title": "지원 자격 증명과 상태",
+      "nav": "지원 자격 증명",
+      "description": "변동하는 벤치마크 숫자를 문서에 복사하지 않고 자격 증명 계열 상태를 읽으세요.",
+      "eyebrow": "지원 상태",
+      "lede": ["현재 릴리스에는 자격 증명 계열 ", { "var": "families" }, "개가 기록되어 있습니다. 숫자와 상태는 이 문구가 아니라 생성된 근거에서 옵니다."],
+      "sections": [
+        { "title": "상태 용어", "body": ["Stable은 문서화된 지원 주장에 필요한 근거가 있다는 뜻입니다. Provisional, pending, unsupported는 서로 다른 근거·범위 경계이며 안전·위험의 동의어가 아닙니다."], "bullets": ["Stable: 명시한 근거와 릴리스에서 지원합니다.", "Provisional: 유용한 동작은 있지만 stable 근거 기준을 충족하지 않습니다.", "Pending: 추적 중이지만 아직 지원을 주장하지 않습니다.", "Unsupported: 현재 주장 범위 밖임을 명시합니다."], "links": [{ "label": "공식 지원 매트릭스", "href": "https://github.com/redact-secret/redact-secret/blob/main/docs/support-matrix.md" }, { "label": "게시된 벤치마크 근거", "href": "https://benchmarks.redactsecret.dev" }] },
+        { "title": "finding 없음은 증명이 아닙니다", "body": ["finding이 비었다는 것은 설정한 탐지기가 일치 항목을 보고하지 않았다는 뜻입니다. 입력에 시크릿이 없다는 증명은 아닙니다."] }
+      ]
+    },
+    {
+      "id": "security",
+      "title": "보안과 신뢰 경계",
+      "nav": "보안 경계",
+      "description": "직접 통제하는 경계에 Redact Secret을 배치하고 가림 결과가 성공했을 때만 전달하세요.",
+      "eyebrow": "신뢰 경계",
+      "lede": "민감한 텍스트가 보호 경계를 지나고 애플리케이션이 원본으로 fallback하지 않을 때만 가림 처리가 도움이 됩니다.",
+      "sections": [
+        { "title": "호출자 책임", "body": ["처리 오류와 차단 결과를 중단 조건으로 취급하세요. 입력이나 평문 finding을 되풀이하는 진단 로그를 남기지 마세요."], "bullets": ["어댑터나 게이트웨이를 우회하는 경로를 제한하세요.", "Provider 자격 증명을 모델로 보낼 텍스트와 분리하세요.", "가림 후 데이터를 덧붙일 수 있는 downstream destination을 검토하세요.", "테스트와 지원 보고에는 합성 예제만 사용하세요."], "links": [{ "label": "아키텍처 개요", "to": "architecture" }, { "label": "코어 보안 정책", "href": "https://github.com/redact-secret/redact-secret/security/policy" }] }
+      ]
+    },
+    {
+      "id": "troubleshooting",
+      "title": "문제 해결",
+      "nav": "문제 해결",
+      "description": "차단 값, 빠진 경계, 버전 불일치, 지원하지 않는 입력을 진단하세요.",
+      "eyebrow": "문제 해결",
+      "lede": "경계와 정확한 배포 패키지 버전부터 확인한 다음 합성 입력으로 문제를 줄이세요.",
+      "sections": [
+        { "title": "흔한 경로", "body": ["원래 민감한 값을 이슈, 로그, 스크린샷, 진단에 붙여 넣지 마세요."], "bullets": ["아무것도 바뀌지 않음: 값이 감싼 handler, processor, callback, 도구 결과 경계를 실제로 지나는지 확인하세요.", "요청이 차단됨: 정책을 바꾸기 전에 지원하지 않는 바이너리·인코딩·구조·프로토콜 필드를 확인하세요.", "버전 불일치: 이 사이트에 표시된 정확한 현재 명령으로 다시 설치하고 peer 범위를 확인하세요.", "시크릿 누락: 명백한 합성 값으로 재현하고 설정 profile을 지원 매트릭스와 비교하세요.", "오탐: 원래 시크릿 없이 탐지기 ID, 액션, 안전한 주변 구조를 기록하세요."], "links": [{ "label": "안전한 커뮤니티 보고 열기", "to": "community" }, { "label": "지원 의미 읽기", "to": "docs/supported-credentials" }] },
+        { "title": "안전하게 에스컬레이션", "body": ["잠재적 취약점과 민감한 보고는 공개 이슈가 아니라 비공개 보안 채널로 보내세요."], "links": [{ "label": "보안 보고 정책", "href": "https://github.com/redact-secret/redact-secret/security/policy" }] }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "$schema": "../../schemas/locale-docs-v1.schema.json",
+  "schemaVersion": "locale-docs-v1",
+  "locale": "en",
+  "section": {
+    "title": "Documentation",
+    "navLabel": "Documentation navigation",
+    "contents": "Browse documentation",
+    "groups": {
+      "start": "Start here",
+      "core": "Use the core",
+      "integrations": "Integrations",
+      "products": "Gateway and Vault",
+      "concepts": "Concepts and support"
+    },
+    "pager": { "label": "Documentation pages", "prev": "Previous", "next": "Next", "back": "Back to docs" }
+  },
+  "pages": [
+    {
+      "id": "overview",
+      "title": "Protect the text your application is about to send",
+      "nav": "Docs home",
+      "description": "Choose the Redact Secret integration that matches the boundary you need to protect.",
+      "eyebrow": "Redact Secret documentation",
+      "lede": "Start with the boundary you control. You do not need to learn every package before making one path safe.",
+      "sections": [
+        {
+          "title": "What are you trying to protect?",
+          "body": ["Choose the closest task. Each path leads directly to a minimal example and its honest coverage boundary."],
+          "bullets": [
+            [{ "a": "Application logs", "to": "docs/pino" }, " — Pino or ", { "a": "Python logging", "to": "docs/python-logging" }],
+            [{ "a": "Traces and telemetry", "to": "docs/opentelemetry" }, " — OpenTelemetry spans and logs"],
+            [{ "a": "MCP, LLM, or agent context", "to": "docs/mcp" }, " — MCP or ", { "a": "AI Context", "to": "docs/ai-context" }],
+            [{ "a": "API traffic", "to": "docs/gateway" }, " — the optional Gateway"],
+            [{ "a": "Values you must restore later", "to": "docs/vault" }, " — the optional Vault"],
+            [{ "a": "Text you scan directly", "to": "docs/javascript" }, " — JavaScript or ", { "a": "Python", "to": "docs/python" }]
+          ]
+        },
+        {
+          "title": "One detector, several boundaries",
+          "body": ["Core detects and applies policy. Adapters carry host values to core. Vault adds controlled restoration. Gateway protects a reviewed API subset before forwarding. None of these claims that an empty finding set proves the input is secret-free."],
+          "links": [
+            { "label": "Read the architecture rationale", "to": "architecture" },
+            { "label": "See current support evidence", "href": "https://benchmarks.redactsecret.dev" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quickstart",
+      "title": "Quickstart",
+      "nav": "Quickstart",
+      "description": "Choose a JavaScript or Python Redact Secret quickstart and get a first redacted result.",
+      "eyebrow": "Start in minutes",
+      "lede": "Run the core directly first, then move the same detection boundary into the host integration you actually use.",
+      "sections": [
+        {
+          "title": "Choose your runtime",
+          "body": ["Both paths use released packages and synthetic input. They return sanitized text plus findings that explain what changed."],
+          "bullets": [
+            [{ "a": "JavaScript", "to": "docs/javascript" }, " — Node.js and browser-capable core"],
+            [{ "a": "Python", "to": "docs/python" }, " — the Python core package"]
+          ]
+        },
+        {
+          "title": "Then place the boundary",
+          "body": ["If your text already enters through a logger, tracer, tool call, or model-context builder, use the matching adapter instead of rewriting host behavior yourself."],
+          "links": [{ "label": "Choose an integration", "to": "docs" }]
+        }
+      ]
+    },
+    {
+      "id": "installation",
+      "title": "Installation",
+      "nav": "Installation",
+      "description": "Install current Redact Secret packages without copying stale version numbers from prose.",
+      "eyebrow": "Released packages",
+      "lede": "Commands on this site are rendered from the release records used by the rest of the site.",
+      "sections": [
+        { "title": "JavaScript", "body": ["Install the current core release. Integration guides replace this with the adapter package they need."], "snippet": "js-core-install", "snippetLabel": "Install with npm" },
+        { "title": "Python", "body": ["Install the current Python mirror of the core release."], "snippet": "python-core-install", "snippetLabel": "Install with pip" }
+      ]
+    },
+    {
+      "id": "javascript",
+      "title": "JavaScript core",
+      "nav": "JavaScript",
+      "description": "Scan and redact application-controlled text with the Redact Secret JavaScript core.",
+      "eyebrow": "Direct core · JavaScript",
+      "lede": "Use the core when your application already owns the text boundary and needs findings and sanitized output directly.",
+      "sections": [
+        { "title": "Scan and redact", "body": ["Initialize once, pass a string, and use the returned redacted text. The example value is deliberately synthetic."], "snippet": "js-core", "snippetLabel": "JavaScript" },
+        { "title": "Runtime boundary", "body": ["The package supports Node.js and the browser. Use the web-stream subpath for streaming browser text. Detection does not send input over the network."], "bullets": ["A finding reports byte ranges, detector identity, confidence, and action.", "A block or processing failure must stop the caller from forwarding the original value."], "links": [{ "label": "Advanced JavaScript and Rust guides", "href": "https://github.com/redact-secret/redact-secret/tree/main/docs/guides" }] }
+      ]
+    },
+    {
+      "id": "python",
+      "title": "Python core",
+      "nav": "Python",
+      "description": "Scan and redact application-controlled text with the Redact Secret Python package.",
+      "eyebrow": "Direct core · Python",
+      "lede": "Use the Python package when your code owns the value before it reaches a logger, request, store, or model.",
+      "sections": [
+        { "title": "Scan and redact", "body": ["The result keeps sanitized text and findings together so callers do not need to reconstruct replacements."], "snippet": "python-core", "snippetLabel": "Python" },
+        { "title": "What the result means", "body": ["Findings are evidence of what the configured detectors saw. No findings is not proof that the input is safe."], "links": [{ "label": "Core support matrix", "href": "https://github.com/redact-secret/redact-secret/blob/main/docs/support-matrix.md" }] }
+      ]
+    },
+    {
+      "id": "pino",
+      "title": "Protect Pino logs",
+      "nav": "Pino",
+      "description": "Redact values and finished Pino log lines before they reach the destination stream.",
+      "eyebrow": "Integration · Pino",
+      "lede": "The adapter protects values passed to Pino and the finished line before it reaches the configured destination.",
+      "sections": [
+        { "title": "Install and attach", "body": ["Install the released adapter and wrap the logger boundary."], "snippet": "pino-install", "snippetLabel": "Install with npm" },
+        { "title": "Coverage", "body": ["Value-based detection complements Pino's path-based redact option."], "bullets": ["Covers values in log calls and the completed line.", "Does not redact object keys or anything a destination adds after the line is written.", "Detection policy still belongs to Redact Secret core."], "snippet": "pino", "snippetLabel": "JavaScript", "links": [{ "label": "Pino documentation", "href": "https://getpino.io/" }, { "label": "Adapter source and runnable examples", "href": "https://github.com/redact-secret/redact-secret-adapters" }] }
+      ]
+    },
+    {
+      "id": "opentelemetry",
+      "title": "Protect OpenTelemetry data",
+      "nav": "OpenTelemetry",
+      "description": "Redact OpenTelemetry span fields before the next processor and log bodies before export.",
+      "eyebrow": "Integration · OpenTelemetry",
+      "lede": "Use signal-specific adapters so trace and log contracts remain explicit.",
+      "sections": [
+        { "title": "Trace adapter", "body": ["Wrap the next SpanProcessor. The adapter sanitizes span names, string attributes, events, links, and status messages before delegation."], "snippet": "otel-install", "snippetLabel": "Install with npm" },
+        { "title": "Coverage and limits", "body": ["Attribute names are not redacted. A span the wrapped processor never receives is outside the boundary. OpenTelemetry logs are a separate beta-channel package."], "snippet": "otel", "snippetLabel": "JavaScript", "links": [{ "label": "OpenTelemetry documentation", "href": "https://opentelemetry.io/docs/" }, { "label": "Adapter source", "href": "https://github.com/redact-secret/redact-secret-adapters" }] }
+      ]
+    },
+    {
+      "id": "python-logging",
+      "title": "Protect Python logs",
+      "nav": "Python logging",
+      "description": "Add value-based redaction to Python logging handlers with a fail-closed filter.",
+      "eyebrow": "Integration · Python logging",
+      "lede": "Attach the filter to every emitting handler so records are sanitized at the output boundary.",
+      "sections": [
+        { "title": "Install", "body": ["The adapters package follows the Python core release independently."], "snippet": "python-logging-install", "snippetLabel": "Install with pip" },
+        { "title": "Attach the filter", "body": ["The filter covers only handlers that receive it. Put it on every emitting handler rather than assuming the logger applies it everywhere."], "snippet": "python-logging", "snippetLabel": "Python", "links": [{ "label": "Python logging documentation", "href": "https://docs.python.org/3/library/logging.html" }, { "label": "Adapter source", "href": "https://github.com/redact-secret/redact-secret-adapters" }] }
+      ]
+    },
+    {
+      "id": "mcp",
+      "title": "Protect MCP tool calls",
+      "nav": "MCP",
+      "description": "Sanitize MCP tools/call and resources/read results before logging, storage, or model context.",
+      "eyebrow": "Integration · Model Context Protocol",
+      "lede": "Protect tool results at the client boundary without coupling detection to an MCP SDK implementation.",
+      "sections": [
+        { "title": "Install", "body": ["The MCP adapter builds on the AI-context boundary and uses released packages."], "snippet": "mcp-install", "snippetLabel": "Install with npm" },
+        { "title": "Protect a result", "body": ["The supported boundary covers tools/call and resources/read results and can include tool arguments. Binary or encoded values block by default rather than being decoded speculatively."], "snippet": "mcp", "snippetLabel": "JavaScript", "links": [{ "label": "Model Context Protocol documentation", "href": "https://modelcontextprotocol.io/" }, { "label": "Adapter source", "href": "https://github.com/redact-secret/redact-secret-adapters" }] }
+      ]
+    },
+    {
+      "id": "ai-context",
+      "title": "Protect AI and LLM context",
+      "nav": "AI Context",
+      "description": "Build sanitized model context from user text and tool results with fail-closed behavior.",
+      "eyebrow": "Integration · AI context",
+      "lede": "Use this boundary when your application assembles model-bound text but does not need a protocol-specific adapter.",
+      "sections": [
+        { "title": "Install", "body": ["The package walks supported text values and delegates every detection decision to core."], "snippet": "ai-context-install", "snippetLabel": "Install with npm" },
+        { "title": "Build context", "body": ["The transformation is all-or-nothing. Unsupported binary or encoded content blocks the result; model output is outside this input boundary."], "snippet": "ai-context", "snippetLabel": "JavaScript", "links": [{ "label": "Adapter source and examples", "href": "https://github.com/redact-secret/redact-secret-adapters" }, { "label": "Architecture: adapters", "to": "architecture/adapters" }] }
+      ]
+    },
+    {
+      "id": "gateway",
+      "title": "Protect reviewed API traffic with Gateway",
+      "nav": "Gateway",
+      "description": "Route a supported OpenAI SDK request through the experimental fail-closed Redact Secret Gateway.",
+      "eyebrow": "Optional product · Gateway",
+      "lede": "Gateway is an unpublished candidate for a bounded OpenAI text subset. It is optional and is not a general proxy or a stable production release.",
+      "sections": [
+        { "title": "Route the SDK", "body": ["Build the candidate from source, validate its configuration, and point an existing SDK at the loopback endpoint."], "snippet": "gateway", "snippetLabel": "JavaScript routing" },
+        { "title": "Fail-closed boundary", "body": ["Supported request bodies are fully admitted, inspected, and transformed before any body bytes are sent upstream."], "bullets": ["Unknown fields, unsupported content, malformed input, exhausted limits, or processing failures are rejected.", "Provider responses and upstream errors are relayed without response-content redaction.", "No artifact is published, signed, or authorized for production distribution."], "links": [{ "label": "Gateway source and current status", "href": "https://github.com/redact-secret/gateway" }, { "label": "Gateway security documentation", "href": "https://github.com/redact-secret/gateway/blob/main/SECURITY.md" }] }
+      ]
+    },
+    {
+      "id": "vault",
+      "title": "Restore protected values with Vault",
+      "nav": "Vault",
+      "description": "Capture sensitive values as opaque tokens and restore them only into an explicitly granted sink and path.",
+      "eyebrow": "Optional product · Vault",
+      "lede": "Vault is for workflows that must recover an original value later. Core scanning and redaction do not require it.",
+      "sections": [
+        { "title": "Capture and restore", "body": ["Capture replaces a value with an opaque token. Restore succeeds only for the granted sink and path."], "snippet": "vault-install", "snippetLabel": "Install with npm" },
+        { "title": "Security semantics", "body": ["In-memory Vault use is beta. Persistent profiles are alpha and supported only for qualified deployment combinations."], "bullets": ["Tokens expire and may be single-use.", "Restoration is all-or-nothing for the designated field.", "A token is not an authorization grant by itself."], "snippet": "vault", "snippetLabel": "JavaScript", "links": [{ "label": "Vault threat model and guides", "href": "https://github.com/redact-secret/redact-secret-vault" }, { "label": "Architecture: Vault", "to": "architecture/vault" }] }
+      ]
+    },
+    {
+      "id": "detection-policies",
+      "title": "Detection, findings, and policy",
+      "nav": "Detection and policy",
+      "description": "Understand how Redact Secret separates detector evidence from the action applied at a runtime boundary.",
+      "eyebrow": "Concepts",
+      "lede": "Detection reports evidence. Policy decides whether a finding is redacted, blocked, warned, or otherwise handled.",
+      "sections": [
+        { "title": "Keep the layers separate", "body": ["Adapters and gateways do not decide what a secret is. They carry values into core and enforce the returned result at their boundary."], "bullets": ["Findings identify byte ranges and detector evidence.", "Actions describe the configured response.", "Overlapping findings are resolved deterministically before replacement."], "links": [{ "label": "Detection architecture", "to": "architecture/detection" }, { "label": "Evaluation methods", "to": "architecture/evaluation-methods" }] },
+        { "title": "PII is opt-in and bounded", "body": ["Credential detection and PII selection are different controls. PII modes cover documented selectors only; Redact Secret is not a general DLP platform."] }
+      ]
+    },
+    {
+      "id": "supported-credentials",
+      "title": "Supported credentials and status",
+      "nav": "Supported credentials",
+      "description": "Read Redact Secret credential-family status without copying volatile benchmark numbers into documentation.",
+      "eyebrow": "Support status",
+      "lede": ["The current release records ", { "var": "families" }, " credential families. Counts and status come from generated evidence, not this prose."],
+      "sections": [
+        { "title": "Status words", "body": ["Stable means the documented support claim has the required evidence. Provisional, pending, and unsupported describe different evidence or coverage boundaries; they are not synonyms for unsafe or safe."], "bullets": ["Stable: supported on the stated basis and release.", "Provisional: useful behavior exists, but the stable evidence bar is not met.", "Pending: tracked but not yet claimed.", "Unsupported: explicitly outside the current claim."], "links": [{ "label": "Authoritative support matrix", "href": "https://github.com/redact-secret/redact-secret/blob/main/docs/support-matrix.md" }, { "label": "Published benchmark evidence", "href": "https://benchmarks.redactsecret.dev" }] },
+        { "title": "No finding is not proof", "body": ["An empty finding set means the configured detectors did not report a match. It does not prove the input contains no secret."] }
+      ]
+    },
+    {
+      "id": "security",
+      "title": "Security and trust boundary",
+      "nav": "Security boundary",
+      "description": "Place Redact Secret at a boundary you control and keep forwarding conditional on a successful sanitized result.",
+      "eyebrow": "Trust boundary",
+      "lede": "Redaction helps only when the application routes sensitive text through the protected boundary and does not fall back to the original value.",
+      "sections": [
+        { "title": "Caller responsibilities", "body": ["Treat processing errors and blocked results as stop conditions. Never log diagnostics that echo the input or plaintext findings."], "bullets": ["Restrict bypass paths around the adapter or gateway.", "Keep provider credentials separate from model-bound text.", "Review downstream destinations that can append their own data after redaction.", "Use synthetic examples in tests and support reports."], "links": [{ "label": "Architecture overview", "to": "architecture" }, { "label": "Core security policy", "href": "https://github.com/redact-secret/redact-secret/security/policy" }] }
+      ]
+    },
+    {
+      "id": "troubleshooting",
+      "title": "Troubleshooting",
+      "nav": "Troubleshooting",
+      "description": "Diagnose blocked values, missed boundaries, version mismatches, and unsupported Redact Secret inputs.",
+      "eyebrow": "Get unstuck",
+      "lede": "Start with the boundary and the exact released package versions, then reduce the problem with synthetic input.",
+      "sections": [
+        { "title": "Common paths", "body": ["Do not paste the original sensitive value into an issue, log, screenshot, or diagnostic."], "bullets": ["Nothing changed: confirm the value actually crosses the wrapped handler, processor, callback, or tool-result boundary.", "The request blocked: check for unsupported binary, encoded, structured, or protocol fields before changing policy.", "Versions disagree: reinstall the exact current command shown on this site and inspect peer ranges.", "A secret was missed: reproduce with an unmistakably synthetic value and compare the configured profile with the support matrix.", "A false positive appeared: capture detector identity, action, and safe surrounding structure without the original secret."], "links": [{ "label": "Open a safe community report", "to": "community" }, { "label": "Read support semantics", "to": "docs/supported-credentials" }] },
+        { "title": "Escalate securely", "body": ["Potential vulnerabilities and sensitive reports belong in the private security channel, not a public issue."], "links": [{ "label": "Security reporting policy", "href": "https://github.com/redact-secret/redact-secret/security/policy" }] }
+      ]
+    }
+  ]
+}
