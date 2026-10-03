@@ -162,11 +162,20 @@
       {
         "title": "실제 로깅·트레이싱 패키지",
         "body": [
-          "pino, Python ",
+          {
+            "a": "pino",
+            "href": "https://getpino.io/"
+          },
+          ", Python ",
           {
             "code": "logging"
           },
-          ", OpenTelemetry span processor는 ",
+          ", ",
+          {
+            "a": "OpenTelemetry",
+            "href": "https://opentelemetry.io/"
+          },
+          " span processor는 ",
           {
             "a": "별도 저장소",
             "to": "architecture/adapters"
@@ -190,7 +199,26 @@
     "eyebrow": "비교",
     "title": "대부분의 시크릿 스캐너는 다른 문을 지킵니다",
     "lede": [
-      "Gitleaks, TruffleHog, detect-secrets, GitGuardian은 ",
+      {
+        "a": "Gitleaks",
+        "href": "https://gitleaks.io/"
+      },
+      ", ",
+      {
+        "a": "TruffleHog",
+        "href": "https://github.com/trufflesecurity/trufflehog"
+      },
+      ", ",
+      {
+        "a": "detect-secrets",
+        "href": "https://github.com/Yelp/detect-secrets"
+      },
+      ", ",
+      {
+        "a": "GitGuardian",
+        "href": "https://www.gitguardian.com/"
+      },
+      "은 ",
       {
         "b": "코드"
       },
@@ -201,7 +229,28 @@
       "을 봅니다. 텍스트가 로그에 남거나, 저장되거나, 모델에 넘어가기 직전에 검사합니다."
     ],
     "nodeTitle1": "코드 → 커밋 → CI",
-    "node1": "Gitleaks, TruffleHog, detect-secrets, GitGuardian. 배포 전에 파일과 git 기록을 검사합니다.",
+    "node1": [
+      {
+        "a": "Gitleaks",
+        "href": "https://gitleaks.io/"
+      },
+      ", ",
+      {
+        "a": "TruffleHog",
+        "href": "https://github.com/trufflesecurity/trufflehog"
+      },
+      ", ",
+      {
+        "a": "detect-secrets",
+        "href": "https://github.com/Yelp/detect-secrets"
+      },
+      ", ",
+      {
+        "a": "GitGuardian",
+        "href": "https://www.gitguardian.com/"
+      },
+      ". 배포 전에 파일과 git 기록을 검사합니다."
+    ],
     "nodeTitle2": "실행 중인 앱 → 오가는 텍스트",
     "node2": [
       {
@@ -226,7 +275,12 @@
         {
           "b": "탐지 범위."
         },
-        " Gitleaks의 규칙은 수백 개이고, Redact Secret은 ",
+        " ",
+        {
+          "a": "Gitleaks",
+          "href": "https://gitleaks.io/"
+        },
+        "의 규칙은 수백 개이고, Redact Secret은 ",
         {
           "var": "families"
         },

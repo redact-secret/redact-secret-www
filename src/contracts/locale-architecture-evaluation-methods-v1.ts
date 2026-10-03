@@ -89,7 +89,7 @@ export interface LocaleArchitectureEvaluationMethodsV1 {
     }[];
     methods: {
       title: Text;
-      ask: Text;
+      ask: Rich;
       gist: Rich;
       sampleLabel?: Text;
       sample?: Rich;

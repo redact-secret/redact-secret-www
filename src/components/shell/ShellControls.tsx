@@ -1,7 +1,7 @@
-import { SegmentedControl } from '../ui';
+import { useState } from 'preact/hooks';
 import type { ShellCopy } from '../../content';
 import { homePath, localeNames, locales, type Locale } from '../../i18n';
-import { useTheme, type Theme } from './useTheme';
+import styles from './ShellControls.module.css';
 
 export type Alternates = Partial<Record<Locale, string>>;
 
@@ -12,25 +12,49 @@ type Props = {
   alternates?: Alternates;
 };
 
-/** Language (links — the URL changes) and theme (buttons) switches. */
+/** A compact language menu. Theme support remains available, but is not shown in the site header. */
 export function ShellControls({ locale, copy, alternates }: Props) {
-  const [theme, setTheme] = useTheme();
+  const [open, setOpen] = useState(false);
+
   return (
-    <>
-      <SegmentedControl
-        label={copy.languageLabel}
-        value={locale}
-        options={locales.map((l) => ({ value: l, label: localeNames[l], href: alternates?.[l] ?? homePath(l), hrefLang: l }))}
-      />
-      <SegmentedControl<Theme>
-        label={copy.themeLabel}
-        value={theme}
-        onChange={setTheme}
-        options={[
-          { value: 'light', label: copy.themeLight },
-          { value: 'dark', label: copy.themeDark },
-        ]}
-      />
-    </>
+    <div
+      class={styles.language}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') setOpen(false);
+      }}
+    >
+      <button
+        type="button"
+        class={styles.trigger}
+        aria-label={copy.languageLabel}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <span lang={locale}>{localeNames[locale]}</span>
+        <span class={styles.chevron} aria-hidden="true">⌄</span>
+      </button>
+      {open && (
+        <div class={styles.options} role="menu" aria-label={copy.languageLabel}>
+          {locales.map((language) => (
+            <a
+              key={language}
+              class={styles.option}
+              href={alternates?.[language] ?? homePath(language)}
+              hrefLang={language}
+              lang={language}
+              role="menuitem"
+              aria-current={language === locale ? 'page' : undefined}
+              onClick={() => setOpen(false)}
+            >
+              {localeNames[language]}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

@@ -208,7 +208,7 @@
                 "$ref": "locale-common-v1.schema.json#/$defs/text"
               },
               "ask": {
-                "$ref": "locale-common-v1.schema.json#/$defs/text"
+                "$ref": "locale-common-v1.schema.json#/$defs/rich"
               },
               "gist": {
                 "$ref": "locale-common-v1.schema.json#/$defs/rich"

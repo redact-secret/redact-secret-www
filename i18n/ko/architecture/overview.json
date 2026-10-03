@@ -41,11 +41,28 @@
     },
     "adapters": {
       "question": "“텍스트는 누가 가져오나요?”",
-      "body": "호스트와 엔진 사이에 놓이는 패키지입니다. 판단은 하지 않고, 실패하면 값 대신 마커를 출력합니다."
+      "body": [
+        "호스트와 엔진 사이에서 ",
+        {
+          "a": "pino",
+          "href": "https://getpino.io/"
+        },
+        ", 분리된 ",
+        {
+          "a": "OpenTelemetry",
+          "href": "https://opentelemetry.io/"
+        },
+        " 트레이스·로그 신호, Python 로깅, AI 컨텍스트와 ",
+        {
+          "a": "MCP",
+          "href": "https://modelcontextprotocol.io/"
+        },
+        "를 다룹니다. 판단은 하지 않고 실패 시 닫힌 상태로 끝납니다."
+      ]
     },
     "vault": {
       "question": "“원본이 다시 필요하면요?”",
-      "body": "코어는 원본을 버립니다. 볼트는 원본을 보관할 수 있는 유일한 곳이며, 쉽게 보관하지 못하도록 설계했습니다."
+      "body": "코어는 원본을 버립니다. 볼트의 인메모리 경로는 베타이며, 검증된 배포 조합에만 지원 주장을 두는 알파 영구 저장 프로필이 추가됐습니다."
     }
   },
   "repos": {
@@ -66,12 +83,28 @@
       },
       {
         "repo": "redact-secret-vault",
-        "owns": "매핑 수명 주기, 불투명 토큰, 복원 검사, 저장소 확장 지점",
+        "owns": "매핑 수명 주기, 불투명 토큰, 복원 검사, 암호화 영구 저장 계약과 저장소",
         "mustNot": "탐지 규칙, 개인정보 분류, 코어 정책 변경"
       },
       {
         "repo": "redact-secret-adapters",
-        "owns": "로그·트레이스·AI 컨텍스트·MCP용 호스트 연동",
+        "owns": [
+          {
+            "a": "pino",
+            "href": "https://getpino.io/"
+          },
+          "·",
+          {
+            "a": "OpenTelemetry",
+            "href": "https://opentelemetry.io/"
+          },
+          " 로그와 트레이스·Python 로깅·AI 컨텍스트·",
+          {
+            "a": "MCP",
+            "href": "https://modelcontextprotocol.io/"
+          },
+          "용 호스트 연동"
+        ],
         "mustNot": "복원, 매핑된 평문을 관측 도구로 내보내기"
       },
       {

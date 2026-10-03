@@ -64,8 +64,8 @@ const spelledCounts = [
       const listed = Object.keys(integrations.packages).filter((id) => /^adapters?(-|$)/.test(id)).length;
       return listed === d.en['architecture/adapters.json'].thePackages.tiles.length ? listed : NaN;
     },
-    n: 6,
-    words: { en: /\bsix\b/i, ko: '여섯' },
+    n: 7,
+    words: { en: /\bseven\b/i, ko: '일곱' },
     at: [
       ['architecture/adapters.json', '/head/lede'],
       ['architecture/adapters.json', '/thePackages/title'],

@@ -1,25 +1,25 @@
 {
   "$schema": "../schemas/evidence-v1.schema.json",
   "schemaVersion": "evidence-v1",
-  "observedAt": "2026-09-29",
+  "observedAt": "2026-10-03",
   "sources": {
     "core": {
       "source": {
         "kind": "repository",
         "repository": "redact-secret/redact-secret",
-        "revision": "b9e90915f4139a79ca1527a79c93cf951fc0927d",
-        "release": "0.1.0-beta.11"
+        "revision": "0b0582a515a10a8c1aec7057265e4f9f7ff23c50",
+        "release": "0.1.0-beta.13"
       },
-      "observedAt": "2026-09-29",
+      "observedAt": "2026-10-03",
       "freshness": "fresh"
     },
     "benchmarks": {
       "source": {
         "kind": "repository",
         "repository": "redact-secret/redact-secret-benchmarks",
-        "revision": "d7da5c45d72867c399950dc5ece6a282d67cdb0a"
+        "revision": "573e128863e0543133e5ccbd513216d19513b7da"
       },
-      "observedAt": "2026-09-29",
+      "observedAt": "2026-10-03",
       "freshness": "fresh"
     },
     "adapters": {
@@ -28,21 +28,21 @@
         "registry": "npm",
         "package": "@redact-secret/adapter",
         "url": "https://registry.npmjs.org/@redact-secret%2fadapter",
-        "version": "0.1.3",
-        "revision": "f57bd4e7c8ef84de63cf9a615904f6560f4661a8",
+        "version": "0.1.8",
+        "revision": "4e43f66a78d6f46f1963e94e083c827a6d21967c",
         "repository": "redact-secret/redact-secret-adapters",
         "paths": ["README.md"]
       },
-      "observedAt": "2026-09-29",
+      "observedAt": "2026-10-03",
       "freshness": "fresh"
     },
     "vault": {
       "source": {
         "kind": "repository",
         "repository": "redact-secret/redact-secret-vault",
-        "revision": "b2625b532bd78f0fa0ca9cdfd6a326d1c06044d0"
+        "revision": "194e20ec7a93300e894abfc613171cd83075f9b0"
       },
-      "observedAt": "2026-09-29",
+      "observedAt": "2026-10-03",
       "freshness": "fresh"
     }
   },
@@ -52,18 +52,18 @@
       "paths": ["docs/support-matrix.md"],
       "note": "check-data fails when these counts differ from the product feed's supportMatrix (data/release.json feeds.product), which the pages also use for the measured and released versions.",
       "value": {
-        "families": 152,
-        "providers": 76,
-        "status": { "stable": 105, "unsupported": 18, "provisional": 20, "pending": 9 },
-        "stableBasis": { "documented": 80, "empirical": 25 },
-        "tiers": { "T1": 86, "T2": 35, "T3": 4, "T0": 2 }
+        "families": 173,
+        "providers": 92,
+        "status": { "stable": 144, "unsupported": 17, "provisional": 7, "pending": 5 },
+        "stableBasis": { "documented": 106, "empirical": 38 },
+        "tiers": { "T1": 106, "T2": 41, "T3": 4, "T0": 1 }
       }
     },
     "taxonomy": {
       "source": "benchmarks",
       "paths": ["results/provider-dossiers-v1.json"],
-      "note": "Synced by npm run sync:taxonomy from https://benchmarks.redactsecret.dev/results/provider-dossiers-v1.json (generated 2026-09-29T17:57:21.579Z at redact-secret-benchmarks 86efbaf21a347fc6fbc7b4bf270d982ee26ae2ac). The counts come from that published file, not from the revision pinned in sources.benchmarks.",
-      "value": { "families": 152, "providers": 77, "withoutDetector": 25 }
+      "note": "Synced by npm run sync:taxonomy from https://benchmarks.redactsecret.dev/results/provider-dossiers-v1.json (generated 2026-10-03T12:26:21.849Z at redact-secret-benchmarks 0269173bfb4b734afa008e69f1234bc8b41d305a). The counts come from that published file, not from the revision pinned in sources.benchmarks.",
+      "value": { "families": 173, "providers": 93, "withoutDetector": 21 }
     },
     "staleProse": {
       "source": "benchmarks",

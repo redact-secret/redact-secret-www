@@ -246,7 +246,19 @@
       },
       {
         "title": "경쟁 도구와의 차이",
-        "ask": "같은 바이트를 두고 우리와 Gitleaks, TruffleHog의 판단은 어디서 갈리는가?",
+        "ask": [
+          "같은 바이트를 두고 우리와 ",
+          {
+            "a": "Gitleaks",
+            "href": "https://gitleaks.io/"
+          },
+          ", ",
+          {
+            "a": "TruffleHog",
+            "href": "https://github.com/trufflesecurity/trufflehog"
+          },
+          "의 판단은 어디서 갈리는가?"
+        ],
         "gist": [
           "경쟁 도구의 결과는 ",
           {

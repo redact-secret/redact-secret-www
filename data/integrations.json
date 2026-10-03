@@ -1,7 +1,7 @@
 {
   "$schema": "../schemas/integrations-v1.schema.json",
   "schemaVersion": "integrations-v1",
-  "generatedAt": "2026-09-29",
+  "generatedAt": "2026-10-03",
   "source": { "kind": "authored", "repository": "redact-secret/redact-secret-www", "path": "data/integrations.json" },
   "freshness": "fresh",
   "packages": {
@@ -17,7 +17,8 @@
     "cli": { "registry": "crates", "name": "redact-secret-cli" },
     "adapter": { "registry": "npm", "name": "@redact-secret/adapter" },
     "adapter-pino": { "registry": "npm", "name": "@redact-secret/adapter-pino" },
-    "adapter-otel": { "registry": "npm", "name": "@redact-secret/adapter-otel" },
+    "adapter-otel-trace": { "registry": "npm", "name": "@redact-secret/adapter-otel-trace" },
+    "adapter-otel-logs": { "registry": "npm", "name": "@redact-secret/adapter-otel-logs", "tag": "beta" },
     "adapter-ai-context": { "registry": "npm", "name": "@redact-secret/adapter-ai-context" },
     "adapter-mcp": { "registry": "npm", "name": "@redact-secret/adapter-mcp" },
     "adapters-py": { "registry": "pypi", "name": "redact-secret-adapters" },
@@ -57,7 +58,7 @@
         "browser": [{ "id": "web-stream", "slot": "core", "display": "@redact-secret/core/web-stream", "facts": ["version"] }],
         "node": [
           { "id": "pino", "slot": "adapter-pino", "facts": ["version", "host", "core"] },
-          { "id": "otel", "slot": "adapter-otel", "facts": ["version", "host", "core"] },
+          { "id": "otel", "slot": "adapter-otel-trace", "facts": ["version", "host", "core"] },
           { "id": "masking", "slot": "adapter", "facts": ["version", "core"] },
           { "id": "ai-context", "slot": "adapter-ai-context", "facts": ["version", "tag", "core"] },
           { "id": "mcp", "slot": "adapter-mcp", "facts": ["version", "tag", "host", "core"] }

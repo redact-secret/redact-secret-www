@@ -160,11 +160,20 @@
       {
         "title": "Real logging and tracing packages",
         "body": [
-          "pino, Python ",
+          {
+            "a": "pino",
+            "href": "https://getpino.io/"
+          },
+          ", Python ",
           {
             "code": "logging"
           },
-          " and an OpenTelemetry span processor ship as versioned adapters from ",
+          " and an ",
+          {
+            "a": "OpenTelemetry",
+            "href": "https://opentelemetry.io/"
+          },
+          " span processor ship as versioned adapters from ",
           {
             "a": "their own repository",
             "to": "architecture/adapters"
@@ -187,7 +196,26 @@
     "eyebrow": "The comparison",
     "title": "Most secret scanners guard a different door",
     "lede": [
-      "Gitleaks, TruffleHog, detect-secrets and GitGuardian watch ",
+      {
+        "a": "Gitleaks",
+        "href": "https://gitleaks.io/"
+      },
+      ", ",
+      {
+        "a": "TruffleHog",
+        "href": "https://github.com/trufflesecurity/trufflehog"
+      },
+      ", ",
+      {
+        "a": "detect-secrets",
+        "href": "https://github.com/Yelp/detect-secrets"
+      },
+      " and ",
+      {
+        "a": "GitGuardian",
+        "href": "https://www.gitguardian.com/"
+      },
+      " watch ",
       {
         "b": "your code"
       },
@@ -198,7 +226,28 @@
       ", at the moment text is about to be logged, stored, or handed to a model."
     ],
     "nodeTitle1": "Code → commit → CI",
-    "node1": "Gitleaks, TruffleHog, detect-secrets, GitGuardian. Scans files and git history, before anything ships.",
+    "node1": [
+      {
+        "a": "Gitleaks",
+        "href": "https://gitleaks.io/"
+      },
+      ", ",
+      {
+        "a": "TruffleHog",
+        "href": "https://github.com/trufflesecurity/trufflehog"
+      },
+      ", ",
+      {
+        "a": "detect-secrets",
+        "href": "https://github.com/Yelp/detect-secrets"
+      },
+      ", ",
+      {
+        "a": "GitGuardian",
+        "href": "https://www.gitguardian.com/"
+      },
+      ". Scans files and git history, before anything ships."
+    ],
     "nodeTitle2": "Running app → text in motion",
     "node2": [
       {
@@ -227,7 +276,12 @@
         {
           "var": "families"
         },
-        " credential families against Gitleaks' several hundred rules. It favors precision over recall on purpose."
+        " credential families against ",
+        {
+          "a": "Gitleaks'",
+          "href": "https://gitleaks.io/"
+        },
+        " several hundred rules. It favors precision over recall on purpose."
       ],
       [
         {

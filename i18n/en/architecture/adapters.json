@@ -10,7 +10,7 @@
     "eyebrow": "05 · Adapters",
     "title": "The core knows what a secret is. Something has to go and get the text.",
     "lede": [
-      "Six packages that fetch text, hand it to the core and carry the answer back. ",
+      "Seven packages that fetch text, hand it to the core and carry the answer back. ",
       {
         "b": "They decide nothing."
       }
@@ -32,7 +32,12 @@
           {
             "b": "Nobody tells you"
           },
-          " when pino's next major changes the hook signature."
+          " when ",
+          {
+            "a": "pino's",
+            "href": "https://getpino.io/"
+          },
+          " next major changes the hook signature."
         ]
       },
       {
@@ -46,7 +51,12 @@
               }
             ]
           },
-          ". A declared pino range, ",
+          ". A declared ",
+          {
+            "a": "pino",
+            "href": "https://getpino.io/"
+          },
+          " range, ",
           {
             "b": "tested at both ends"
           },
@@ -66,7 +76,24 @@
     "eyebrow": "Where they sit",
     "title": "Between your host and the engine",
     "nodeTitle1": "Your host",
-    "node1": "A pino logger, an OpenTelemetry span, a Python log record, an MCP tool result, a model prompt.",
+    "node1": [
+      "A ",
+      {
+        "a": "pino",
+        "href": "https://getpino.io/"
+      },
+      " logger, an ",
+      {
+        "a": "OpenTelemetry",
+        "href": "https://opentelemetry.io/"
+      },
+      " span, a Python log record, an ",
+      {
+        "a": "MCP",
+        "href": "https://modelcontextprotocol.io/"
+      },
+      " tool result, a model prompt."
+    ],
     "arrow1": "the adapter carries the text in",
     "claimSub": "It decides what a secret is. The adapter does not.",
     "claim": "The Redact Secret core",
@@ -76,7 +103,7 @@
   },
   "thePackages": {
     "eyebrow": "The packages",
-    "title": "Six of them, on two registries",
+    "title": "Seven of them, on two registries",
     "tiles": [
       [
         "The shared base everything else is built on: one primitive for masking a string, and the ",
@@ -90,18 +117,44 @@
         {
           "b": "by value"
         },
-        ", and works alongside pino's own path-based ",
+        ", and works alongside ",
+        {
+          "a": "pino's",
+          "href": "https://getpino.io/"
+        },
+        " own path-based ",
         {
           "code": "redact"
         },
-        ". pino cannot see a token inside a message string or an error message; this can."
+        ". ",
+        {
+          "a": "pino",
+          "href": "https://getpino.io/"
+        },
+        " cannot see a token inside a message string or an error message; this can."
       ],
       [
-        "Every string and string-array attribute on a span and its events, redacted before the span reaches the next processor. Attribute names are not allowlisted, so OpenInference and GenAI conventions are covered ",
+        "The dedicated ",
+        {
+          "a": "OpenTelemetry",
+          "href": "https://opentelemetry.io/"
+        },
+        " trace adapter redacts span names, string attributes, events, links and status messages before the span reaches the next processor. Attribute names are not allowlisted, so OpenInference and GenAI conventions are covered ",
         {
           "b": "without hardcoding either"
         },
         "."
+      ],
+      [
+        {
+          "a": "OpenTelemetry",
+          "href": "https://opentelemetry.io/"
+        },
+        " logs, kept separate from traces and published on the ",
+        {
+          "code": "beta"
+        },
+        " channel. It redacts log bodies and attributes before export; the split keeps each signal's host contract explicit."
       ],
       [
         "A framework-neutral boundary for AI work: user input, tool results, a constructed context and streamed text, sanitized before any of it reaches a model. ",
@@ -110,13 +163,30 @@
         }
       ],
       [
-        "The Model Context Protocol boundary: a tool's result, optionally its arguments, and what a client reads with ",
+        "The ",
+        {
+          "a": "Model Context Protocol",
+          "href": "https://modelcontextprotocol.io/"
+        },
+        " boundary: a tool's result, optionally its arguments, and what a client reads with ",
         {
           "code": "resources/read"
         },
-        ". A thin specialization of the package above, adding only the MCP shape. ",
+        ". A thin specialization of the package above, adding only the ",
         {
-          "b": "It imports no MCP SDK, even for types."
+          "a": "MCP",
+          "href": "https://modelcontextprotocol.io/"
+        },
+        " shape. ",
+        {
+          "b": [
+            "It imports no ",
+            {
+              "a": "MCP",
+              "href": "https://modelcontextprotocol.io/"
+            },
+            " SDK, even for types."
+          ]
         }
       ],
       [
@@ -129,7 +199,12 @@
     ],
     "pythonMeta": "logging filter",
     "note": [
-      "A masking-callback host such as Langfuse ",
+      "A masking-callback host such as ",
+      {
+        "a": "Langfuse",
+        "href": "https://langfuse.com/"
+      },
+      " ",
       {
         "b": "needs no dedicated package"
       },
@@ -239,7 +314,12 @@
       " The core is released in lockstep across Rust, npm, PyPI and the CLI. These packages are not: ",
       {
         "b": [
-          "a new pino release moves ",
+          "a new ",
+          {
+            "a": "pino",
+            "href": "https://getpino.io/"
+          },
+          " release moves ",
           {
             "code": "adapter-pino"
           },
@@ -265,7 +345,14 @@
       "Verified by"
     ],
     "verifiedBy": [
-      "a real pino logger writing to a captured stream",
+      [
+        "a real ",
+        {
+          "a": "pino",
+          "href": "https://getpino.io/"
+        },
+        " logger writing to a captured stream"
+      ],
       [
         "a real span passed through ",
         {
@@ -276,7 +363,12 @@
       "a real span through a real tracer provider"
     ],
     "p": [
-      "A pino major outside the declared range is ",
+      "A ",
+      {
+        "a": "pino",
+        "href": "https://getpino.io/"
+      },
+      " major outside the declared range is ",
       {
         "b": "deliberately"
       },
@@ -322,7 +414,18 @@
       ],
       [
         {
-          "b": "LangChain, and a Langfuse package."
+          "b": [
+            {
+              "a": "LangChain",
+              "href": "https://www.langchain.com/"
+            },
+            ", and a ",
+            {
+              "a": "Langfuse",
+              "href": "https://langfuse.com/"
+            },
+            " package."
+          ]
         },
         " A masking-callback host needs no package; the shared walker is the integration."
       ],

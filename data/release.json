@@ -1,7 +1,7 @@
 {
   "$schema": "../schemas/release-v1.schema.json",
   "schemaVersion": "release-v1",
-  "generatedAt": "2026-09-29T20:06:05.954Z",
+  "generatedAt": "2026-10-03T17:56:09.701Z",
   "generator": "scripts/refresh-slots.mjs",
   "packages": {
     "core": {
@@ -10,21 +10,21 @@
         "registry": "npm",
         "package": "@redact-secret/core",
         "url": "https://registry.npmjs.org/@redact-secret%2fcore",
-        "version": "0.1.0-beta.11"
+        "version": "0.1.0-beta.13"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:fdf3c9603dddaad93203ba2174812942da92e4328a8a49033aef118702707248",
+      "digest": "sha256:f7380b238a9cc4ec43423f9fe5f8777b2e9ba3fd4dcd8f1c52214f8acfe8c0cf",
       "value": {
         "registry": "npm",
         "name": "@redact-secret/core",
-        "version": "0.1.0-beta.11",
-        "published": "2026-09-29",
-        "latest": "0.1.0-beta.11",
+        "version": "0.1.0-beta.13",
+        "published": "2026-10-03",
+        "latest": "0.1.0-beta.13",
         "tag": "latest",
         "peers": {},
         "dependencies": {
-          "@redact-secret/wasm": "0.1.0-beta.11"
+          "@redact-secret/wasm": "0.1.0-beta.13"
         }
       },
       "mirrors": {
@@ -34,15 +34,15 @@
             "registry": "pypi",
             "package": "redact-secret",
             "url": "https://pypi.org/pypi/redact-secret/json",
-            "version": "0.1.0b11"
+            "version": "0.1.0b13"
           },
-          "observedAt": "2026-09-29T20:06:05.954Z",
+          "observedAt": "2026-10-03T17:56:09.701Z",
           "freshness": "fresh",
-          "digest": "sha256:0ee5fc0ae9459f6c34d48ff67396b7230ad8aff25ca9ba011b6a4de4df4159ee",
+          "digest": "sha256:ae60adf9e214fc3ed404506cbbd47d328baa9600ea2e01eac63b3b765b6da20e",
           "value": {
             "name": "redact-secret",
-            "version": "0.1.0b11",
-            "published": "2026-09-29"
+            "version": "0.1.0b13",
+            "published": "2026-10-03"
           }
         },
         "crates": {
@@ -51,15 +51,15 @@
             "registry": "crates",
             "package": "redact-secret",
             "url": "https://crates.io/api/v1/crates/redact-secret",
-            "version": "0.1.0-beta.11"
+            "version": "0.1.0-beta.13"
           },
-          "observedAt": "2026-09-29T20:06:05.954Z",
+          "observedAt": "2026-10-03T17:56:09.701Z",
           "freshness": "fresh",
-          "digest": "sha256:271cf23522d920ff0a9c5dfed8f2eae34a0bd01b4ea4b78896ba245cc45640ea",
+          "digest": "sha256:5212bf2e4ee9dbd1008cf2a821ce3a3b6ba1f2c4957af8f7ac1c7072ee7a4d4c",
           "value": {
             "name": "redact-secret",
-            "version": "0.1.0-beta.11",
-            "published": "2026-09-29"
+            "version": "0.1.0-beta.13",
+            "published": "2026-10-03"
           }
         }
       }
@@ -70,17 +70,17 @@
         "registry": "npm",
         "package": "@redact-secret/wasm",
         "url": "https://registry.npmjs.org/@redact-secret%2fwasm",
-        "version": "0.1.0-beta.11"
+        "version": "0.1.0-beta.13"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:bb8d5c0ae71889543b881e2edc2d952df0d2aa9a96f761ffc734b2de79eef233",
+      "digest": "sha256:9cfc30e6ab2e9fbdcfc42de96f851d68d4e710b881331fdddb44554c5037dce9",
       "value": {
         "registry": "npm",
         "name": "@redact-secret/wasm",
-        "version": "0.1.0-beta.11",
-        "published": "2026-09-29",
-        "latest": "0.1.0-beta.11",
+        "version": "0.1.0-beta.13",
+        "published": "2026-10-03",
+        "latest": "0.1.0-beta.13",
         "tag": "latest",
         "peers": {},
         "dependencies": {}
@@ -92,16 +92,16 @@
         "registry": "crates",
         "package": "redact-secret-cli",
         "url": "https://crates.io/api/v1/crates/redact-secret-cli",
-        "version": "0.1.0-beta.11"
+        "version": "0.1.0-beta.13"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:6ca292c41e8fe75d36f4fbc194cdebcc8e5c4540ba9f7bafa8bd867d59f5e884",
+      "digest": "sha256:d1cbd2a0fd82f9945364807f33f24a96a2890c312344a1a432182cd3d49146fb",
       "value": {
         "registry": "crates",
         "name": "redact-secret-cli",
-        "version": "0.1.0-beta.11",
-        "published": "2026-09-29"
+        "version": "0.1.0-beta.13",
+        "published": "2026-10-03"
       }
     },
     "adapter": {
@@ -110,18 +110,18 @@
         "registry": "npm",
         "package": "@redact-secret/adapter",
         "url": "https://registry.npmjs.org/@redact-secret%2fadapter",
-        "version": "0.1.4",
-        "revision": "646bbee784103aaa5562b6681231737364fdbc6b"
+        "version": "0.1.8",
+        "revision": "4e43f66a78d6f46f1963e94e083c827a6d21967c"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:803928abb97553b744e4c7cfb6d2b01d64c1194607472abd93a65b30ffa42062",
+      "digest": "sha256:ef9a85ee312ce6cfbe6d19ff30243160c20dd3fb884be27e5ee41466926ff9a2",
       "value": {
         "registry": "npm",
         "name": "@redact-secret/adapter",
-        "version": "0.1.4",
-        "published": "2026-09-29",
-        "latest": "0.1.4",
+        "version": "0.1.8",
+        "published": "2026-10-03",
+        "latest": "0.1.8",
         "tag": "latest",
         "peers": {
           "@redact-secret/core": "^0.1.0-beta.6"
@@ -135,53 +135,81 @@
         "registry": "npm",
         "package": "@redact-secret/adapter-pino",
         "url": "https://registry.npmjs.org/@redact-secret%2fadapter-pino",
-        "version": "0.1.2",
-        "revision": "f57bd4e7c8ef84de63cf9a615904f6560f4661a8"
+        "version": "0.1.5",
+        "revision": "4e43f66a78d6f46f1963e94e083c827a6d21967c"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:fd508810ccfc7cf26cf4a39c0358f622acf4dac83394a7d7fe59dbfc55767b53",
+      "digest": "sha256:a1aeb05c712e6f89b331ac7904cce253a7f17b13a459cec043dc2080a84fd839",
       "value": {
         "registry": "npm",
         "name": "@redact-secret/adapter-pino",
-        "version": "0.1.2",
-        "published": "2026-09-29",
-        "latest": "0.1.2",
+        "version": "0.1.5",
+        "published": "2026-10-03",
+        "latest": "0.1.5",
         "tag": "latest",
         "peers": {
           "pino": "^10.0.0",
           "@redact-secret/core": "^0.1.0-beta.6"
         },
         "dependencies": {
-          "@redact-secret/adapter": "^0.1.3"
+          "@redact-secret/adapter": "^0.1.7"
         }
       }
     },
-    "adapter-otel": {
+    "adapter-otel-trace": {
       "source": {
         "kind": "registry",
         "registry": "npm",
-        "package": "@redact-secret/adapter-otel",
-        "url": "https://registry.npmjs.org/@redact-secret%2fadapter-otel",
-        "version": "0.1.2",
-        "revision": "f57bd4e7c8ef84de63cf9a615904f6560f4661a8"
+        "package": "@redact-secret/adapter-otel-trace",
+        "url": "https://registry.npmjs.org/@redact-secret%2fadapter-otel-trace",
+        "version": "0.1.3",
+        "revision": "4e43f66a78d6f46f1963e94e083c827a6d21967c"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:fb2fdad8be68070d80a86a891dcc48b6b04d5f261dfb9df79aa3eb19450b836f",
+      "digest": "sha256:89ad01b30579617a0088f95ba68d58f20eaf5f74239f414380b300b9a1ff01c6",
       "value": {
         "registry": "npm",
-        "name": "@redact-secret/adapter-otel",
-        "version": "0.1.2",
-        "published": "2026-09-29",
-        "latest": "0.1.2",
+        "name": "@redact-secret/adapter-otel-trace",
+        "version": "0.1.3",
+        "published": "2026-10-03",
+        "latest": "0.1.3",
         "tag": "latest",
         "peers": {
           "@redact-secret/core": "^0.1.0-beta.6",
           "@opentelemetry/sdk-trace-base": "^2.0.0"
         },
         "dependencies": {
-          "@redact-secret/adapter": "^0.1.3"
+          "@redact-secret/adapter": "^0.1.7"
+        }
+      }
+    },
+    "adapter-otel-logs": {
+      "source": {
+        "kind": "registry",
+        "registry": "npm",
+        "package": "@redact-secret/adapter-otel-logs",
+        "url": "https://registry.npmjs.org/@redact-secret%2fadapter-otel-logs",
+        "version": "0.1.0-beta.3",
+        "revision": "4e43f66a78d6f46f1963e94e083c827a6d21967c"
+      },
+      "observedAt": "2026-10-03T17:56:09.701Z",
+      "freshness": "fresh",
+      "digest": "sha256:e98b64b03e306a4edb082ea972323c17697e26d1f3552c6ad04e5e4d55638590",
+      "value": {
+        "registry": "npm",
+        "name": "@redact-secret/adapter-otel-logs",
+        "version": "0.1.0-beta.3",
+        "published": "2026-10-03",
+        "latest": "0.1.0-beta.2",
+        "tag": "beta",
+        "peers": {
+          "@redact-secret/core": "^0.1.0-beta.6",
+          "@opentelemetry/sdk-logs": ">=0.200.0 <=0.222.0"
+        },
+        "dependencies": {
+          "@redact-secret/adapter": "^0.1.7"
         }
       }
     },
@@ -191,24 +219,24 @@
         "registry": "npm",
         "package": "@redact-secret/adapter-ai-context",
         "url": "https://registry.npmjs.org/@redact-secret%2fadapter-ai-context",
-        "version": "0.1.1",
-        "revision": "53fc7fc427ae8f0f7e5c38dc500e6077910bf3aa"
+        "version": "0.1.4",
+        "revision": "4e43f66a78d6f46f1963e94e083c827a6d21967c"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:70abb7550028de1636266d03e71bd14081dc19a0b93ef582a7e2660a30597ef2",
+      "digest": "sha256:adee8600e9e0387832dfb68bf806608ae5b20a34f73bca429d53c2d3376035ac",
       "value": {
         "registry": "npm",
         "name": "@redact-secret/adapter-ai-context",
-        "version": "0.1.1",
-        "published": "2026-09-29",
-        "latest": "0.1.1",
+        "version": "0.1.4",
+        "published": "2026-10-03",
+        "latest": "0.1.4",
         "tag": "latest",
         "peers": {
           "@redact-secret/core": "^0.1.0-beta.6"
         },
         "dependencies": {
-          "@redact-secret/adapter": "^0.1.3"
+          "@redact-secret/adapter": "^0.1.7"
         }
       }
     },
@@ -218,27 +246,27 @@
         "registry": "npm",
         "package": "@redact-secret/adapter-mcp",
         "url": "https://registry.npmjs.org/@redact-secret%2fadapter-mcp",
-        "version": "0.1.1",
-        "revision": "53fc7fc427ae8f0f7e5c38dc500e6077910bf3aa"
+        "version": "0.1.5",
+        "revision": "4e43f66a78d6f46f1963e94e083c827a6d21967c"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:1b5d5854916d5d61bae6178e7df3d61c1672808e6c748b408e589a09094ce07b",
+      "digest": "sha256:d804fd5cc552cf79d3debf52880c6ba044036d5b2f3b771261a5a4c3681ee4d4",
       "value": {
         "registry": "npm",
         "name": "@redact-secret/adapter-mcp",
-        "version": "0.1.1",
-        "published": "2026-09-29",
-        "latest": "0.1.1",
+        "version": "0.1.5",
+        "published": "2026-10-03",
+        "latest": "0.1.5",
         "tag": "latest",
         "peers": {
           "@redact-secret/core": "^0.1.0-beta.6",
-          "@modelcontextprotocol/sdk": ">=1.13.0 <=1.30.1",
+          "@modelcontextprotocol/sdk": ">=1.26.0 <=1.30.1",
           "@modelcontextprotocol/client": ">=2.0.0 <=2.1.0",
           "@modelcontextprotocol/server": ">=2.0.0 <=2.1.0"
         },
         "dependencies": {
-          "@redact-secret/adapter-ai-context": "^0.1.0-alpha.2"
+          "@redact-secret/adapter-ai-context": "^0.1.3"
         }
       }
     },
@@ -248,16 +276,16 @@
         "registry": "pypi",
         "package": "redact-secret-adapters",
         "url": "https://pypi.org/pypi/redact-secret-adapters/json",
-        "version": "0.1.1"
+        "version": "0.1.5"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:e174c1e6413d4d8548271059fdc128b93319f13af5b0c8d2e37e36af713f644b",
+      "digest": "sha256:27ad0909f6621b7ca4d5dd64b2af19440338eabc02e0d3e5addbf9872ee74b50",
       "value": {
         "registry": "pypi",
         "name": "redact-secret-adapters",
-        "version": "0.1.1",
-        "published": "2026-09-29",
+        "version": "0.1.5",
+        "published": "2026-10-03",
         "requires": [
           "redact-secret<0.2,>=0.1.0b6",
           "opentelemetry-sdk<2,>=1.16.0; extra == \"otel\"",
@@ -271,21 +299,21 @@
         "registry": "npm",
         "package": "@redact-secret/vault",
         "url": "https://registry.npmjs.org/@redact-secret%2fvault",
-        "version": "0.1.0-beta.2",
-        "revision": "3462d8e6f1e4bd9ca6a2480497794da84679c9e9"
+        "version": "0.1.0-beta.5",
+        "revision": "194e20ec7a93300e894abfc613171cd83075f9b0"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:79447f02f9e094823d388595b899a6f022d916ccf19bd15bc59ed00edb461331",
+      "digest": "sha256:4a030d96b381fa9408efdcc46a823e8a4a4ab13de9dc1ad8cbfc8b465da1b456",
       "value": {
         "registry": "npm",
         "name": "@redact-secret/vault",
-        "version": "0.1.0-beta.2",
-        "published": "2026-09-29",
-        "latest": "0.1.0-beta.2",
+        "version": "0.1.0-beta.5",
+        "published": "2026-10-03",
+        "latest": "0.1.0-beta.5",
         "tag": "latest",
         "peers": {
-          "@redact-secret/core": "0.1.0-beta.11"
+          "@redact-secret/core": "0.1.0-beta.13"
         },
         "dependencies": {}
       }
@@ -296,24 +324,25 @@
         "registry": "npm",
         "package": "@redact-secret/vault-server",
         "url": "https://registry.npmjs.org/@redact-secret%2fvault-server",
-        "version": "0.1.0-beta.2",
-        "revision": "3462d8e6f1e4bd9ca6a2480497794da84679c9e9"
+        "version": "0.1.0-beta.5",
+        "revision": "194e20ec7a93300e894abfc613171cd83075f9b0"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:1d73d8fa259aab72b4b66254e7ef045049ffad72af3fee41e603ffff639a0681",
+      "digest": "sha256:c49e213f98c1aa526d8088f1aeaec5ffe47e938c536e24d8e8e345006193516e",
       "value": {
         "registry": "npm",
         "name": "@redact-secret/vault-server",
-        "version": "0.1.0-beta.2",
-        "published": "2026-09-29",
-        "latest": "0.1.0-beta.2",
+        "version": "0.1.0-beta.5",
+        "published": "2026-10-03",
+        "latest": "0.1.0-beta.5",
         "tag": "latest",
         "peers": {
-          "@redact-secret/core": "0.1.0-beta.11"
+          "@redact-secret/core": "0.1.0-beta.13"
         },
         "dependencies": {
-          "@redact-secret/vault": "0.1.0-beta.2"
+          "@redact-secret/vault": "0.1.0-beta.5",
+          "@redact-secret/vault-contracts": "0.1.0-alpha.1"
         }
       }
     },
@@ -323,18 +352,21 @@
         "registry": "pypi",
         "package": "redact-secret-vault",
         "url": "https://pypi.org/pypi/redact-secret-vault/json",
-        "version": "0.1.0b2"
+        "version": "0.1.0b5"
       },
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
-      "digest": "sha256:85d980d825c8357e0905a2adb9d06f93d5f1d883e71155a403dad57a23e64f0b",
+      "digest": "sha256:07a6573ba520aa9837bcf0e83b9ae95b2ed40ad025b5af1d1ada1bbeb6d02c76",
       "value": {
         "registry": "pypi",
         "name": "redact-secret-vault",
-        "version": "0.1.0b2",
-        "published": "2026-09-29",
+        "version": "0.1.0b5",
+        "published": "2026-10-03",
         "requires": [
+          "boto3>=1.43; extra == \"aws-kms\"",
+          "cryptography>=47; extra == \"crypto\"",
           "ruff<1,>=0.6; extra == \"lint\"",
+          "psycopg<4,>=3.2; extra == \"postgres\"",
           "pytest<9,>=8.0; extra == \"test\""
         ]
       }
@@ -345,18 +377,18 @@
       "source": {
         "kind": "repository",
         "repository": "redact-secret/redact-secret",
-        "revision": "b9e90915f4139a79ca1527a79c93cf951fc0927d",
+        "revision": "0b0582a515a10a8c1aec7057265e4f9f7ff23c50",
         "paths": [
           "docs/contracts/site-feed/v1/feed.json",
           "docs/contracts/site-feed/v1/feed.schema.json"
         ]
       },
       "ref": "main",
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
       "schemaVersion": "redact-secret.site-feed/v1",
-      "generatedAt": "2026-09-29T18:57:14Z",
-      "digest": "sha256:1afadcce04bf1ddc4dc7253d74658be11ea6a4e774fb4febedb6c20858854e84",
+      "generatedAt": "2026-10-03T00:00:00Z",
+      "digest": "sha256:898dbf3de011c7ec23689abc42c8a89a774816efb7bf8f9a14499bd450e4b801",
       "schemaDigest": "sha256:11b65a0e8fb6db1d126adcd0ccd96abc260e6f7476355b15e6f253deb1e45a11",
       "crossChecked": [
         "cli",
@@ -367,33 +399,33 @@
       ],
       "value": {
         "release": {
-          "version": "0.1.0-beta.11",
-          "tag": "v0.1.0-beta.11",
-          "sourceRevision": "94fc18a974f659ea882c89120dbf1adb3acf2f28",
-          "verifiedOn": "2026-09-29"
+          "version": "0.1.0-beta.13",
+          "tag": "v0.1.0-beta.13",
+          "sourceRevision": "66b492bdff5e6751fc6b5409266916346ed7c723",
+          "verifiedOn": "2026-10-03"
         },
         "supportMatrix": {
-          "benchmarksRevision": "a30282d90f31a7a059cd1a0262e9f1b3ec8423b3",
-          "generatedAt": "2026-09-29T18:57:14Z",
-          "measuredProductVersion": "0.1.0-beta.11",
-          "measuredProductRevision": "94fc18a974f659ea882c89120dbf1adb3acf2f28",
-          "gatedLatestRelease": false,
-          "families": 152,
-          "providers": 76,
+          "benchmarksRevision": "573e128863e0543133e5ccbd513216d19513b7da",
+          "generatedAt": "2026-10-02T19:28:20Z",
+          "measuredProductVersion": "0.1.0-beta.13",
+          "measuredProductRevision": "fe6e9234d40e7d5964de27d00d33544f9c621dbf",
+          "gatedLatestRelease": true,
+          "families": 173,
+          "providers": 92,
           "status": {
-            "stable": 105,
-            "provisional": 20,
-            "pending": 9,
-            "unsupported": 18
+            "stable": 144,
+            "provisional": 7,
+            "pending": 5,
+            "unsupported": 17
           },
           "stableBasis": {
-            "documented": 80,
-            "empirical": 25
+            "documented": 106,
+            "empirical": 38
           },
           "tiers": {
-            "T0": 2,
-            "T1": 86,
-            "T2": 35,
+            "T0": 1,
+            "T1": 106,
+            "T2": 41,
             "T3": 4
           }
         }
@@ -403,7 +435,7 @@
       "source": {
         "kind": "repository",
         "repository": "redact-secret/redact-secret-adapters",
-        "revision": "76779f085a40acac69a51dc2292ca1503d85c736",
+        "revision": "7e01b199a19f2c8980585c83fa6a73ea068a23f7",
         "paths": [
           "site-feed/v1/adapters.json",
           "site-feed/v1/adapters.schema.json"
@@ -411,17 +443,18 @@
       },
       "ref": "main",
       "mode": "feed",
-      "observedAt": "2026-09-29T20:06:05.954Z",
+      "observedAt": "2026-10-03T17:56:09.701Z",
       "freshness": "fresh",
       "schemaVersion": "redact-secret-adapters.release-feed/v1",
       "generatedAt": "2026-09-29T00:00:00Z",
-      "digest": "sha256:4ce9f3433121e7e4493673178687d88ce44e8dc8386061865ee94ff6d1c50e06",
+      "digest": "sha256:20da960e9e0336af6f96fbc930c15bd14ce75c0d1f3e1202e4e64030853ce223",
       "schemaDigest": "sha256:90590e1d60fa89aa43f7e4e9a5359da170017a4f845cd6f6fe31d36747a67a98",
       "crossChecked": [
         "adapter",
         "adapter-ai-context",
         "adapter-mcp",
-        "adapter-otel",
+        "adapter-otel-logs",
+        "adapter-otel-trace",
         "adapter-pino",
         "adapters-py"
       ],
@@ -431,14 +464,14 @@
             "id": "adapter",
             "ecosystem": "npm",
             "name": "@redact-secret/adapter",
-            "version": "0.1.4",
+            "version": "0.1.8",
             "channel": "latest",
             "core": {
               "name": "@redact-secret/core",
               "range": "^0.1.0-beta.6",
               "tested": {
                 "lowest": "0.1.0-beta.6",
-                "highest": "0.1.0-beta.11"
+                "highest": "0.1.0-beta.13"
               }
             }
           },
@@ -446,14 +479,29 @@
             "id": "adapter-pino",
             "ecosystem": "npm",
             "name": "@redact-secret/adapter-pino",
-            "version": "0.1.2",
+            "version": "0.1.5",
             "channel": "latest",
             "core": {
               "name": "@redact-secret/core",
               "range": "^0.1.0-beta.6",
               "tested": {
                 "lowest": "0.1.0-beta.6",
-                "highest": "0.1.0-beta.11"
+                "highest": "0.1.0-beta.13"
+              }
+            }
+          },
+          {
+            "id": "adapter-otel-trace",
+            "ecosystem": "npm",
+            "name": "@redact-secret/adapter-otel-trace",
+            "version": "0.1.3",
+            "channel": "latest",
+            "core": {
+              "name": "@redact-secret/core",
+              "range": "^0.1.0-beta.6",
+              "tested": {
+                "lowest": "0.1.0-beta.6",
+                "highest": "0.1.0-beta.13"
               }
             }
           },
@@ -461,14 +509,29 @@
             "id": "adapter-otel",
             "ecosystem": "npm",
             "name": "@redact-secret/adapter-otel",
-            "version": "0.1.2",
+            "version": "0.1.6",
             "channel": "latest",
             "core": {
               "name": "@redact-secret/core",
               "range": "^0.1.0-beta.6",
               "tested": {
                 "lowest": "0.1.0-beta.6",
-                "highest": "0.1.0-beta.11"
+                "highest": "0.1.0-beta.13"
+              }
+            }
+          },
+          {
+            "id": "adapter-otel-logs",
+            "ecosystem": "npm",
+            "name": "@redact-secret/adapter-otel-logs",
+            "version": "0.1.0-beta.3",
+            "channel": "beta",
+            "core": {
+              "name": "@redact-secret/core",
+              "range": "^0.1.0-beta.6",
+              "tested": {
+                "lowest": "0.1.0-beta.6",
+                "highest": "0.1.0-beta.13"
               }
             }
           },
@@ -476,14 +539,14 @@
             "id": "adapter-ai-context",
             "ecosystem": "npm",
             "name": "@redact-secret/adapter-ai-context",
-            "version": "0.1.1",
+            "version": "0.1.4",
             "channel": "latest",
             "core": {
               "name": "@redact-secret/core",
               "range": "^0.1.0-beta.6",
               "tested": {
                 "lowest": "0.1.0-beta.6",
-                "highest": "0.1.0-beta.11"
+                "highest": "0.1.0-beta.13"
               }
             }
           },
@@ -491,14 +554,14 @@
             "id": "adapter-mcp",
             "ecosystem": "npm",
             "name": "@redact-secret/adapter-mcp",
-            "version": "0.1.1",
+            "version": "0.1.5",
             "channel": "latest",
             "core": {
               "name": "@redact-secret/core",
               "range": "^0.1.0-beta.6",
               "tested": {
                 "lowest": "0.1.0-beta.6",
-                "highest": "0.1.0-beta.11"
+                "highest": "0.1.0-beta.13"
               }
             }
           },
@@ -506,14 +569,14 @@
             "id": "redact-secret-adapters",
             "ecosystem": "pypi",
             "name": "redact-secret-adapters",
-            "version": "0.1.1",
+            "version": "0.1.5",
             "channel": "latest",
             "core": {
               "name": "redact-secret",
               "range": ">=0.1.0b6,<0.2",
               "tested": {
                 "lowest": "0.1.0b6",
-                "highest": "0.1.0b11"
+                "highest": "0.1.0b13"
               }
             }
           }

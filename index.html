@@ -9,11 +9,11 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Merriweather:wght@700&family=Roboto:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700;800&family=Noto+Serif+KR:wght@700&display=swap"
     />
-    <!-- Apply a saved theme before first paint; the toggle hydrates later. -->
+    <!-- Dark is the site default; a saved light choice remains supported. -->
     <script>
       try {
         var t = localStorage.getItem('rs-theme');
-        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
       } catch (e) {}
     </script>
   </head>
